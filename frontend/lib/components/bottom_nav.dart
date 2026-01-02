@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+import '../localization/app_localizations_extension.dart';
 
 enum NavItem { home, scan, history }
 
@@ -19,32 +20,39 @@ class BottomNav extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.white,
-        border: Border(
-          top: BorderSide(color: AppColors.borderLight, width: 1),
-        ),
+        border: Border(top: BorderSide(color: AppColors.borderLight, width: 1)),
       ),
       padding: const EdgeInsets.only(top: 12, bottom: 24),
       child: SafeArea(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _NavButton(
-              icon: Icons.home,
-              label: 'Home',
-              isActive: activeItem == NavItem.home,
-              onTap: () => onItemTap(NavItem.home),
+            Builder(
+              builder:
+                  (context) => _NavButton(
+                    icon: Icons.home,
+                    label: context.l10n.navHome,
+                    isActive: activeItem == NavItem.home,
+                    onTap: () => onItemTap(NavItem.home),
+                  ),
             ),
-            _NavButton(
-              icon: Icons.camera_alt,
-              label: 'Scan',
-              isActive: activeItem == NavItem.scan,
-              onTap: () => onItemTap(NavItem.scan),
+            Builder(
+              builder:
+                  (context) => _NavButton(
+                    icon: Icons.camera_alt,
+                    label: context.l10n.navScan,
+                    isActive: activeItem == NavItem.scan,
+                    onTap: () => onItemTap(NavItem.scan),
+                  ),
             ),
-            _NavButton(
-              icon: Icons.history,
-              label: 'History',
-              isActive: activeItem == NavItem.history,
-              onTap: () => onItemTap(NavItem.history),
+            Builder(
+              builder:
+                  (context) => _NavButton(
+                    icon: Icons.history,
+                    label: context.l10n.navHistory,
+                    isActive: activeItem == NavItem.history,
+                    onTap: () => onItemTap(NavItem.history),
+                  ),
             ),
           ],
         ),
@@ -93,4 +101,3 @@ class _NavButton extends StatelessWidget {
     );
   }
 }
-

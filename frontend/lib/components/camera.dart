@@ -2,15 +2,13 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+import '../localization/app_localizations_extension.dart';
 
 /// Shutter button for camera screen
 class ShutterButton extends StatefulWidget {
   final VoidCallback onPressed;
 
-  const ShutterButton({
-    super.key,
-    required this.onPressed,
-  });
+  const ShutterButton({super.key, required this.onPressed});
 
   @override
   State<ShutterButton> createState() => _ShutterButtonState();
@@ -40,7 +38,7 @@ class _ShutterButtonState extends State<ShutterButton> {
             color: _isPressed ? const Color(0xFFF3F4F6) : Colors.white,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.3),
+                color: Colors.black.withAlpha(77),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -66,10 +64,7 @@ class _ShutterButtonState extends State<ShutterButton> {
 class HelperText extends StatelessWidget {
   final String text;
 
-  const HelperText({
-    super.key,
-    required this.text,
-  });
+  const HelperText({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +75,7 @@ class HelperText extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.black.withAlpha(128),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
@@ -101,10 +96,7 @@ class HelperText extends StatelessWidget {
 class CameraCloseButton extends StatelessWidget {
   final VoidCallback onPressed;
 
-  const CameraCloseButton({
-    super.key,
-    required this.onPressed,
-  });
+  const CameraCloseButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -118,13 +110,9 @@ class CameraCloseButton extends StatelessWidget {
             height: 40,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.black.withOpacity(0.4),
+              color: Colors.black.withAlpha(102),
             ),
-            child: const Icon(
-              Icons.close,
-              color: Colors.white,
-              size: 24,
-            ),
+            child: const Icon(Icons.close, color: Colors.white, size: 24),
           ),
         ),
       ),
@@ -136,10 +124,7 @@ class CameraCloseButton extends StatelessWidget {
 class UploadButton extends StatefulWidget {
   final VoidCallback onPressed;
 
-  const UploadButton({
-    super.key,
-    required this.onPressed,
-  });
+  const UploadButton({super.key, required this.onPressed});
 
   @override
   State<UploadButton> createState() => _UploadButtonState();
@@ -167,7 +152,7 @@ class _UploadButtonState extends State<UploadButton> {
               const Icon(Icons.image, color: Colors.white, size: 18),
               const SizedBox(width: 8),
               Text(
-                'Upload from gallery',
+                context.l10n.uploadFromGallery,
                 style: AppTextStyles.bodyMedium.copyWith(
                   color: Colors.white,
                   fontSize: 15,
@@ -180,4 +165,3 @@ class _UploadButtonState extends State<UploadButton> {
     );
   }
 }
-

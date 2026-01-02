@@ -1,9 +1,38 @@
 import 'package:flutter/material.dart';
 import '../components/components.dart';
 import '../theme/app_colors.dart';
+import '../localization/app_localizations_extension.dart';
+import '../models/models.dart';
+import '../repository/mock_fridge_repository.dart';
 
-class RecipeResultsScreen extends StatelessWidget {
+class RecipeResultsScreen extends StatefulWidget {
   const RecipeResultsScreen({super.key});
+
+  @override
+  State<RecipeResultsScreen> createState() => _RecipeResultsScreenState();
+}
+
+class _RecipeResultsScreenState extends State<RecipeResultsScreen> {
+  final MockFridgeRepository _repository = MockFridgeRepository();
+  List<Recipe> _recipes = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRecipes();
+  }
+
+  Future<void> _loadRecipes() async {
+    // In production, this would use the actual detected ingredients
+    // For now, we'll use empty list to get mock recipes
+    final ingredients = await _repository.getDetectedIngredients();
+    final recipes = await _repository.generateRecipes(ingredients);
+    setState(() {
+      _recipes = recipes;
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +47,9 @@ class RecipeResultsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Here's what you can make",
-                    style: TextStyle(
+                  Text(
+                    context.l10n.heresWhatYouCanMake,
+                    style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textPrimary,
@@ -28,8 +57,8 @@ class RecipeResultsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    '3 recipes found',
-                    style: TextStyle(
+                    context.l10n.recipesFound(_recipes.length),
+                    style: const TextStyle(
                       fontSize: 16,
                       color: AppColors.textSecondary,
                     ),
@@ -40,90 +69,60 @@ class RecipeResultsScreen extends StatelessWidget {
 
             // Recipes List
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    // Recipe 1: Fast & Lazy
-                    RecipeCard(
-                      emoji: '🍳',
-                      badge: 'Fast & Lazy',
-                      title: 'Scrambled Eggs & Toast',
-                      steps: [
-                        'Beat eggs with milk and butter',
-                        'Cook on medium heat, stirring',
-                        'Toast bread while eggs cook',
-                        'Season and serve',
-                      ],
-                      onShare: () {
-                        // Share recipe
-                      },
-                    ),
+              child:
+                  _isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : SingleChildScrollView(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            ..._recipes.map((recipe) {
+                              return RecipeCard(
+                                emoji: recipe.emoji,
+                                badge: recipe.getBadgeString(context),
+                                title: recipe.title,
+                                steps: recipe.steps,
+                                onShare: () {
+                                  // Share recipe
+                                },
+                              );
+                            }),
 
-                    // Recipe 2: Actually Good
-                    RecipeCard(
-                      emoji: '🍝',
-                      badge: 'Actually Good',
-                      title: 'Creamy Tomato Pasta',
-                      steps: [
-                        'Boil pasta according to package',
-                        'Sauté garlic and onions in olive oil',
-                        'Add chopped tomatoes, simmer 10 min',
-                        'Stir in milk and mozzarella',
-                        'Toss with pasta and fresh basil',
-                      ],
-                      onShare: () {
-                        // Share recipe
-                      },
-                    ),
+                            const SizedBox(height: 20),
 
-                    // Recipe 3: This Shouldn't Work
-                    RecipeCard(
-                      emoji: '🍗',
-                      badge: 'This Shouldn\'t Work',
-                      title: 'Chicken Parm Surprise',
-                      steps: [
-                        'Flatten chicken with butter wrapper',
-                        'Coat in beaten egg, then breadcrumbs',
-                        'Pan-fry in olive oil until golden',
-                        'Top with tomato sauce & mozzarella',
-                        'Broil 2 min, garnish with basil',
-                        'Serve over any leftover pasta',
-                      ],
-                      onShare: () {
-                        // Share recipe
-                      },
-                    ),
+                            // Secondary Actions
+                            Column(
+                              children: [
+                                SecondaryButton(
+                                  text: context.l10n.editIngredients,
+                                  icon: Icons.edit,
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/confirm-ingredients',
+                                    );
+                                  },
+                                  fullWidth: true,
+                                ),
+                                const SizedBox(height: 12),
+                                SecondaryButton(
+                                  text: context.l10n.scanAgain,
+                                  icon: Icons.camera_alt,
+                                  onPressed: () {
+                                    Navigator.pushReplacementNamed(
+                                      context,
+                                      '/scan',
+                                    );
+                                  },
+                                  fullWidth: true,
+                                ),
+                              ],
+                            ),
 
-                    const SizedBox(height: 20),
-
-                    // Secondary Actions
-                    Column(
-                      children: [
-                        SecondaryButton(
-                          text: 'Edit ingredients',
-                          icon: Icons.edit,
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/confirm-ingredients');
-                          },
-                          fullWidth: true,
+                            const SizedBox(height: 24),
+                          ],
                         ),
-                        const SizedBox(height: 12),
-                        SecondaryButton(
-                          text: 'Scan again',
-                          icon: Icons.camera_alt,
-                          onPressed: () {
-                            Navigator.pushReplacementNamed(context, '/scan');
-                          },
-                          fullWidth: true,
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 24),
-                  ],
-                ),
-              ),
+                      ),
             ),
 
             // Bottom Navigation
@@ -149,4 +148,3 @@ class RecipeResultsScreen extends StatelessWidget {
     );
   }
 }
-

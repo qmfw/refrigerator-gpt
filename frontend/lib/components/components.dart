@@ -1,9 +1,10 @@
 /// FridgeGPT Component Library
-/// 
+///
 /// Export all components for easy importing:
 /// ```dart
 /// import 'package:frontend/components/components.dart';
 /// ```
+library;
 
 // Navigation
 export 'bottom_nav.dart';
@@ -36,3 +37,6 @@ export 'photo_review.dart';
 // Sections
 export 'intro_section.dart';
 
+// Dialogs
+export 'language_picker_dialog.dart';
+export 'info_dialog.dart';

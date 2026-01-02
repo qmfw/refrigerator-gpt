@@ -28,7 +28,10 @@ class AppHeader extends StatelessWidget {
         children: [
           if (showBackButton)
             IconButton(
-              icon: const Icon(Icons.arrow_back, color: AppColors.textSecondary),
+              icon: const Icon(
+                Icons.arrow_back,
+                color: AppColors.textSecondary,
+              ),
               onPressed: onBackPressed ?? () => Navigator.of(context).pop(),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
@@ -82,19 +85,19 @@ class SimpleHeader extends StatelessWidget {
         children: [
           if (showBackButton)
             IconButton(
-              icon: const Icon(Icons.arrow_back, color: AppColors.textSecondary),
+              icon: const Icon(
+                Icons.arrow_back,
+                color: AppColors.textSecondary,
+              ),
               onPressed: onBackPressed ?? () => Navigator.of(context).pop(),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
             ),
           if (showBackButton) const SizedBox(width: 16),
-          Expanded(
-            child: Text(title, style: AppTextStyles.headerTitle),
-          ),
+          Expanded(child: Text(title, style: AppTextStyles.headerTitle)),
           if (action != null) action!,
         ],
       ),
     );
   }
 }
-

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/components.dart';
 import '../theme/app_colors.dart';
+import '../localization/app_localizations_extension.dart';
 
 class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
@@ -25,19 +26,13 @@ class _ScanScreenState extends State<ScanScreen> {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFF374151),
-                    Color(0xFF1A202C),
-                  ],
+                  colors: [Color(0xFF374151), Color(0xFF1A202C)],
                 ),
               ),
               child: Center(
                 child: Opacity(
                   opacity: 0.1,
-                  child: const Text(
-                    '📷',
-                    style: TextStyle(fontSize: 96),
-                  ),
+                  child: const Text('📷', style: TextStyle(fontSize: 96)),
                 ),
               ),
             ),
@@ -62,9 +57,7 @@ class _ScanScreenState extends State<ScanScreen> {
                   // Helper text
                   Expanded(
                     child: Center(
-                      child: HelperText(
-                        text: 'Take 1–3 photos. Messy is okay.',
-                      ),
+                      child: HelperText(text: context.l10n.takePhotosHelper),
                     ),
                   ),
 
@@ -127,4 +120,3 @@ class _ScanScreenState extends State<ScanScreen> {
     );
   }
 }
-

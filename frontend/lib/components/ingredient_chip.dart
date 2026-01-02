@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+import '../localization/app_localizations_extension.dart';
 
 /// Editable ingredient chip component
 /// Used on Confirm Ingredients screen
@@ -8,11 +9,7 @@ class IngredientChip extends StatefulWidget {
   final String ingredient;
   final VoidCallback? onRemove;
 
-  const IngredientChip({
-    super.key,
-    required this.ingredient,
-    this.onRemove,
-  });
+  const IngredientChip({super.key, required this.ingredient, this.onRemove});
 
   @override
   State<IngredientChip> createState() => _IngredientChipState();
@@ -30,17 +27,17 @@ class _IngredientChipState extends State<IngredientChip> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color: _isHovered ? AppColors.chipBackgroundHover : AppColors.chipBackground,
+          color:
+              _isHovered
+                  ? AppColors.chipBackgroundHover
+                  : AppColors.chipBackground,
           borderRadius: BorderRadius.circular(24),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              widget.ingredient,
-              style: AppTextStyles.bodyMedium,
-            ),
+            Text(widget.ingredient, style: AppTextStyles.bodyMedium),
             if (widget.onRemove != null) ...[
               const SizedBox(width: 8),
               GestureDetector(
@@ -50,7 +47,10 @@ class _IngredientChipState extends State<IngredientChip> {
                   child: Icon(
                     Icons.close,
                     size: 18,
-                    color: _isHovered ? AppColors.textSecondary : AppColors.textHint,
+                    color:
+                        _isHovered
+                            ? AppColors.textSecondary
+                            : AppColors.textHint,
                   ),
                 ),
               ),
@@ -93,7 +93,7 @@ class AddIngredientInput extends StatelessWidget {
               controller: controller,
               style: AppTextStyles.bodyMedium,
               decoration: InputDecoration(
-                hintText: placeholder ?? 'Add something else…',
+                hintText: placeholder ?? context.l10n.addSomethingElse,
                 hintStyle: AppTextStyles.bodyMedium.copyWith(
                   color: AppColors.textHint,
                 ),
@@ -109,4 +109,3 @@ class AddIngredientInput extends StatelessWidget {
     );
   }
 }
-

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/components.dart';
 import '../theme/app_colors.dart';
+import '../localization/app_localizations_extension.dart';
 
 class PhotoReviewScreen extends StatefulWidget {
   const PhotoReviewScreen({super.key});
@@ -22,7 +23,7 @@ class _PhotoReviewScreenState extends State<PhotoReviewScreen> {
           children: [
             // Header
             SimpleHeader(
-              title: 'Review Photos',
+              title: context.l10n.reviewPhotos,
               showBackButton: true,
               onBackPressed: () {
                 Navigator.pop(context);
@@ -66,7 +67,7 @@ class _PhotoReviewScreenState extends State<PhotoReviewScreen> {
                     // Main Preview
                     PhotoPreview(
                       photoCount: photoCount,
-                      placeholderText: 'Tap a thumbnail to preview',
+                      placeholderText: context.l10n.tapThumbnailToPreview,
                     ),
 
                     const SizedBox(height: 24),
@@ -75,7 +76,7 @@ class _PhotoReviewScreenState extends State<PhotoReviewScreen> {
                     Column(
                       children: [
                         PrimaryButton(
-                          text: 'This is enough',
+                          text: context.l10n.thisIsEnough,
                           onPressed: () {
                             Navigator.pushReplacementNamed(
                               context,
@@ -86,7 +87,7 @@ class _PhotoReviewScreenState extends State<PhotoReviewScreen> {
                         ),
                         const SizedBox(height: 12),
                         SecondaryButton(
-                          text: 'Add another photo',
+                          text: context.l10n.addAnotherPhoto,
                           icon: Icons.add,
                           onPressed: () {
                             // Add photo
@@ -125,4 +126,3 @@ class _PhotoReviewScreenState extends State<PhotoReviewScreen> {
     );
   }
 }
-

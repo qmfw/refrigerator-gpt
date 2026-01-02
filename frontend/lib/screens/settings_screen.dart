@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../components/components.dart';
 import '../theme/app_colors.dart';
+import '../localization/app_localizations_extension.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -14,7 +16,7 @@ class SettingsScreen extends StatelessWidget {
           children: [
             // Header
             SimpleHeader(
-              title: 'Settings',
+              title: context.l10n.settings,
               showBackButton: true,
               onBackPressed: () {
                 Navigator.pop(context);
@@ -26,64 +28,54 @@ class SettingsScreen extends StatelessWidget {
               child: ListView(
                 children: [
                   SettingsItem(
-                    label: 'Clear history',
+                    label: context.l10n.clearHistory,
                     isDestructive: true,
                     onTap: () {
                       // Clear history
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('History cleared'),
-                        ),
+                        SnackBar(content: Text(context.l10n.historyCleared)),
                       );
                     },
                   ),
                   SettingsItem(
-                    label: 'About',
+                    label: context.l10n.about,
                     onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('About FridgeGPT'),
-                          content: const Text('FridgeGPT v1\n\nA friendly app to help you cook with what you have.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        ),
+                      InfoDialog.show(
+                        context,
+                        title: context.l10n.aboutTitle,
+                        content: context.l10n.aboutContent,
                       );
                     },
                   ),
                   SettingsItem(
-                    label: 'Feedback',
+                    label: context.l10n.feedback,
                     onTap: () {
                       // Open feedback
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Feedback feature coming soon'),
+                        SnackBar(
+                          content: Text(context.l10n.feedbackComingSoon),
                         ),
                       );
                     },
                   ),
                   SettingsItem(
-                    label: 'Privacy',
+                    label: context.l10n.privacy,
                     onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Privacy'),
-                          content: const Text('Your photos are processed securely and are not stored permanently.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        ),
+                      InfoDialog.show(
+                        context,
+                        title: context.l10n.privacyTitle,
+                        content: context.l10n.privacyContent,
                       );
                     },
                   ),
+                  // Language picker (visible in debug mode or always)
+                  if (kDebugMode || true) // Set to false to hide in production
+                    SettingsItem(
+                      label: context.l10n.languageLabel,
+                      onTap: () {
+                        LanguagePickerDialog.show(context);
+                      },
+                    ),
                 ],
               ),
             ),
@@ -93,4 +85,3 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 }
-

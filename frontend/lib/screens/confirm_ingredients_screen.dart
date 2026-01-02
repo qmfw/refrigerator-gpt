@@ -1,41 +1,49 @@
 import 'package:flutter/material.dart';
 import '../components/components.dart';
 import '../theme/app_colors.dart';
+import '../localization/app_localizations_extension.dart';
+import '../models/models.dart';
+import '../repository/mock_fridge_repository.dart';
 
 class ConfirmIngredientsScreen extends StatefulWidget {
   const ConfirmIngredientsScreen({super.key});
 
   @override
-  State<ConfirmIngredientsScreen> createState() => _ConfirmIngredientsScreenState();
+  State<ConfirmIngredientsScreen> createState() =>
+      _ConfirmIngredientsScreenState();
 }
 
 class _ConfirmIngredientsScreenState extends State<ConfirmIngredientsScreen> {
   final TextEditingController _ingredientController = TextEditingController();
-  final List<String> _ingredients = [
-    'Tomatoes',
-    'Onions',
-    'Garlic',
-    'Pasta',
-    'Olive oil',
-    'Basil',
-    'Mozzarella',
-    'Eggs',
-    'Milk',
-    'Butter',
-    'Chicken breast',
-  ];
+  final MockFridgeRepository _repository = MockFridgeRepository();
+  List<Ingredient> _ingredients = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadIngredients();
+  }
+
+  Future<void> _loadIngredients() async {
+    final ingredients = await _repository.getDetectedIngredients();
+    setState(() {
+      _ingredients = ingredients;
+      _isLoading = false;
+    });
+  }
 
   void _addIngredient() {
     final text = _ingredientController.text.trim();
     if (text.isNotEmpty) {
       setState(() {
-        _ingredients.add(text);
+        _ingredients.add(Ingredient(name: text));
         _ingredientController.clear();
       });
     }
   }
 
-  void _removeIngredient(String ingredient) {
+  void _removeIngredient(Ingredient ingredient) {
     setState(() {
       _ingredients.remove(ingredient);
     });
@@ -56,7 +64,7 @@ class _ConfirmIngredientsScreenState extends State<ConfirmIngredientsScreen> {
           children: [
             // Header
             SimpleHeader(
-              title: 'Confirm Ingredients',
+              title: context.l10n.confirmIngredients,
               showBackButton: true,
               onBackPressed: () {
                 Navigator.pop(context);
@@ -74,30 +82,39 @@ class _ConfirmIngredientsScreenState extends State<ConfirmIngredientsScreen> {
 
                     // Intro Section
                     IntroSection(
-                      title: "Here's what I think you have.",
-                      subtitle: 'I might be wrong. Fix anything.',
+                      title: context.l10n.heresWhatIThink,
+                      subtitle: context.l10n.mightBeWrong,
                     ),
 
                     const SizedBox(height: 32),
 
                     // Ingredients Grid
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: _ingredients.map((ingredient) {
-                        return IngredientChip(
-                          ingredient: ingredient,
-                          onRemove: () => _removeIngredient(ingredient),
-                        );
-                      }).toList(),
-                    ),
+                    if (_isLoading)
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(32.0),
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    else
+                      Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children:
+                            _ingredients.map((ingredient) {
+                              return IngredientChip(
+                                ingredient: ingredient.name,
+                                onRemove: () => _removeIngredient(ingredient),
+                              );
+                            }).toList(),
+                      ),
 
                     const SizedBox(height: 32),
 
                     // Add Ingredient Input
                     AddIngredientInput(
                       controller: _ingredientController,
-                      placeholder: 'Add something else…',
+                      placeholder: context.l10n.addSomethingElse,
                       onSubmitted: _addIngredient,
                     ),
 
@@ -108,7 +125,7 @@ class _ConfirmIngredientsScreenState extends State<ConfirmIngredientsScreen> {
 
                     // Cook Button
                     PrimaryButton(
-                      text: '🍳 Cook with this',
+                      text: context.l10n.cookWithThis,
                       onPressed: () {
                         Navigator.pushReplacementNamed(
                           context,
@@ -147,4 +164,3 @@ class _ConfirmIngredientsScreenState extends State<ConfirmIngredientsScreen> {
     );
   }
 }
-

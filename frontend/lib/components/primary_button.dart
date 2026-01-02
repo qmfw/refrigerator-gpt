@@ -41,22 +41,23 @@ class _PrimaryButtonState extends State<PrimaryButton> {
           decoration: BoxDecoration(
             gradient: AppColors.primaryGradient,
             borderRadius: BorderRadius.circular(16),
-            boxShadow: _isPressed
-                ? [
-                    BoxShadow(
-                      color: AppColors.primaryStart.withOpacity(0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ]
-                : [
-                    BoxShadow(
-                      color: AppColors.primaryStart.withOpacity(0.3),
-                      blurRadius: 25,
-                      offset: const Offset(0, 10),
-                      blurStyle: BlurStyle.outer,
-                    ),
-                  ],
+            boxShadow:
+                _isPressed
+                    ? [
+                      BoxShadow(
+                        color: AppColors.primaryStart.withAlpha(77),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ]
+                    : [
+                      BoxShadow(
+                        color: AppColors.primaryStart.withAlpha(77),
+                        blurRadius: 25,
+                        offset: const Offset(0, 10),
+                        blurStyle: BlurStyle.outer,
+                      ),
+                    ],
           ),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
           child: Row(
@@ -67,10 +68,7 @@ class _PrimaryButtonState extends State<PrimaryButton> {
                 Icon(widget.icon, color: Colors.white, size: 20),
                 const SizedBox(width: 10),
               ],
-              Text(
-                widget.text,
-                style: AppTextStyles.buttonMedium,
-              ),
+              Text(widget.text, style: AppTextStyles.buttonMedium),
             ],
           ),
         ),
@@ -133,10 +131,7 @@ class _SecondaryButtonState extends State<SecondaryButton> {
                 Icon(widget.icon, color: AppColors.textPrimary, size: 18),
                 const SizedBox(width: 8),
               ],
-              Text(
-                widget.text,
-                style: AppTextStyles.buttonSecondary,
-              ),
+              Text(widget.text, style: AppTextStyles.buttonSecondary),
             ],
           ),
         ),
@@ -149,4 +144,3 @@ class _SecondaryButtonState extends State<SecondaryButton> {
     return button;
   }
 }
-

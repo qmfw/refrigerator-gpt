@@ -35,14 +35,9 @@ class _SettingsItemState extends State<SettingsItem> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color: _isPressed
-              ? Colors.black.withOpacity(0.02)
-              : Colors.transparent,
+          color: _isPressed ? Colors.black.withAlpha(5) : Colors.transparent,
           border: Border(
-            bottom: BorderSide(
-              color: AppColors.borderLight,
-              width: 1,
-            ),
+            bottom: BorderSide(color: AppColors.borderLight, width: 1),
           ),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 22),
@@ -53,21 +48,17 @@ class _SettingsItemState extends State<SettingsItem> {
               widget.label,
               style: AppTextStyles.bodyLarge.copyWith(
                 fontSize: 17,
-                color: widget.isDestructive
-                    ? AppColors.destructive
-                    : AppColors.textPrimary,
+                color:
+                    widget.isDestructive
+                        ? AppColors.destructive
+                        : AppColors.textPrimary,
                 fontWeight: FontWeight.w400,
               ),
             ),
-            const Icon(
-              Icons.chevron_right,
-              color: Color(0xFFD1D5DB),
-              size: 20,
-            ),
+            const Icon(Icons.chevron_right, color: Color(0xFFD1D5DB), size: 20),
           ],
         ),
       ),
     );
   }
 }
-

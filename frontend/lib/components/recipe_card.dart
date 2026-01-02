@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+import '../localization/app_localizations_extension.dart';
 
 /// Recipe card component
 /// Used on Recipe Results screen
@@ -29,7 +30,7 @@ class RecipeCard extends StatelessWidget {
         border: Border.all(color: AppColors.borderLight, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withAlpha(20),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -51,10 +52,7 @@ class RecipeCard extends StatelessWidget {
               ),
             ),
             child: Center(
-              child: Text(
-                emoji,
-                style: const TextStyle(fontSize: 64),
-              ),
+              child: Text(emoji, style: const TextStyle(fontSize: 64)),
             ),
           ),
           // Recipe Content
@@ -65,24 +63,22 @@ class RecipeCard extends StatelessWidget {
               children: [
                 // Badge
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.badgeBackground,
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
                     badge.toUpperCase(),
-                    style: AppTextStyles.labelUppercase.copyWith(
-                      fontSize: 12,
-                    ),
+                    style: AppTextStyles.labelUppercase.copyWith(fontSize: 12),
                   ),
                 ),
                 const SizedBox(height: 12),
                 // Title
-                Text(
-                  title,
-                  style: AppTextStyles.recipeTitle,
-                ),
+                Text(title, style: AppTextStyles.recipeTitle),
                 const SizedBox(height: 20),
                 // Steps
                 ...steps.asMap().entries.map((entry) {
@@ -101,10 +97,7 @@ class RecipeCard extends StatelessWidget {
                           ),
                         ),
                         Expanded(
-                          child: Text(
-                            step,
-                            style: AppTextStyles.recipeStep,
-                          ),
+                          child: Text(step, style: AppTextStyles.recipeStep),
                         ),
                       ],
                     ),
@@ -117,7 +110,7 @@ class RecipeCard extends StatelessWidget {
                     children: [
                       _ActionButton(
                         icon: Icons.share,
-                        label: 'Share',
+                        label: context.l10n.share,
                         onTap: onShare!,
                       ),
                     ],
@@ -187,4 +180,3 @@ class _ActionButtonState extends State<_ActionButton> {
     );
   }
 }
-

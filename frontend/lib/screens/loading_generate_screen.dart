@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/components.dart';
 import '../theme/app_colors.dart';
+import '../localization/app_localizations_extension.dart';
 
 class LoadingGenerateScreen extends StatelessWidget {
   const LoadingGenerateScreen({super.key});
@@ -18,12 +19,9 @@ class LoadingGenerateScreen extends StatelessWidget {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Center(
-          child: LoadingIndicator(
-            message: 'This fridge has potential.',
-          ),
+          child: LoadingIndicator(message: context.l10n.fridgeHasPotential),
         ),
       ),
     );
   }
 }
-

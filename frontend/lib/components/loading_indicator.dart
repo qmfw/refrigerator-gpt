@@ -7,10 +7,7 @@ import '../theme/app_text_styles.dart';
 class LoadingIndicator extends StatefulWidget {
   final String message;
 
-  const LoadingIndicator({
-    super.key,
-    required this.message,
-  });
+  const LoadingIndicator({super.key, required this.message});
 
   @override
   State<LoadingIndicator> createState() => _LoadingIndicatorState();
@@ -65,10 +62,7 @@ class _AnimatedDot extends StatelessWidget {
   final double delay;
   final AnimationController controller;
 
-  const _AnimatedDot({
-    required this.delay,
-    required this.controller,
-  });
+  const _AnimatedDot({required this.delay, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -113,4 +107,3 @@ class _AnimatedDot extends StatelessWidget {
     }
   }
 }
-

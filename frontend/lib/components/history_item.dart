@@ -56,10 +56,7 @@ class _HistoryItemState extends State<HistoryItem> {
                 ),
               ),
               child: Center(
-                child: Text(
-                  widget.emoji,
-                  style: const TextStyle(fontSize: 24),
-                ),
+                child: Text(widget.emoji, style: const TextStyle(fontSize: 24)),
               ),
             ),
             const SizedBox(width: 16),
@@ -75,10 +72,7 @@ class _HistoryItemState extends State<HistoryItem> {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    widget.timeAgo,
-                    style: AppTextStyles.bodySmall,
-                  ),
+                  Text(widget.timeAgo, style: AppTextStyles.bodySmall),
                 ],
               ),
             ),
@@ -88,4 +82,3 @@ class _HistoryItemState extends State<HistoryItem> {
     );
   }
 }
-

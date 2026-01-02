@@ -39,7 +39,8 @@ class PhotoThumbnail extends StatelessWidget {
                 width: 3,
               ),
             ),
-            child: child ??
+            child:
+                child ??
                 const Center(
                   child: Icon(Icons.image, color: Colors.white, size: 32),
                 ),
@@ -55,7 +56,7 @@ class PhotoThumbnail extends StatelessWidget {
                   height: 20,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.black.withOpacity(0.6),
+                    color: Colors.black.withAlpha(153),
                   ),
                   child: const Center(
                     child: Text(
@@ -106,20 +107,13 @@ class PhotoPreview extends StatelessWidget {
       child: Stack(
         children: [
           if (image != null)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: image!,
-            )
+            ClipRRect(borderRadius: BorderRadius.circular(20), child: image!)
           else
             Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
-                    Icons.image,
-                    size: 48,
-                    color: AppColors.textHint,
-                  ),
+                  const Icon(Icons.image, size: 48, color: AppColors.textHint),
                   const SizedBox(height: 12),
                   Text(
                     placeholderText ?? 'Tap a thumbnail to preview',
@@ -135,7 +129,7 @@ class PhotoPreview extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.6),
+                color: Colors.black.withAlpha(153),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
@@ -152,4 +146,3 @@ class PhotoPreview extends StatelessWidget {
     );
   }
 }
-

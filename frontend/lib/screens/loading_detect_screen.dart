@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/components.dart';
 import '../theme/app_colors.dart';
+import '../localization/app_localizations_extension.dart';
 
 class LoadingDetectScreen extends StatelessWidget {
   const LoadingDetectScreen({super.key});
@@ -18,12 +19,9 @@ class LoadingDetectScreen extends StatelessWidget {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Center(
-          child: LoadingIndicator(
-            message: 'Looking closely…',
-          ),
+          child: LoadingIndicator(message: context.l10n.lookingClosely),
         ),
       ),
     );
   }
 }
-

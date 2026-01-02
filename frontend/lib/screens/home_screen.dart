@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/components.dart';
 import '../theme/app_colors.dart';
+import '../localization/app_localizations_extension.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -18,16 +19,19 @@ class HomeScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'FridgeGPT',
-                    style: TextStyle(
+                  Text(
+                    context.l10n.appName,
+                    style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w700,
                       color: AppColors.textPrimary,
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.settings, color: AppColors.textSecondary),
+                    icon: const Icon(
+                      Icons.settings,
+                      color: AppColors.textSecondary,
+                    ),
                     onPressed: () {
                       Navigator.pushNamed(context, '/settings');
                     },
@@ -92,4 +96,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-

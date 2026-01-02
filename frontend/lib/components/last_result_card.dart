@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+import '../localization/app_localizations_extension.dart';
 
 /// Card showing the last recipe result
 /// Used on Home screen
@@ -30,7 +31,7 @@ class LastResultCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withAlpha(26),
               blurRadius: 3,
               offset: const Offset(0, 1),
             ),
@@ -43,14 +44,8 @@ class LastResultCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'LAST RESULT',
-                  style: AppTextStyles.cardTitle,
-                ),
-                Text(
-                  timeAgo,
-                  style: AppTextStyles.cardDate,
-                ),
+                Text(context.l10n.lastResult, style: AppTextStyles.cardTitle),
+                Text(timeAgo, style: AppTextStyles.cardDate),
               ],
             ),
             const SizedBox(height: 12),
@@ -68,10 +63,7 @@ class LastResultCard extends StatelessWidget {
                     ),
                   ),
                   child: Center(
-                    child: Text(
-                      emoji,
-                      style: const TextStyle(fontSize: 28),
-                    ),
+                    child: Text(emoji, style: const TextStyle(fontSize: 28)),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -87,7 +79,7 @@ class LastResultCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '$recipeCount recipes found',
+                        context.l10n.recipesFound(recipeCount),
                         style: AppTextStyles.bodySmall,
                       ),
                     ],
@@ -101,4 +93,3 @@ class LastResultCard extends StatelessWidget {
     );
   }
 }
-
