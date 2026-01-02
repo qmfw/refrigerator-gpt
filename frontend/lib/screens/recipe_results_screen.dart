@@ -28,6 +28,13 @@ class _RecipeResultsScreenState extends State<RecipeResultsScreen> {
     // For now, we'll use empty list to get mock recipes
     final ingredients = await _repository.getDetectedIngredients();
     final recipes = await _repository.generateRecipes(ingredients);
+
+    // Save the first recipe to history (local storage)
+    // This avoids API calls for history retrieval
+    if (recipes.isNotEmpty) {
+      await _repository.saveRecipeToHistory(recipes.first);
+    }
+
     setState(() {
       _recipes = recipes;
       _isLoading = false;

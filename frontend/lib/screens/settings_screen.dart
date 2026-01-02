@@ -3,9 +3,17 @@ import 'package:flutter/material.dart';
 import '../components/components.dart';
 import '../theme/app_colors.dart';
 import '../localization/app_localizations_extension.dart';
+import '../repository/mock_fridge_repository.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  final MockFridgeRepository _repository = MockFridgeRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +38,13 @@ class SettingsScreen extends StatelessWidget {
                   SettingsItem(
                     label: context.l10n.clearHistory,
                     isDestructive: true,
-                    onTap: () {
-                      // Clear history
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(context.l10n.historyCleared)),
-                      );
+                    onTap: () async {
+                      await _repository.clearHistory();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(context.l10n.historyCleared)),
+                        );
+                      }
                     },
                   ),
                   SettingsItem(
