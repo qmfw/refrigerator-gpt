@@ -1,24 +1,20 @@
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'app_localizations.dart';
 
 /// Service to persist and retrieve language preferences
-/// Uses a simple in-memory storage for now (can be replaced with SharedPreferences)
+/// Uses SharedPreferences to persist language across app restarts
 class LanguageService {
-  // In-memory storage (replace with SharedPreferences if needed)
-  // To use SharedPreferences, uncomment and add shared_preferences to pubspec.yaml:
-  // static const String _languageKey = 'app_language';
-  static String? _cachedLanguage;
+  static const String _languageKey = 'app_language';
 
-  /// Get the saved language preference
+  /// Get the saved language preference from persistent storage
   Future<AppLanguage?> getLanguage() async {
     try {
-      // For now, use in-memory cache
-      // In production, you can use SharedPreferences:
-      // final prefs = await SharedPreferences.getInstance();
-      // final languageCode = prefs.getString(_languageKey);
+      final prefs = await SharedPreferences.getInstance();
+      final languageCode = prefs.getString(_languageKey);
 
-      if (_cachedLanguage != null) {
-        return _parseLanguage(_cachedLanguage!);
+      if (languageCode != null) {
+        return _parseLanguage(languageCode);
       }
 
       // Default to English if nothing is saved
@@ -31,14 +27,11 @@ class LanguageService {
     }
   }
 
-  /// Save the language preference
+  /// Save the language preference to persistent storage
   Future<void> saveLanguage(AppLanguage language) async {
     try {
-      _cachedLanguage = language.name;
-
-      // In production, use SharedPreferences:
-      // final prefs = await SharedPreferences.getInstance();
-      // await prefs.setString(_languageKey, language.name);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_languageKey, language.name);
 
       if (kDebugMode) {
         print('Language saved: ${language.name}');

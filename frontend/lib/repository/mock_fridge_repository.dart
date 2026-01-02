@@ -1,12 +1,17 @@
 import '../models/models.dart';
+import '../services/history_storage_service.dart';
 
 /// Mock repository for fridge/recipe data
 /// In production, this would be replaced with an API service
+///
+/// Cost-saving strategy: History is stored locally to avoid API calls
 class MockFridgeRepository {
   static final MockFridgeRepository _instance =
       MockFridgeRepository._internal();
   factory MockFridgeRepository() => _instance;
   MockFridgeRepository._internal();
+
+  final HistoryStorageService _historyStorage = HistoryStorageService();
 
   /// Get detected ingredients (mock data)
   Future<List<Ingredient>> getDetectedIngredients() async {
@@ -28,62 +33,30 @@ class MockFridgeRepository {
     ];
   }
 
-  /// Get recipe history (mock data)
+  /// Get recipe history from local storage
+  /// Uses local storage to avoid API calls and reduce costs
   Future<List<HistoryEntry>> getHistory() async {
-    // Simulate network delay
-    await Future.delayed(const Duration(milliseconds: 300));
+    return await _historyStorage.getHistory();
+  }
 
-    final now = DateTime.now();
-    return [
-      HistoryEntry(
-        id: '1',
-        emoji: '🍝',
-        title: 'Creamy Tomato Pasta',
-        createdAt: now.subtract(const Duration(hours: 2)),
-      ),
-      HistoryEntry(
-        id: '2',
-        emoji: '🥗',
-        title: 'Garden Fresh Salad',
-        createdAt: now.subtract(const Duration(days: 1)),
-      ),
-      HistoryEntry(
-        id: '3',
-        emoji: '🍲',
-        title: 'Chicken Stir Fry',
-        createdAt: now.subtract(const Duration(days: 2)),
-      ),
-      HistoryEntry(
-        id: '4',
-        emoji: '🥘',
-        title: 'Vegetable Curry',
-        createdAt: now.subtract(const Duration(days: 3)),
-      ),
-      HistoryEntry(
-        id: '5',
-        emoji: '🍕',
-        title: 'Margherita Pizza',
-        createdAt: now.subtract(const Duration(days: 5)),
-      ),
-      HistoryEntry(
-        id: '6',
-        emoji: '🍳',
-        title: 'Spanish Omelette',
-        createdAt: now.subtract(const Duration(days: 7)),
-      ),
-      HistoryEntry(
-        id: '7',
-        emoji: '🥙',
-        title: 'Mediterranean Wrap',
-        createdAt: now.subtract(const Duration(days: 7, hours: 12)),
-      ),
-      HistoryEntry(
-        id: '8',
-        emoji: '🍜',
-        title: 'Ramen Bowl',
-        createdAt: now.subtract(const Duration(days: 14)),
-      ),
-    ];
+  /// Save a recipe to history (local storage)
+  /// Called when recipes are generated to save the first recipe
+  ///
+  /// Note: Title is stored in the language it was generated.
+  /// When viewing the recipe, fetch it from API with current language.
+  /// This avoids storing multiple translations and keeps storage minimal.
+  Future<void> saveRecipeToHistory(
+    Recipe recipe, {
+    String? languageCode,
+  }) async {
+    final historyEntry = HistoryEntry(
+      id: recipe.id,
+      emoji: recipe.emoji,
+      title: recipe.title, // Stored in language when generated
+      createdAt: DateTime.now(),
+      languageCode: languageCode, // Optional: track original language
+    );
+    await _historyStorage.saveHistoryEntry(historyEntry);
   }
 
   /// Generate recipes from ingredients (mock data)
@@ -167,9 +140,8 @@ class MockFridgeRepository {
     }
   }
 
-  /// Clear history (mock implementation)
+  /// Clear history from local storage
   Future<void> clearHistory() async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    // In production, this would call an API to clear history
+    await _historyStorage.clearHistory();
   }
 }
