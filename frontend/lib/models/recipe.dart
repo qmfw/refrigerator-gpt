@@ -22,6 +22,55 @@ class Recipe {
     this.ingredients,
   });
 
+  factory Recipe.fromJson(Map<String, dynamic> json) {
+    RecipeBadge parseBadge(String badgeStr) {
+      switch (badgeStr) {
+        case 'fastLazy':
+          return RecipeBadge.fastLazy;
+        case 'actuallyGood':
+          return RecipeBadge.actuallyGood;
+        case 'shouldntWork':
+          return RecipeBadge.shouldntWork;
+        default:
+          return RecipeBadge.fastLazy;
+      }
+    }
+
+    return Recipe(
+      id: json['id'] as String,
+      emoji: json['emoji'] as String,
+      badge: parseBadge(json['badge'] as String),
+      title: json['title'] as String,
+      steps: List<String>.from(json['steps'] as List),
+      ingredients:
+          json['ingredients'] != null
+              ? List<String>.from(json['ingredients'] as List)
+              : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    String badgeToString(RecipeBadge badge) {
+      switch (badge) {
+        case RecipeBadge.fastLazy:
+          return 'fastLazy';
+        case RecipeBadge.actuallyGood:
+          return 'actuallyGood';
+        case RecipeBadge.shouldntWork:
+          return 'shouldntWork';
+      }
+    }
+
+    return {
+      'id': id,
+      'emoji': emoji,
+      'badge': badgeToString(badge),
+      'title': title,
+      'steps': steps,
+      'ingredients': ingredients,
+    };
+  }
+
   /// Get localized badge string
   String getBadgeString(BuildContext context) {
     switch (badge) {

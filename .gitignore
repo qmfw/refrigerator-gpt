@@ -77,6 +77,11 @@ __pycache__/
 venv/
 env/
 
+# Database files (SQLite)
+*.db
+*.sqlite
+*.sqlite3
+
 ####################################
 # Environment Variables / Secrets
 ####################################

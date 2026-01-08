@@ -1,0 +1,2 @@
+"""FridgeGPT Backend Application"""
+

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'screens/home_screen.dart';
 import 'screens/scan_screen.dart';
 import 'screens/photo_review_screen.dart';
@@ -11,7 +12,17 @@ import 'screens/settings_screen.dart';
 import 'theme/app_colors.dart';
 import 'localization/localizations_provider.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Load environment variables from .env file
+  try {
+    await dotenv.load(fileName: '.env');
+  } catch (e) {
+    // .env file is optional - will use defaults in url.dart
+    debugPrint('Warning: Could not load .env file: $e');
+  }
+
   runApp(const FridgeGPTApp());
 }
 

@@ -1,0 +1,588 @@
+openapi: 3.0.3
+info:
+  title: FridgeGPT API
+  description: |
+    Backend API for FridgeGPT mobile application.
+    
+    **Features:**
+    - Ingredient detection from images (OpenAI Vision)
+    - Recipe generation (OpenAI GPT-4)
+    - App Store/Play Store receipt verification
+    - Premium subscription status checking
+    - Usage tracking and limits
+    
+    **Architecture:**
+    - No user accounts or authentication required
+    - App Store/Play Store handles user identity
+    - Minimal backend: receipt verification + status checks
+    - History stored locally (no cloud sync needed for MVP)
+    
+    **Cost Optimization:**
+    - History stored locally on client
+    - Only essential API calls: detection + generation
+    - Batch operations where possible
+  version: 1.0.0
+  contact:
+    name: FridgeGPT API Support
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Local development server
+  - url: https://api.fridgegpt.com/api/v1
+    description: Production server
+
+tags:
+  - name: Detection
+    description: Ingredient detection from images
+  - name: Recipes
+    description: Recipe generation and retrieval
+  - name: Health
+    description: Health check endpoints
+  - name: Subscription
+    description: App Store/Play Store receipt verification and subscription status
+  - name: Usage
+    description: Usage tracking and limits
+
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health check
+      description: Check API health status
+      operationId: healthCheck
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /detect-ingredients:
+    post:
+      tags:
+        - Detection
+      summary: Detect ingredients from images
+      description: |
+        Upload 1-3 images of your fridge/food to detect ingredients.
+        Uses OpenAI Vision API for detection.
+        Usage is tracked via appAccountToken for limits.
+      operationId: detectIngredients
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - images
+              properties:
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: 1-3 image files (JPEG, PNG, WebP, max 10MB each)
+                  minItems: 1
+                  maxItems: 3
+                language:
+                  type: string
+                  description: Language code for localized ingredient names
+                  default: en
+                  example: en
+                appAccountToken:
+                  type: string
+                  format: uuid
+                  description: Unique app account token (generated locally, used for usage tracking)
+                  example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        '200':
+          description: Ingredients detected successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngredientDetectionResponse'
+        '400':
+          description: Bad request (invalid images, too many images, etc.)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Daily scan limit reached
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '413':
+          description: Payload too large (image file exceeds size limit)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /generate-recipes:
+    post:
+      tags:
+        - Recipes
+      summary: Generate recipes from ingredients
+      description: |
+        Generate recipe suggestions based on detected ingredients.
+        Uses OpenAI GPT-4 for recipe generation.
+        Usage is tracked via appAccountToken for limits.
+      operationId: generateRecipes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateRecipesRequest'
+      responses:
+        '200':
+          description: Recipes generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipeGenerationResponse'
+        '400':
+          description: Bad request (invalid ingredients, etc.)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Daily recipe limit reached
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /recipes/{recipe_id}:
+    get:
+      tags:
+        - Recipes
+      summary: Get recipe by ID
+      description: Retrieve a specific recipe by its ID
+      operationId: getRecipeById
+      parameters:
+        - name: recipe_id
+          in: path
+          required: true
+          description: Recipe identifier
+          schema:
+            type: string
+            example: rec_001
+        - name: language
+          in: query
+          required: false
+          description: Language code for localized content
+          schema:
+            type: string
+            default: en
+            example: en
+      responses:
+        '200':
+          description: Recipe found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+        '404':
+          description: Recipe not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /subscription/verify-receipt:
+    post:
+      tags:
+        - Subscription
+      summary: Verify App Store/Play Store receipt
+      description: |
+        Verify purchase receipt from App Store (iOS) or Play Store (Android).
+        Returns subscription status and validity.
+      operationId: verifyReceipt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyReceiptRequest'
+      responses:
+        '200':
+          description: Receipt verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionStatus'
+        '400':
+          description: Bad request (invalid receipt format)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Receipt verification failed (invalid or expired)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /subscription/status:
+    get:
+      tags:
+        - Subscription
+      summary: Get subscription status
+      description: |
+        Get subscription status for a given appAccountToken.
+        Token is generated locally and used to track usage/limits.
+      operationId: getSubscriptionStatus
+      parameters:
+        - name: appAccountToken
+          in: query
+          required: true
+          description: Unique app account token (UUID generated locally)
+          schema:
+            type: string
+            format: uuid
+            example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        '200':
+          description: Subscription status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionStatus'
+        '400':
+          description: Bad request (invalid token format)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /usage/limits:
+    get:
+      tags:
+        - Usage
+      summary: Get usage limits
+      description: |
+        Get usage limits and today's usage count for a given appAccountToken.
+        Token is generated locally and used to track usage/limits.
+      operationId: getUsageLimits
+      parameters:
+        - name: appAccountToken
+          in: query
+          required: true
+          description: Unique app account token (UUID generated locally)
+          schema:
+            type: string
+            format: uuid
+            example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        '200':
+          description: Usage limits
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageLimits'
+        '400':
+          description: Bad request (invalid token format)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: healthy
+        version:
+          type: string
+          example: 1.0.0
+        timestamp:
+          type: string
+          format: date-time
+          example: 2024-01-15T10:30:00Z
+
+    Ingredient:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          description: Unique ingredient identifier
+          example: ing_001
+        name:
+          type: string
+          description: Ingredient name (localized)
+          example: Tomatoes
+
+    IngredientDetectionResponse:
+      type: object
+      required:
+        - ingredients
+        - detection_id
+      properties:
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ingredient'
+        detection_id:
+          type: string
+          description: Unique detection identifier
+          example: det_abc123
+        confidence:
+          type: number
+          format: float
+          description: Overall confidence score (0.0 to 1.0)
+          minimum: 0
+          maximum: 1
+          example: 0.85
+
+    GenerateRecipesRequest:
+      type: object
+      required:
+        - ingredients
+      properties:
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ingredient'
+          minItems: 1
+        language:
+          type: string
+          description: Language code for recipe generation
+          default: en
+          example: en
+        max_recipes:
+          type: integer
+          description: Maximum number of recipes to generate
+          default: 3
+          minimum: 1
+          maximum: 10
+          example: 3
+        appAccountToken:
+          type: string
+          format: uuid
+          description: Unique app account token (generated locally, used for usage tracking)
+          example: 123e4567-e89b-12d3-a456-426614174000
+
+    Recipe:
+      type: object
+      required:
+        - id
+        - emoji
+        - badge
+        - title
+        - steps
+      properties:
+        id:
+          type: string
+          description: Unique recipe identifier
+          example: rec_001
+        emoji:
+          type: string
+          description: Recipe emoji
+          example: 🍝
+        badge:
+          type: string
+          enum:
+            - fastLazy
+            - actuallyGood
+            - shouldntWork
+          description: Recipe category badge
+          example: fastLazy
+        title:
+          type: string
+          description: Recipe title (localized)
+          example: Creamy Tomato Pasta
+        steps:
+          type: array
+          items:
+            type: string
+          description: Cooking steps (localized)
+          example:
+            - Boil pasta according to package
+            - Sauté garlic and onions in olive oil
+            - Add chopped tomatoes, simmer 10 min
+        ingredients:
+          type: array
+          items:
+            type: string
+          description: Required ingredients (localized)
+          example:
+            - Pasta
+            - Tomatoes
+            - Garlic
+        created_at:
+          type: string
+          format: date-time
+          description: Recipe creation timestamp
+          example: 2024-01-15T10:30:00Z
+
+    RecipeGenerationResponse:
+      type: object
+      required:
+        - recipes
+        - generation_id
+      properties:
+        recipes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recipe'
+        generation_id:
+          type: string
+          description: Unique generation identifier
+          example: gen_xyz789
+
+    ErrorResponse:
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          type: string
+          description: Error message
+          example: Invalid image format
+        error_code:
+          type: string
+          description: Error code (optional)
+          example: INVALID_IMAGE_FORMAT
+
+    VerifyReceiptRequest:
+      type: object
+      required:
+        - receipt_data
+        - app_account_token
+        - platform
+      properties:
+        receipt_data:
+          type: string
+          description: Base64-encoded receipt from App Store or Play Store
+          example: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA...
+        app_account_token:
+          type: string
+          format: uuid
+          description: Unique app account token (UUID generated locally)
+          example: 123e4567-e89b-12d3-a456-426614174000
+        platform:
+          type: string
+          enum:
+            - ios
+            - android
+          description: Platform (iOS or Android)
+          example: ios
+        product_id:
+          type: string
+          description: Product ID (subscription ID) - required for Android, optional for iOS (extracted from receipt if not provided)
+          example: premium
+
+    SubscriptionStatus:
+      type: object
+      required:
+        - plan
+        - status
+      properties:
+        plan:
+          type: string
+          enum:
+            - free
+            - premium
+            - premium_annual
+          description: Subscription plan
+          example: premium
+        status:
+          type: string
+          enum:
+            - active
+            - cancelled
+            - expired
+          description: Subscription status
+          example: active
+        started_at:
+          type: string
+          format: date-time
+          description: Subscription start date
+          example: 2024-01-15T10:30:00Z
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Subscription expiration date (null for free plan)
+          example: 2025-01-15T10:30:00Z
+
+    UsageLimits:
+      type: object
+      required:
+        - scans_today
+        - scans_limit
+        - is_premium
+      properties:
+        scans_today:
+          type: integer
+          description: Number of scans performed today
+          example: 5
+        scans_limit:
+          type: integer
+          description: Daily scan limit (-1 for unlimited)
+          example: 10
+        recipes_today:
+          type: integer
+          description: Number of recipes generated today
+          example: 15
+        recipes_limit:
+          type: integer
+          description: Daily recipe limit (-1 for unlimited)
+          example: -1
+        is_premium:
+          type: boolean
+          description: Whether user has premium subscription
+          example: false
+
+  securitySchemes: {}
