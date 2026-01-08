@@ -5,6 +5,14 @@ class Ingredient {
 
   const Ingredient({required this.name, this.id});
 
+  factory Ingredient.fromJson(Map<String, dynamic> json) {
+    return Ingredient(id: json['id'] as String?, name: json['name'] as String);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'id': id, 'name': name};
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
