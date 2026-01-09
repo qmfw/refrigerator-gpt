@@ -79,7 +79,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               title: item.title,
                               timeAgo: item.getTimeAgo(),
                               onTap: () {
-                                Navigator.pushNamed(context, '/recipe-results');
+                                // Pass recipe ID to fetch recipe details
+                                Navigator.pushNamed(
+                                  context,
+                                  '/recipe-results',
+                                  arguments:
+                                      item.id, // Pass recipe ID as string
+                                );
                               },
                             ),
                           );

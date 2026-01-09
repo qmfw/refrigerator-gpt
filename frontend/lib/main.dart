@@ -15,6 +15,7 @@ import 'screens/language_screen.dart';
 import 'screens/diet_preferences_screen.dart';
 import 'theme/app_colors.dart';
 import 'localization/localizations_provider.dart';
+import 'localization/language_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +36,10 @@ class FridgeGPTApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Use device language as initial language
+    final deviceLanguage = LanguageService.detectDeviceLanguage();
     return LocalizationsProvider(
+      initialLanguage: deviceLanguage,
       child: MaterialApp(
         title: 'FridgeGPT',
         debugShowCheckedModeBanner: false,

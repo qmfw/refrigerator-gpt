@@ -47,12 +47,40 @@ const Map<String, String> dutchStrings = {
   AppStrings.ok: 'OK',
   AppStrings.history: 'Geschiedenis',
   AppStrings.emptyHistory: 'Nog geen geschiedenis',
+  AppStrings.minutesAgo: '{minutes} minuten geleden',
   AppStrings.hoursAgo: '{hours} uur geleden',
   AppStrings.yesterday: 'Gisteren',
   AppStrings.daysAgo: '{days} dagen geleden',
   AppStrings.weekAgo: '1 week geleden',
   AppStrings.weeksAgo: '{weeks} weken geleden',
-  AppStrings.dietPreferences: 'Nederlands',
+  AppStrings.dietPreferences: 'Dieetvoorkeuren',
   AppStrings.dietPreferencesHelper:
       'We proberen deze te vermijden bij het suggereren van recepten.',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: 'Vermijd Ingrediënten',
+  AppStrings.dietStyle: 'Dieetstijl',
+  AppStrings.cookingPreferences: 'Kookvoorkeuren',
+  AppStrings.religious: 'Religieus',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'Noten',
+  AppStrings.shellfish: 'Schaal- en schelpdieren',
+  AppStrings.dairy: 'Zuivel',
+  AppStrings.eggs: 'Eieren',
+  AppStrings.gluten: 'Gluten',
+  AppStrings.soy: 'Soja',
+
+  // Diet Style
+  AppStrings.vegan: 'Veganistisch',
+  AppStrings.vegetarian: 'Vegetarisch',
+  AppStrings.pescatarian: 'Pescetarisch',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: 'Koolhydraatarm',
+  AppStrings.lowFat: 'Vetarm',
+
+  // Religious
+  AppStrings.halal: 'Halal',
+  AppStrings.kosher: 'Kosher',
 };

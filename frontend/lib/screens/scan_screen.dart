@@ -27,14 +27,27 @@ class _ScanScreenState extends State<ScanScreen> {
           Navigator.pushNamed(context, '/photo-review', arguments: [bytes]);
         }
       }
+      // If photo is null, user cancelled - don't show error
     } catch (e) {
+      // Only show error for actual failures, not user cancellations
+      final errorString = e.toString().toLowerCase();
+
+      // Check if it's a user cancellation (not a real error)
+      if (errorString.contains('cancel') ||
+          errorString.contains('cancelled') ||
+          errorString.contains('user')) {
+        // User cancelled - don't show error
+        return;
+      }
+
+      // Only show error for actual permission or camera issues
       if (mounted) {
         String errorMessage = 'Failed to take photo';
-        if (e.toString().contains('permission') ||
-            e.toString().contains('Permission')) {
+        if (errorString.contains('permission')) {
           errorMessage =
               'Camera permission denied. Please enable camera access in settings.';
-        } else if (e.toString().contains('camera')) {
+        } else if (errorString.contains('camera') &&
+            !errorString.contains('cancel')) {
           errorMessage =
               'Camera not available. Please check your device settings.';
         }
@@ -63,11 +76,23 @@ class _ScanScreenState extends State<ScanScreen> {
           Navigator.pushNamed(context, '/photo-review', arguments: [bytes]);
         }
       }
+      // If image is null, user cancelled - don't show error
     } catch (e) {
+      // Only show error for actual failures, not user cancellations
+      final errorString = e.toString().toLowerCase();
+
+      // Check if it's a user cancellation (not a real error)
+      if (errorString.contains('cancel') ||
+          errorString.contains('cancelled') ||
+          errorString.contains('user')) {
+        // User cancelled - don't show error
+        return;
+      }
+
+      // Only show error for actual permission issues
       if (mounted) {
         String errorMessage = 'Failed to pick image';
-        if (e.toString().contains('permission') ||
-            e.toString().contains('Permission')) {
+        if (errorString.contains('permission')) {
           errorMessage =
               'Photo library permission denied. Please enable photo access in settings.';
         }

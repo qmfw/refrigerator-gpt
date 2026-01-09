@@ -47,12 +47,40 @@ const Map<String, String> indonesianStrings = {
   AppStrings.ok: 'OK',
   AppStrings.history: 'Riwayat',
   AppStrings.emptyHistory: 'Belum ada riwayat',
+  AppStrings.minutesAgo: '{minutes} menit yang lalu',
   AppStrings.hoursAgo: '{hours} jam yang lalu',
   AppStrings.yesterday: 'Kemarin',
   AppStrings.daysAgo: '{days} hari yang lalu',
   AppStrings.weekAgo: '1 minggu yang lalu',
   AppStrings.weeksAgo: '{weeks} minggu yang lalu',
-  AppStrings.dietPreferences: 'Bahasa Indonesia',
+  AppStrings.dietPreferences: 'Preferensi Diet',
   AppStrings.dietPreferencesHelper:
       'Kami akan mencoba menghindari ini saat menyarankan resep.',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: 'Hindari Bahan',
+  AppStrings.dietStyle: 'Gaya Diet',
+  AppStrings.cookingPreferences: 'Preferensi Memasak',
+  AppStrings.religious: 'Agama',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'Kacang',
+  AppStrings.shellfish: 'Kerang',
+  AppStrings.dairy: 'Susu',
+  AppStrings.eggs: 'Telur',
+  AppStrings.gluten: 'Gluten',
+  AppStrings.soy: 'Kedelai',
+
+  // Diet Style
+  AppStrings.vegan: 'Vegan',
+  AppStrings.vegetarian: 'Vegetarian',
+  AppStrings.pescatarian: 'Pescatarian',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: 'Rendah karbohidrat',
+  AppStrings.lowFat: 'Rendah lemak',
+
+  // Religious
+  AppStrings.halal: 'Halal',
+  AppStrings.kosher: 'Kosher',
 };

@@ -47,12 +47,40 @@ const Map<String, String> finnishStrings = {
   AppStrings.ok: 'OK',
   AppStrings.history: 'Historia',
   AppStrings.emptyHistory: 'Ei vielä historiaa',
+  AppStrings.minutesAgo: '{minutes} minuuttia sitten',
   AppStrings.hoursAgo: '{hours} tuntia sitten',
   AppStrings.yesterday: 'Eilen',
   AppStrings.daysAgo: '{days} päivää sitten',
   AppStrings.weekAgo: '1 viikko sitten',
   AppStrings.weeksAgo: '{weeks} viikkoa sitten',
-  AppStrings.dietPreferences: 'Suomi',
+  AppStrings.dietPreferences: 'Ruokavaliopreferenssit',
   AppStrings.dietPreferencesHelper:
       'Yritämme välttää näitä, kun ehdotamme reseptejä.',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: 'Vältä Aineksia',
+  AppStrings.dietStyle: 'Ruokavaliotyyli',
+  AppStrings.cookingPreferences: 'Keittopreferenssit',
+  AppStrings.religious: 'Uskonnollinen',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'Pähkinät',
+  AppStrings.shellfish: 'Äyriäiset',
+  AppStrings.dairy: 'Maitotuotteet',
+  AppStrings.eggs: 'Munat',
+  AppStrings.gluten: 'Gluteeni',
+  AppStrings.soy: 'Soija',
+
+  // Diet Style
+  AppStrings.vegan: 'Vegaaninen',
+  AppStrings.vegetarian: 'Kasvisruokavalio',
+  AppStrings.pescatarian: 'Peskatariaaninen',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: 'Vähähiilihydraattinen',
+  AppStrings.lowFat: 'Vähärasvainen',
+
+  // Religious
+  AppStrings.halal: 'Halal',
+  AppStrings.kosher: 'Kosher',
 };

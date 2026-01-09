@@ -162,6 +162,33 @@ class AppLocalizations {
   String get dietPreferencesHelper =>
       translate(AppStrings.dietPreferencesHelper);
 
+  // Diet Preference Sections
+  String get avoidIngredients => translate(AppStrings.avoidIngredients);
+  String get dietStyle => translate(AppStrings.dietStyle);
+  String get cookingPreferences => translate(AppStrings.cookingPreferences);
+  String get religious => translate(AppStrings.religious);
+
+  // Avoid Ingredients
+  String get nuts => translate(AppStrings.nuts);
+  String get shellfish => translate(AppStrings.shellfish);
+  String get dairy => translate(AppStrings.dairy);
+  String get eggs => translate(AppStrings.eggs);
+  String get gluten => translate(AppStrings.gluten);
+  String get soy => translate(AppStrings.soy);
+
+  // Diet Style
+  String get vegan => translate(AppStrings.vegan);
+  String get vegetarian => translate(AppStrings.vegetarian);
+  String get pescatarian => translate(AppStrings.pescatarian);
+
+  // Cooking Preferences
+  String get lowCarb => translate(AppStrings.lowCarb);
+  String get lowFat => translate(AppStrings.lowFat);
+
+  // Religious
+  String get halal => translate(AppStrings.halal);
+  String get kosher => translate(AppStrings.kosher);
+
   /// Format plural strings
   String recipesFound(int count) {
     final template = translate(AppStrings.recipesFound);
@@ -173,6 +200,11 @@ class AppLocalizations {
     final template =
         isPlural ? translate(AppStrings.photos) : translate(AppStrings.photo);
     return '$count $template';
+  }
+
+  String minutesAgo(int minutes) {
+    final template = translate(AppStrings.minutesAgo);
+    return template.replaceAll('{minutes}', minutes.toString());
   }
 
   String hoursAgo(int hours) {
@@ -188,5 +220,28 @@ class AppLocalizations {
   String weeksAgo(int weeks) {
     final template = translate(AppStrings.weeksAgo);
     return template.replaceAll('{weeks}', weeks.toString());
+  }
+
+  /// Format time ago string based on time difference
+  /// Returns localized "X minutes ago", "X hours ago", "Yesterday", etc.
+  String formatTimeAgo(DateTime createdAt) {
+    final now = DateTime.now();
+    final difference = now.difference(createdAt);
+
+    if (difference.inDays == 0) {
+      if (difference.inHours == 0) {
+        return minutesAgo(difference.inMinutes);
+      }
+      return hoursAgo(difference.inHours);
+    } else if (difference.inDays == 1) {
+      return translate(AppStrings.yesterday);
+    } else if (difference.inDays < 7) {
+      return daysAgo(difference.inDays);
+    } else if (difference.inDays < 14) {
+      return translate(AppStrings.weekAgo);
+    } else {
+      final weeks = (difference.inDays / 7).floor();
+      return weeksAgo(weeks);
+    }
   }
 }

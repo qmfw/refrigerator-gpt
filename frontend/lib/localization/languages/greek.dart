@@ -48,12 +48,40 @@ const Map<String, String> greekStrings = {
   AppStrings.ok: 'Εντάξει',
   AppStrings.history: 'Ιστορικό',
   AppStrings.emptyHistory: 'Δεν υπάρχει ιστορικό ακόμα',
+  AppStrings.minutesAgo: 'πριν {minutes} λεπτά',
   AppStrings.hoursAgo: 'πριν {hours} ώρες',
   AppStrings.yesterday: 'Χθες',
   AppStrings.daysAgo: 'πριν {days} ημέρες',
   AppStrings.weekAgo: 'πριν 1 εβδομάδα',
   AppStrings.weeksAgo: 'πριν {weeks} εβδομάδες',
-  AppStrings.dietPreferences: 'Ελληνικά',
+  AppStrings.dietPreferences: 'Διατροφικές Προτιμήσεις',
   AppStrings.dietPreferencesHelper:
       'Θα προσπαθήσουμε να τα αποφύγουμε όταν προτείνουμε συνταγές.',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: 'Αποφύγετε Συστατικά',
+  AppStrings.dietStyle: 'Στυλ Διατροφής',
+  AppStrings.cookingPreferences: 'Προτιμήσεις Μαγειρικής',
+  AppStrings.religious: 'Θρησκευτικό',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'Καρύδια',
+  AppStrings.shellfish: 'Οστρακοειδή',
+  AppStrings.dairy: 'Γαλακτοκομικά',
+  AppStrings.eggs: 'Αυγά',
+  AppStrings.gluten: 'Γλουτένη',
+  AppStrings.soy: 'Σόγια',
+
+  // Diet Style
+  AppStrings.vegan: 'Βίγκαν',
+  AppStrings.vegetarian: 'Χορτοφαγικό',
+  AppStrings.pescatarian: 'Πεσκαταριανό',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: 'Χαμηλά υδατάνθρακες',
+  AppStrings.lowFat: 'Χαμηλά λίπη',
+
+  // Religious
+  AppStrings.halal: 'Χαλάλ',
+  AppStrings.kosher: 'Κόσερ',
 };

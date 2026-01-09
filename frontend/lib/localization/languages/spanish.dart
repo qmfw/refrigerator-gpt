@@ -66,6 +66,7 @@ const Map<String, String> spanishStrings = {
   AppStrings.cancel: 'Cancelar',
   AppStrings.history: 'Historial',
   AppStrings.emptyHistory: 'Aún no hay historial',
+  AppStrings.minutesAgo: 'hace {minutes} minutos',
   AppStrings.hoursAgo: 'hace {hours} horas',
   AppStrings.yesterday: 'Ayer',
   AppStrings.daysAgo: 'hace {days} días',
@@ -74,4 +75,31 @@ const Map<String, String> spanishStrings = {
   AppStrings.dietPreferences: 'Preferencias Dietéticas',
   AppStrings.dietPreferencesHelper:
       'Intentaremos evitar estos al sugerir recetas.',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: 'Evitar Ingredientes',
+  AppStrings.dietStyle: 'Estilo de Dieta',
+  AppStrings.cookingPreferences: 'Preferencias de Cocina',
+  AppStrings.religious: 'Religioso',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'Frutos Secos',
+  AppStrings.shellfish: 'Mariscos',
+  AppStrings.dairy: 'Lácteos',
+  AppStrings.eggs: 'Huevos',
+  AppStrings.gluten: 'Gluten',
+  AppStrings.soy: 'Soja',
+
+  // Diet Style
+  AppStrings.vegan: 'Vegano',
+  AppStrings.vegetarian: 'Vegetariano',
+  AppStrings.pescatarian: 'Pescetariano',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: 'Bajo en carbohidratos',
+  AppStrings.lowFat: 'Bajo en grasa',
+
+  // Religious
+  AppStrings.halal: 'Halal',
+  AppStrings.kosher: 'Kosher',
 };

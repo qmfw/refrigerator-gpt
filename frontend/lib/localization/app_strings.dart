@@ -81,6 +81,7 @@ class AppStrings {
   static const String emptyHistory = 'emptyHistory';
 
   // Time Ago
+  static const String minutesAgo = 'minutesAgo';
   static const String hoursAgo = 'hoursAgo';
   static const String yesterday = 'yesterday';
   static const String daysAgo = 'daysAgo';
@@ -90,4 +91,31 @@ class AppStrings {
   // Diet Preferences
   static const String dietPreferences = 'dietPreferences';
   static const String dietPreferencesHelper = 'dietPreferencesHelper';
+
+  // Diet Preference Sections
+  static const String avoidIngredients = 'avoidIngredients';
+  static const String dietStyle = 'dietStyle';
+  static const String cookingPreferences = 'cookingPreferences';
+  static const String religious = 'religious';
+
+  // Avoid Ingredients
+  static const String nuts = 'nuts';
+  static const String shellfish = 'shellfish';
+  static const String dairy = 'dairy';
+  static const String eggs = 'eggs';
+  static const String gluten = 'gluten';
+  static const String soy = 'soy';
+
+  // Diet Style
+  static const String vegan = 'vegan';
+  static const String vegetarian = 'vegetarian';
+  static const String pescatarian = 'pescatarian';
+
+  // Cooking Preferences
+  static const String lowCarb = 'lowCarb';
+  static const String lowFat = 'lowFat';
+
+  // Religious
+  static const String halal = 'halal';
+  static const String kosher = 'kosher';
 }

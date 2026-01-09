@@ -47,12 +47,40 @@ const Map<String, String> turkishStrings = {
   AppStrings.ok: 'Tamam',
   AppStrings.history: 'Geçmiş',
   AppStrings.emptyHistory: 'Henüz geçmiş yok',
+  AppStrings.minutesAgo: '{minutes} dakika önce',
   AppStrings.hoursAgo: '{hours} saat önce',
   AppStrings.yesterday: 'Dün',
   AppStrings.daysAgo: '{days} gün önce',
   AppStrings.weekAgo: '1 hafta önce',
   AppStrings.weeksAgo: '{weeks} hafta önce',
-  AppStrings.dietPreferences: 'Türkçe',
+  AppStrings.dietPreferences: 'Diyet Tercihleri',
   AppStrings.dietPreferencesHelper:
       'Tarif önerirken bunlardan kaçınmaya çalışacağız.',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: 'Kaçınılacak Malzemeler',
+  AppStrings.dietStyle: 'Diyet Stili',
+  AppStrings.cookingPreferences: 'Pişirme Tercihleri',
+  AppStrings.religious: 'Dini',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'Fındık',
+  AppStrings.shellfish: 'Kabuklu Deniz Ürünleri',
+  AppStrings.dairy: 'Süt Ürünleri',
+  AppStrings.eggs: 'Yumurta',
+  AppStrings.gluten: 'Gluten',
+  AppStrings.soy: 'Soya',
+
+  // Diet Style
+  AppStrings.vegan: 'Vegan',
+  AppStrings.vegetarian: 'Vejetaryen',
+  AppStrings.pescatarian: 'Pesketaryen',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: 'Düşük karbonhidrat',
+  AppStrings.lowFat: 'Düşük yağ',
+
+  // Religious
+  AppStrings.halal: 'Helal',
+  AppStrings.kosher: 'Koşer',
 };

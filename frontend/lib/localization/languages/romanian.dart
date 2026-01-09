@@ -47,12 +47,40 @@ const Map<String, String> romanianStrings = {
   AppStrings.ok: 'OK',
   AppStrings.history: 'Istoric',
   AppStrings.emptyHistory: 'Nu există istoric încă',
+  AppStrings.minutesAgo: 'acum {minutes} minute',
   AppStrings.hoursAgo: 'acum {hours} ore',
   AppStrings.yesterday: 'Ieri',
   AppStrings.daysAgo: 'acum {days} zile',
   AppStrings.weekAgo: 'acum 1 săptămână',
   AppStrings.weeksAgo: 'acum {weeks} săptămâni',
-  AppStrings.dietPreferences: 'Română',
+  AppStrings.dietPreferences: 'Preferințe Dietetice',
   AppStrings.dietPreferencesHelper:
       'Vom încerca să le evităm când sugerăm rețete.',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: 'Evită Ingredientele',
+  AppStrings.dietStyle: 'Stil de Dietă',
+  AppStrings.cookingPreferences: 'Preferințe de Gătit',
+  AppStrings.religious: 'Religios',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'Nuci',
+  AppStrings.shellfish: 'Fructe de Mare',
+  AppStrings.dairy: 'Lactate',
+  AppStrings.eggs: 'Ouă',
+  AppStrings.gluten: 'Gluten',
+  AppStrings.soy: 'Soia',
+
+  // Diet Style
+  AppStrings.vegan: 'Vegan',
+  AppStrings.vegetarian: 'Vegetarian',
+  AppStrings.pescatarian: 'Pescetarian',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: 'Carbohidrați reduși',
+  AppStrings.lowFat: 'Grăsimi reduse',
+
+  // Religious
+  AppStrings.halal: 'Halal',
+  AppStrings.kosher: 'Kosher',
 };

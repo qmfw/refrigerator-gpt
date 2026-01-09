@@ -60,6 +60,7 @@ const Map<String, String> japaneseStrings = {
   AppStrings.cancel: 'キャンセル',
   AppStrings.history: '履歴',
   AppStrings.emptyHistory: 'まだ履歴がありません',
+  AppStrings.minutesAgo: '{minutes}分前',
   AppStrings.hoursAgo: '{hours}時間前',
   AppStrings.yesterday: '昨日',
   AppStrings.daysAgo: '{days}日前',
@@ -67,4 +68,31 @@ const Map<String, String> japaneseStrings = {
   AppStrings.weeksAgo: '{weeks}週間前',
   AppStrings.dietPreferences: '食事の好み',
   AppStrings.dietPreferencesHelper: 'レシピを提案する際、これらを避けるようにします。',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: '避ける食材',
+  AppStrings.dietStyle: '食事スタイル',
+  AppStrings.cookingPreferences: '調理の好み',
+  AppStrings.religious: '宗教的',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'ナッツ',
+  AppStrings.shellfish: '甲殻類',
+  AppStrings.dairy: '乳製品',
+  AppStrings.eggs: '卵',
+  AppStrings.gluten: 'グルテン',
+  AppStrings.soy: '大豆',
+
+  // Diet Style
+  AppStrings.vegan: 'ビーガン',
+  AppStrings.vegetarian: 'ベジタリアン',
+  AppStrings.pescatarian: 'ペスカタリアン',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: '低炭水化物',
+  AppStrings.lowFat: '低脂肪',
+
+  // Religious
+  AppStrings.halal: 'ハラル',
+  AppStrings.kosher: 'コーシャ',
 };

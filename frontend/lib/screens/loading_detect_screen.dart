@@ -19,7 +19,12 @@ class _LoadingDetectScreenState extends State<LoadingDetectScreen> {
   @override
   void initState() {
     super.initState();
-    _detectIngredients();
+    // Defer detection until after first frame is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _detectIngredients();
+      }
+    });
   }
 
   Future<void> _detectIngredients() async {

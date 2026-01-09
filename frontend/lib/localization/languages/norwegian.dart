@@ -48,12 +48,40 @@ const Map<String, String> norwegianStrings = {
   AppStrings.ok: 'OK',
   AppStrings.history: 'Historikk',
   AppStrings.emptyHistory: 'Ingen historikk ennå',
+  AppStrings.minutesAgo: 'for {minutes} minutter siden',
   AppStrings.hoursAgo: 'for {hours} timer siden',
   AppStrings.yesterday: 'I går',
   AppStrings.daysAgo: 'for {days} dager siden',
   AppStrings.weekAgo: 'for 1 uke siden',
   AppStrings.weeksAgo: 'for {weeks} uker siden',
-  AppStrings.dietPreferences: 'Norsk',
+  AppStrings.dietPreferences: 'Kostpreferanser',
   AppStrings.dietPreferencesHelper:
       'Vi vil prøve å unngå disse når vi foreslår oppskrifter.',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: 'Unngå Ingredienser',
+  AppStrings.dietStyle: 'Koststil',
+  AppStrings.cookingPreferences: 'Matlagningspreferanser',
+  AppStrings.religious: 'Religiøs',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'Nøtter',
+  AppStrings.shellfish: 'Skalldyr',
+  AppStrings.dairy: 'Meieriprodukter',
+  AppStrings.eggs: 'Egg',
+  AppStrings.gluten: 'Gluten',
+  AppStrings.soy: 'Soja',
+
+  // Diet Style
+  AppStrings.vegan: 'Vegan',
+  AppStrings.vegetarian: 'Vegetarian',
+  AppStrings.pescatarian: 'Pescetarian',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: 'Lavt karbohydrat',
+  AppStrings.lowFat: 'Lavt fett',
+
+  // Religious
+  AppStrings.halal: 'Halal',
+  AppStrings.kosher: 'Kosher',
 };

@@ -67,12 +67,40 @@ const Map<String, String> russianStrings = {
   AppStrings.cancel: 'Отмена',
   AppStrings.history: 'История',
   AppStrings.emptyHistory: 'Истории пока нет',
+  AppStrings.minutesAgo: '{minutes} минут назад',
   AppStrings.hoursAgo: '{hours} часов назад',
   AppStrings.yesterday: 'Вчера',
   AppStrings.daysAgo: '{days} дней назад',
   AppStrings.weekAgo: '1 неделю назад',
   AppStrings.weeksAgo: '{weeks} недель назад',
-  AppStrings.dietPreferences: 'Русский',
+  AppStrings.dietPreferences: 'Диетические Предпочтения',
   AppStrings.dietPreferencesHelper:
       'Мы постараемся избегать их при предложении рецептов.',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: 'Избегать Ингредиентов',
+  AppStrings.dietStyle: 'Стиль Питания',
+  AppStrings.cookingPreferences: 'Кулинарные Предпочтения',
+  AppStrings.religious: 'Религиозные',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'Орехи',
+  AppStrings.shellfish: 'Морепродукты',
+  AppStrings.dairy: 'Молочные Продукты',
+  AppStrings.eggs: 'Яйца',
+  AppStrings.gluten: 'Глютен',
+  AppStrings.soy: 'Соя',
+
+  // Diet Style
+  AppStrings.vegan: 'Веган',
+  AppStrings.vegetarian: 'Вегетарианец',
+  AppStrings.pescatarian: 'Пескетарианец',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: 'Низкоуглеводная',
+  AppStrings.lowFat: 'Низкожировая',
+
+  // Religious
+  AppStrings.halal: 'Халяль',
+  AppStrings.kosher: 'Кошер',
 };

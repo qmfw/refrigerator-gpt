@@ -7,7 +7,7 @@ import 'language_service.dart';
 class LocalizationsInherited extends InheritedWidget {
   final AppLocalizations localizations;
   final AppLanguage currentLanguage;
-  final Future<void> Function(AppLanguage) setLanguage;
+  final Future<void> Function(AppLanguage?) setLanguage;
 
   const LocalizationsInherited({
     super.key,
@@ -63,7 +63,18 @@ class LocalizationsProviderState extends State<LocalizationsProvider> {
 
   Future<void> _loadSavedLanguage() async {
     final savedLanguage = await _languageService.getLanguage();
-    if (savedLanguage != null && savedLanguage != _currentLanguage) {
+
+    if (savedLanguage == null) {
+      // Use device language
+      final deviceLanguage = LanguageService.detectDeviceLanguage();
+      if (deviceLanguage != _currentLanguage) {
+        setState(() {
+          _currentLanguage = deviceLanguage;
+          _localizations = AppLocalizations(_currentLanguage);
+        });
+      }
+    } else if (savedLanguage != _currentLanguage) {
+      // Use saved language
       setState(() {
         _currentLanguage = savedLanguage;
         _localizations = AppLocalizations(_currentLanguage);
@@ -72,11 +83,23 @@ class LocalizationsProviderState extends State<LocalizationsProvider> {
   }
 
   /// Change the app language
-  Future<void> setLanguage(AppLanguage language) async {
-    if (_currentLanguage != language) {
-      await _languageService.saveLanguage(language);
+  /// Pass null to use device language
+  Future<void> setLanguage(AppLanguage? language) async {
+    AppLanguage targetLanguage;
+
+    if (language == null) {
+      // Use device language
+      targetLanguage = LanguageService.detectDeviceLanguage();
+    } else {
+      targetLanguage = language;
+    }
+
+    if (_currentLanguage != targetLanguage) {
+      await _languageService.saveLanguage(
+        language,
+      ); // Save null for device language
       setState(() {
-        _currentLanguage = language;
+        _currentLanguage = targetLanguage;
         _localizations = AppLocalizations(_currentLanguage);
       });
     }

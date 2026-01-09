@@ -57,6 +57,7 @@ const Map<String, String> chineseStrings = {
   AppStrings.cancel: '取消',
   AppStrings.history: '历史',
   AppStrings.emptyHistory: '暂无历史记录',
+  AppStrings.minutesAgo: '{minutes} 分钟前',
   AppStrings.hoursAgo: '{hours} 小时前',
   AppStrings.yesterday: '昨天',
   AppStrings.daysAgo: '{days} 天前',
@@ -64,4 +65,31 @@ const Map<String, String> chineseStrings = {
   AppStrings.weeksAgo: '{weeks} 周前',
   AppStrings.dietPreferences: '饮食偏好',
   AppStrings.dietPreferencesHelper: '我们会在建议食谱时尽量避免这些。',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: '避免食材',
+  AppStrings.dietStyle: '饮食风格',
+  AppStrings.cookingPreferences: '烹饪偏好',
+  AppStrings.religious: '宗教',
+
+  // Avoid Ingredients
+  AppStrings.nuts: '坚果',
+  AppStrings.shellfish: '贝类',
+  AppStrings.dairy: '乳制品',
+  AppStrings.eggs: '鸡蛋',
+  AppStrings.gluten: '麸质',
+  AppStrings.soy: '大豆',
+
+  // Diet Style
+  AppStrings.vegan: '纯素',
+  AppStrings.vegetarian: '素食',
+  AppStrings.pescatarian: '鱼素',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: '低碳水化合物',
+  AppStrings.lowFat: '低脂肪',
+
+  // Religious
+  AppStrings.halal: '清真',
+  AppStrings.kosher: '犹太洁食',
 };

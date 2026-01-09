@@ -5,6 +5,7 @@ import '../localization/app_localizations_extension.dart';
 import '../models/models.dart';
 import '../services/api/recipe_service.dart';
 import '../services/history_storage_service.dart';
+import '../services/diet_preferences_storage_service.dart';
 
 class LoadingGenerateScreen extends StatefulWidget {
   const LoadingGenerateScreen({super.key});
@@ -19,7 +20,9 @@ class _LoadingGenerateScreenState extends State<LoadingGenerateScreen> {
     super.initState();
     // Defer loading until after first frame to ensure route is available
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _generateRecipes();
+      if (mounted) {
+        _generateRecipes();
+      }
     });
   }
 
@@ -58,10 +61,24 @@ class _LoadingGenerateScreenState extends State<LoadingGenerateScreen> {
       final recipeService = RecipeService();
       final language = context.languageCode;
 
+      // Load diet preferences from local storage
+      final dietPrefsService = DietPreferencesStorageService();
+      final dietPreferences = await dietPrefsService.getPreferences();
+
+      // Only send preferences if they have values (for premium users)
+      final Map<String, List<String>>? preferencesToSend =
+          (dietPreferences['avoid_ingredients']!.isNotEmpty ||
+                  dietPreferences['diet_style']!.isNotEmpty ||
+                  dietPreferences['cooking_preferences']!.isNotEmpty ||
+                  dietPreferences['religious']!.isNotEmpty)
+              ? dietPreferences
+              : null;
+
       final response = await recipeService.generateRecipes(
         ingredients: ingredients,
         language: language,
         maxRecipes: 3,
+        dietPreferences: preferencesToSend,
       );
 
       // Save first recipe to history (local storage)

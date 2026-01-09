@@ -21,10 +21,23 @@ class _PhotoReviewScreenState extends State<PhotoReviewScreen> {
   @override
   void initState() {
     super.initState();
+    // Defer loading until after first frame is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _loadImages();
+      }
+    });
+  }
+
+  void _loadImages() {
     // Get initial images from route arguments
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is List<Uint8List>) {
-      _images = List.from(args);
+      if (mounted) {
+        setState(() {
+          _images = List.from(args);
+        });
+      }
     }
   }
 

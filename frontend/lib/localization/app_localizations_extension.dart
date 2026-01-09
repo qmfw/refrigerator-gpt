@@ -21,7 +21,8 @@ extension AppLocalizationsExtension on BuildContext {
   }
 
   /// Change the app language
-  Future<void> setLanguage(AppLanguage language) async {
+  /// Pass null to use device language
+  Future<void> setLanguage(AppLanguage? language) async {
     final provider = LocalizationsProvider.of(this);
     if (provider != null) {
       await provider.setLanguage(language);
