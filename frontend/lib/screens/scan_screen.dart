@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../components/components.dart';
 import '../theme/app_colors.dart';
 import '../localization/app_localizations_extension.dart';
@@ -11,6 +12,77 @@ class ScanScreen extends StatefulWidget {
 }
 
 class _ScanScreenState extends State<ScanScreen> {
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _takePhoto() async {
+    try {
+      final XFile? photo = await _picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 100, // Will be compressed later in preprocessing
+      );
+
+      if (photo != null && mounted) {
+        final bytes = await photo.readAsBytes();
+        if (mounted) {
+          Navigator.pushNamed(context, '/photo-review', arguments: [bytes]);
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        String errorMessage = 'Failed to take photo';
+        if (e.toString().contains('permission') ||
+            e.toString().contains('Permission')) {
+          errorMessage =
+              'Camera permission denied. Please enable camera access in settings.';
+        } else if (e.toString().contains('camera')) {
+          errorMessage =
+              'Camera not available. Please check your device settings.';
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _pickFromGallery() async {
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 100, // Will be compressed later in preprocessing
+      );
+
+      if (image != null && mounted) {
+        final bytes = await image.readAsBytes();
+        if (mounted) {
+          Navigator.pushNamed(context, '/photo-review', arguments: [bytes]);
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        String errorMessage = 'Failed to pick image';
+        if (e.toString().contains('permission') ||
+            e.toString().contains('Permission')) {
+          errorMessage =
+              'Photo library permission denied. Please enable photo access in settings.';
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,19 +138,9 @@ class _ScanScreenState extends State<ScanScreen> {
                     padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
                     child: Column(
                       children: [
-                        ShutterButton(
-                          onPressed: () {
-                            // Take photo
-                            Navigator.pushNamed(context, '/photo-review');
-                          },
-                        ),
+                        ShutterButton(onPressed: _takePhoto),
                         const SizedBox(height: 16),
-                        UploadButton(
-                          onPressed: () {
-                            // Open gallery
-                            Navigator.pushNamed(context, '/photo-review');
-                          },
-                        ),
+                        UploadButton(onPressed: _pickFromGallery),
                       ],
                     ),
                   ),

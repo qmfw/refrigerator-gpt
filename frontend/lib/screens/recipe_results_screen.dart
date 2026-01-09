@@ -3,7 +3,6 @@ import '../components/components.dart';
 import '../theme/app_colors.dart';
 import '../localization/app_localizations_extension.dart';
 import '../models/models.dart';
-import '../repository/mock_fridge_repository.dart';
 
 class RecipeResultsScreen extends StatefulWidget {
   const RecipeResultsScreen({super.key});
@@ -13,7 +12,6 @@ class RecipeResultsScreen extends StatefulWidget {
 }
 
 class _RecipeResultsScreenState extends State<RecipeResultsScreen> {
-  final MockFridgeRepository _repository = MockFridgeRepository();
   List<Recipe> _recipes = [];
   bool _isLoading = true;
 
@@ -23,20 +21,12 @@ class _RecipeResultsScreenState extends State<RecipeResultsScreen> {
     _loadRecipes();
   }
 
-  Future<void> _loadRecipes() async {
-    // In production, this would use the actual detected ingredients
-    // For now, we'll use empty list to get mock recipes
-    final ingredients = await _repository.getDetectedIngredients();
-    final recipes = await _repository.generateRecipes(ingredients);
-
-    // Save the first recipe to history (local storage)
-    // This avoids API calls for history retrieval
-    if (recipes.isNotEmpty) {
-      await _repository.saveRecipeToHistory(recipes.first);
-    }
+  void _loadRecipes() {
+    // Get recipes from route arguments
+    final recipes = ModalRoute.of(context)?.settings.arguments as List<Recipe>?;
 
     setState(() {
-      _recipes = recipes;
+      _recipes = recipes ?? [];
       _isLoading = false;
     });
   }

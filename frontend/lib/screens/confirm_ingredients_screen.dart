@@ -3,7 +3,6 @@ import '../components/components.dart';
 import '../theme/app_colors.dart';
 import '../localization/app_localizations_extension.dart';
 import '../models/models.dart';
-import '../repository/mock_fridge_repository.dart';
 
 class ConfirmIngredientsScreen extends StatefulWidget {
   const ConfirmIngredientsScreen({super.key});
@@ -15,18 +14,37 @@ class ConfirmIngredientsScreen extends StatefulWidget {
 
 class _ConfirmIngredientsScreenState extends State<ConfirmIngredientsScreen> {
   final TextEditingController _ingredientController = TextEditingController();
-  final MockFridgeRepository _repository = MockFridgeRepository();
   List<Ingredient> _ingredients = [];
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadIngredients();
+    // Defer loading until after first frame to ensure route is available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadIngredients();
+    });
   }
 
-  Future<void> _loadIngredients() async {
-    final ingredients = await _repository.getDetectedIngredients();
+  void _loadIngredients() {
+    // Get ingredients from route arguments
+    final args = ModalRoute.of(context)?.settings.arguments;
+
+    List<Ingredient> ingredients = [];
+    if (args != null) {
+      if (args is List<Ingredient>) {
+        ingredients = args;
+      } else if (args is List) {
+        // Try to convert list of dynamic to List<Ingredient>
+        try {
+          ingredients = args.whereType<Ingredient>().toList();
+        } catch (e) {
+          // If conversion fails, use empty list
+          ingredients = [];
+        }
+      }
+    }
+
     setState(() {
       _ingredients = ingredients;
       _isLoading = false;
@@ -126,12 +144,16 @@ class _ConfirmIngredientsScreenState extends State<ConfirmIngredientsScreen> {
                     // Cook Button
                     PrimaryButton(
                       text: context.l10n.cookWithThis,
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(
-                          context,
-                          '/loading-generate',
-                        );
-                      },
+                      onPressed:
+                          _ingredients.isEmpty
+                              ? null
+                              : () {
+                                Navigator.pushReplacementNamed(
+                                  context,
+                                  '/loading-generate',
+                                  arguments: _ingredients,
+                                );
+                              },
                       fullWidth: true,
                     ),
 

@@ -1,9 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../components/components.dart';
 import '../theme/app_colors.dart';
 import '../localization/app_localizations_extension.dart';
-import '../repository/mock_fridge_repository.dart';
+import '../services/history_storage_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -13,7 +12,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  final MockFridgeRepository _repository = MockFridgeRepository();
+  final HistoryStorageService _historyService = HistoryStorageService();
 
   @override
   Widget build(BuildContext context) {
@@ -36,56 +35,52 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: ListView(
                 children: [
                   SettingsItem(
+                    label: context.l10n.dietPreferences,
+                    onTap: () {
+                      Navigator.pushNamed(context, '/diet-preferences');
+                    },
+                  ),
+                  SettingsItem(
+                    label: context.l10n.languageLabel,
+                    onTap: () {
+                      Navigator.pushNamed(context, '/language');
+                    },
+                  ),
+                  SettingsItem(
                     label: context.l10n.clearHistory,
                     isDestructive: true,
                     onTap: () async {
-                      await _repository.clearHistory();
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(context.l10n.historyCleared)),
-                        );
+                      final confirmed = await ConfirmationDialog.show(
+                        context,
+                        title: context.l10n.clearHistoryTitle,
+                        body: context.l10n.clearHistoryBody,
+                        confirmText: context.l10n.clearHistory,
+                        isDestructive: true,
+                      );
+                      if (confirmed == true && context.mounted) {
+                        await _historyService.clearHistory();
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(context.l10n.historyCleared),
+                            ),
+                          );
+                        }
                       }
                     },
                   ),
                   SettingsItem(
                     label: context.l10n.about,
                     onTap: () {
-                      InfoDialog.show(
-                        context,
-                        title: context.l10n.aboutTitle,
-                        content: context.l10n.aboutContent,
-                      );
-                    },
-                  ),
-                  SettingsItem(
-                    label: context.l10n.feedback,
-                    onTap: () {
-                      // Open feedback
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(context.l10n.feedbackComingSoon),
-                        ),
-                      );
+                      Navigator.pushNamed(context, '/about');
                     },
                   ),
                   SettingsItem(
                     label: context.l10n.privacy,
                     onTap: () {
-                      InfoDialog.show(
-                        context,
-                        title: context.l10n.privacyTitle,
-                        content: context.l10n.privacyContent,
-                      );
+                      Navigator.pushNamed(context, '/privacy');
                     },
                   ),
-                  // Language picker (visible in debug mode or always)
-                  if (kDebugMode || true) // Set to false to hide in production
-                    SettingsItem(
-                      label: context.l10n.languageLabel,
-                      onTap: () {
-                        LanguagePickerDialog.show(context);
-                      },
-                    ),
                 ],
               ),
             ),

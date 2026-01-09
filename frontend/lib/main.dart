@@ -9,6 +9,10 @@ import 'screens/loading_generate_screen.dart';
 import 'screens/recipe_results_screen.dart';
 import 'screens/history_screen.dart';
 import 'screens/settings_screen.dart';
+import 'screens/about_screen.dart';
+import 'screens/privacy_screen.dart';
+import 'screens/language_screen.dart';
+import 'screens/diet_preferences_screen.dart';
 import 'theme/app_colors.dart';
 import 'localization/localizations_provider.dart';
 
@@ -56,6 +60,10 @@ class FridgeGPTApp extends StatelessWidget {
           '/recipe-results': (context) => const RecipeResultsScreen(),
           '/history': (context) => const HistoryScreen(),
           '/settings': (context) => const SettingsScreen(),
+          '/about': (context) => const AboutScreen(),
+          '/privacy': (context) => const PrivacyScreen(),
+          '/language': (context) => const LanguageScreen(),
+          '/diet-preferences': (context) => const DietPreferencesScreen(),
         },
       ),
     );
