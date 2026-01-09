@@ -18,7 +18,7 @@ router = APIRouter(prefix="/api/v1/subscription", tags=["Subscription"])
 class VerifyReceiptRequest(BaseModel):
     """Request model for receipt verification"""
     receipt_data: str = Field(..., description="Base64-encoded receipt from App Store or Play Store")
-    app_account_token: UUID = Field(..., description="Unique app account token (UUID generated locally)")
+    app_account_token: str = Field(..., description="Unique app account token (UUID generated locally)")
     platform: str = Field(..., description="Platform: 'ios' or 'android'", pattern="^(ios|android)$")
     product_id: Optional[str] = Field(None, description="Product ID (subscription ID) - required for Android, optional for iOS (extracted from receipt)")
 
@@ -138,7 +138,7 @@ async def verify_receipt(
 
 @router.get("/status")
 async def get_subscription_status(
-    appAccountToken: UUID = Query(..., description="Unique app account token"),
+    appAccountToken: str = Query(..., description="Unique app account token"),
     db: Session = Depends(get_db)
 ):
     """

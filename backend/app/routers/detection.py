@@ -83,7 +83,7 @@ async def detect_ingredients(
             # Check if premium
             subscription = (
                 db.query(Subscription)
-                .filter(Subscription.app_account_token == UUID(appAccountToken))
+                .filter(Subscription.app_account_token == appAccountToken)
                 .order_by(Subscription.created_at.desc())
                 .first()
             )

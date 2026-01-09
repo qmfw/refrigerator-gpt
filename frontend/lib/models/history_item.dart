@@ -1,22 +1,51 @@
+import 'recipe.dart';
+
 /// History entry model representing a past recipe scan
 ///
-/// Note: Title is stored in the language it was generated.
-/// When viewing the recipe, fetch it from API with current language.
-/// This avoids storing multiple translations and keeps storage minimal.
+/// Now fetched from server via bulk API with full recipe data - no additional API call needed
 class HistoryEntry {
-  final String id;
+  final String id; // recipe_id
   final String emoji;
-  final String title; // Stored in language when generated
+  final String badge; // fastLazy, actuallyGood, shouldntWork
+  final String title; // Already in requested language from server
+  final List<String> steps;
+  final List<String>? ingredients;
   final DateTime createdAt;
-  final String? languageCode; // Optional: language when recipe was generated
 
   const HistoryEntry({
     required this.id,
     required this.emoji,
+    required this.badge,
     required this.title,
+    required this.steps,
+    this.ingredients,
     required this.createdAt,
-    this.languageCode,
   });
+
+  /// Convert to Recipe object for recipe results screen
+  Recipe toRecipe() {
+    RecipeBadge parseBadge(String badgeStr) {
+      switch (badgeStr) {
+        case 'fastLazy':
+          return RecipeBadge.fastLazy;
+        case 'actuallyGood':
+          return RecipeBadge.actuallyGood;
+        case 'shouldntWork':
+          return RecipeBadge.shouldntWork;
+        default:
+          return RecipeBadge.fastLazy;
+      }
+    }
+
+    return Recipe(
+      id: id,
+      emoji: emoji,
+      badge: parseBadge(badge),
+      title: title,
+      steps: steps,
+      ingredients: ingredients,
+    );
+  }
 
   /// Get a human-readable time ago string
   /// This should be localized in production

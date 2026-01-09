@@ -1,34 +1,175 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:uuid/uuid.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../components/components.dart' show BottomNav, NavItem, HistoryItem;
 import '../theme/app_colors.dart';
 import '../localization/app_localizations_extension.dart';
 import '../models/models.dart' show HistoryEntry;
-import '../repository/mock_fridge_repository.dart';
+import '../services/api/recipe_service.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
 
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
+
+  // Static flag to indicate history should be refreshed
+  static bool shouldRefresh = false;
+
+  // Static cache for history items (persists across widget recreations)
+  static List<HistoryEntry>? cachedHistory;
+  static String? cachedLanguage;
+
+  // Static method to mark history for refresh
+  static void markForRefresh() {
+    shouldRefresh = true;
+    cachedHistory = null; // Clear cache when refresh is needed
+  }
+
+  // Static method to clear cache (e.g., on app restart)
+  static void clearCache() {
+    cachedHistory = null;
+    cachedLanguage = null;
+    shouldRefresh = false;
+  }
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
-  final MockFridgeRepository _repository = MockFridgeRepository();
+  final RecipeService _recipeService = RecipeService();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
   List<HistoryEntry> _historyItems = [];
   bool _isLoading = true;
+  String? _lastLanguage; // Track last language to detect changes
+  bool _hasLoadedInitially = false; // Track if initial load is done
 
   @override
   void initState() {
     super.initState();
-    _loadHistory();
+    // Defer language check until after first frame (context is available)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _checkCacheAndLoad();
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Track language changes - just set flag, don't call API yet
+    if (_hasLoadedInitially) {
+      final currentLanguage = context.languageCode;
+      if (_lastLanguage != null && _lastLanguage != currentLanguage) {
+        if (kDebugMode) {
+          print(
+            'History: Language changed from $_lastLanguage to $currentLanguage, clearing cache and setting refresh flag',
+          );
+        }
+        // Clear cache when language changes and set refresh flag
+        // API will be called when user navigates to history screen
+        HistoryScreen.cachedHistory = null;
+        HistoryScreen.cachedLanguage = null;
+        HistoryScreen.shouldRefresh = true;
+      }
+      _lastLanguage = currentLanguage;
+    }
+  }
+
+  void _checkCacheAndLoad() {
+    if (!mounted) return;
+
+    // Check if we have cached data and language matches
+    final currentLanguage = context.languageCode;
+    if (HistoryScreen.cachedHistory != null &&
+        HistoryScreen.cachedLanguage == currentLanguage &&
+        !HistoryScreen.shouldRefresh) {
+      // Use cached data - no API call needed!
+      if (kDebugMode) {
+        print('History: Using cached data, no API call');
+      }
+      setState(() {
+        _historyItems = HistoryScreen.cachedHistory!;
+        _isLoading = false;
+        _hasLoadedInitially = true;
+        _lastLanguage = currentLanguage;
+      });
+    } else {
+      // Need to load - either no cache, language changed, or refresh needed
+      if (kDebugMode) {
+        print(
+          'History: Loading - cache=${HistoryScreen.cachedHistory != null}, '
+          'langMatch=${HistoryScreen.cachedLanguage == currentLanguage}, '
+          'shouldRefresh=${HistoryScreen.shouldRefresh}',
+        );
+      }
+      _initializeHistory();
+    }
+  }
+
+  /// Manual refresh (pull-to-refresh)
+  Future<void> _onRefresh() async {
+    if (kDebugMode) {
+      print('History: Manual refresh triggered');
+    }
+    await _loadHistory();
+  }
+
+  Future<void> _initializeHistory() async {
+    await _loadHistory();
+    _hasLoadedInitially = true;
   }
 
   Future<void> _loadHistory() async {
-    final items = await _repository.getHistory();
-    setState(() {
-      _historyItems = items;
-      _isLoading = false;
-    });
+    // Capture language code before async operations
+    if (!mounted) return;
+    final language = context.languageCode;
+    _lastLanguage = language; // Update last language
+
+    // Get or generate device ID
+    final prefs = await SharedPreferences.getInstance();
+    String? appAccountToken = prefs.getString('device_id');
+    if (appAccountToken == null || appAccountToken.isEmpty) {
+      appAccountToken = const Uuid().v4();
+      await prefs.setString('device_id', appAccountToken);
+    }
+
+    try {
+      // Fetch history from server (bulk API - only needs language)
+      final history = await _recipeService.getHistory(
+        appAccountToken: appAccountToken,
+        language: language,
+      );
+
+      if (mounted) {
+        // Cache the history data
+        HistoryScreen.cachedHistory = history;
+        HistoryScreen.cachedLanguage = language;
+        // Clear refresh flag after successful load
+        HistoryScreen.shouldRefresh = false;
+
+        if (kDebugMode) {
+          print(
+            'History: Loaded ${history.length} items, cached, refresh flag cleared',
+          );
+        }
+
+        setState(() {
+          _historyItems = history;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Failed to load history: $e');
+      }
+      if (mounted) {
+        setState(() {
+          _historyItems = [];
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -53,43 +194,60 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
             const SizedBox(height: 24),
 
-            // History List
+            // History List with Pull-to-Refresh
             Expanded(
               child:
                   _isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : _historyItems.isEmpty
-                      ? Center(
-                        child: Text(
-                          context.l10n.emptyHistory,
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
+                      ? RefreshIndicator(
+                        key: _refreshIndicatorKey,
+                        onRefresh: _onRefresh,
+                        child: SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.5,
+                            child: Center(
+                              child: Text(
+                                context.l10n.emptyHistory,
+                                style: const TextStyle(
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       )
-                      : ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        itemCount: _historyItems.length,
-                        itemBuilder: (context, index) {
-                          final item = _historyItems[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: HistoryItem(
-                              emoji: item.emoji,
-                              title: item.title,
-                              timeAgo: item.getTimeAgo(),
-                              onTap: () {
-                                // Pass recipe ID to fetch recipe details
-                                Navigator.pushNamed(
-                                  context,
-                                  '/recipe-results',
-                                  arguments:
-                                      item.id, // Pass recipe ID as string
-                                );
-                              },
-                            ),
-                          );
-                        },
+                      : RefreshIndicator(
+                        key: _refreshIndicatorKey,
+                        onRefresh: _onRefresh,
+                        child: ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          itemCount: _historyItems.length,
+                          itemBuilder: (context, index) {
+                            final item = _historyItems[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: HistoryItem(
+                                emoji: item.emoji,
+                                title: item.title,
+                                timeAgo: context.l10n.formatTimeAgo(
+                                  item.createdAt,
+                                ),
+                                onTap: () {
+                                  // Pass full recipe data - no API call needed!
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/recipe-results',
+                                    arguments: [
+                                      item.toRecipe(),
+                                    ], // Pass Recipe object
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        ),
                       ),
             ),
 

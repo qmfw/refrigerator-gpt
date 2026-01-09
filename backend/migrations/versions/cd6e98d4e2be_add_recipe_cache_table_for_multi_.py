@@ -8,6 +8,7 @@ This migration creates the initial database schema including:
 - subscriptions table (for premium features)
 - usage_logs table (for usage tracking)
 - recipe_cache table (for multi-language recipe support)
+- history table (for storing user's recipe history)
 
 Note: This is the initial migration. All tables are created together.
 """
@@ -67,10 +68,25 @@ def upgrade() -> None:
     )
     op.create_index('idx_recipe_id', 'recipe_cache', ['recipe_id'], unique=False)
     op.create_index('idx_recipe_language', 'recipe_cache', ['recipe_id', 'language'], unique=False)
+    
+    # Create history table (for storing user's recipe history)
+    op.create_table('history',
+        sa.Column('id', sa.String(length=36), nullable=False),
+        sa.Column('app_account_token', sa.String(length=36), nullable=False),
+        sa.Column('recipe_id', sa.String(length=255), nullable=False),
+        sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+        sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index('idx_history_token', 'history', ['app_account_token'], unique=False)
+    op.create_index('idx_history_token_created', 'history', ['app_account_token', 'created_at'], unique=False)
 
 
 def downgrade() -> None:
     # Drop tables in reverse order
+    op.drop_index('idx_history_token_created', table_name='history')
+    op.drop_index('idx_history_token', table_name='history')
+    op.drop_table('history')
+    
     op.drop_index('idx_recipe_language', table_name='recipe_cache')
     op.drop_index('idx_recipe_id', table_name='recipe_cache')
     op.drop_table('recipe_cache')

@@ -1,6 +1,5 @@
 """Database models"""
 from sqlalchemy import Column, String, DateTime, Integer, Date, Index, UniqueConstraint
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from app.db import Base
 import uuid
@@ -10,9 +9,9 @@ class Subscription(Base):
     """Subscription model - caches verified App Store/Play Store receipts"""
     __tablename__ = "subscriptions"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))  # Use String for SQLite compatibility
     platform = Column(String(10), nullable=False)  # 'ios' or 'android'
-    app_account_token = Column(UUID(as_uuid=True), nullable=False, index=True)
+    app_account_token = Column(String(36), nullable=False, index=True)  # Use String for SQLite compatibility
     original_transaction_id = Column(String(255))  # iOS: original transaction ID
     purchase_token = Column(String(500))  # Android: purchase token
     product_id = Column(String(255), nullable=False)  # 'premium' or 'premium_annual'
@@ -32,7 +31,7 @@ class UsageLog(Base):
     """Usage tracking model - tracks daily usage limits per app instance"""
     __tablename__ = "usage_logs"
     
-    app_account_token = Column(UUID(as_uuid=True), primary_key=True, nullable=False)
+    app_account_token = Column(String(36), primary_key=True, nullable=False)  # Use String for SQLite compatibility
     feature = Column(String(100), primary_key=True, nullable=False)  # 'scan', 'recipe_generation'
     date = Column(Date, primary_key=True, nullable=False)
     count = Column(Integer, default=1, nullable=False)
@@ -61,3 +60,20 @@ class RecipeCache(Base):
         Index('idx_recipe_id', 'recipe_id'),
         Index('idx_recipe_language', 'recipe_id', 'language'),
     )
+
+
+class History(Base):
+    """History model - stores user's recipe history"""
+    __tablename__ = "history"
+    
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))  # Use String for SQLite compatibility
+    app_account_token = Column(String(36), nullable=False, index=True)  # User identifier
+    recipe_id = Column(String(255), nullable=False, index=True)  # Recipe identifier
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    
+    __table_args__ = (
+        Index('idx_history_token', 'app_account_token'),
+        Index('idx_history_token_created', 'app_account_token', 'created_at'),
+    )
+
+

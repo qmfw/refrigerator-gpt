@@ -1,7 +1,6 @@
 """Usage router - usage limits and tracking"""
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from uuid import UUID
 
 from app.db import get_db
 from app.models import Subscription
@@ -14,7 +13,7 @@ router = APIRouter(prefix="/api/v1/usage", tags=["Usage"])
 
 @router.get("/limits")
 async def get_usage_limits(
-    appAccountToken: UUID = Query(..., description="Unique app account token"),
+    appAccountToken: str = Query(..., description="Unique app account token"),
     db: Session = Depends(get_db)
 ):
     """
@@ -38,7 +37,7 @@ async def get_usage_limits(
     # Get usage limits
     limits = usage_service.get_usage_limits(
         db=db,
-        app_account_token=str(appAccountToken),
+        app_account_token=appAccountToken,
         is_premium=is_premium
     )
     

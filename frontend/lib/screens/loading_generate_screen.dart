@@ -4,8 +4,10 @@ import '../theme/app_colors.dart';
 import '../localization/app_localizations_extension.dart';
 import '../models/models.dart';
 import '../services/api/recipe_service.dart';
-import '../services/history_storage_service.dart';
 import '../services/diet_preferences_storage_service.dart';
+import 'package:uuid/uuid.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'history_screen.dart';
 
 class LoadingGenerateScreen extends StatefulWidget {
   const LoadingGenerateScreen({super.key});
@@ -74,27 +76,25 @@ class _LoadingGenerateScreenState extends State<LoadingGenerateScreen> {
               ? dietPreferences
               : null;
 
+      // Get or generate device ID for history tracking
+      final prefs = await SharedPreferences.getInstance();
+      String? appAccountToken = prefs.getString('device_id');
+      if (appAccountToken == null || appAccountToken.isEmpty) {
+        appAccountToken = const Uuid().v4();
+        await prefs.setString('device_id', appAccountToken);
+      }
+
       final response = await recipeService.generateRecipes(
         ingredients: ingredients,
         language: language,
         maxRecipes: 3,
+        appAccountToken: appAccountToken,
         dietPreferences: preferencesToSend,
       );
 
-      // Save first recipe to history (local storage)
-      final historyService = HistoryStorageService();
-      if (response.recipes.isNotEmpty) {
-        final recipe = response.recipes.first;
-        await historyService.saveHistoryEntry(
-          HistoryEntry(
-            id: recipe.id,
-            emoji: recipe.emoji,
-            title: recipe.title,
-            createdAt: DateTime.now(),
-            languageCode: language,
-          ),
-        );
-      }
+      // History is automatically saved on server when recipe is generated
+      // Mark history screen for refresh when user navigates to it
+      HistoryScreen.markForRefresh();
 
       if (mounted) {
         Navigator.pushReplacementNamed(

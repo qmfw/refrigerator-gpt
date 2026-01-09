@@ -63,3 +63,19 @@ class UsageLimits(BaseModel):
     recipes_today: int
     recipes_limit: int  # -1 for unlimited
     is_premium: bool
+
+
+class HistoryEntry(BaseModel):
+    """History entry with full recipe data"""
+    recipe_id: str
+    emoji: str
+    badge: str  # fastLazy, actuallyGood, shouldntWork
+    title: str
+    steps: List[str]
+    ingredients: Optional[List[str]] = None
+    created_at: datetime
+
+
+class HistoryResponse(BaseModel):
+    """Response model for history"""
+    history: List[HistoryEntry]
