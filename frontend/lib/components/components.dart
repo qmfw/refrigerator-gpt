@@ -39,4 +39,7 @@ export 'intro_section.dart';
 
 // Dialogs
 export 'language_picker_dialog.dart';
-export 'info_dialog.dart';
+export 'confirmation_dialog.dart';
+
+// Settings
+export 'toggle_switch.dart';

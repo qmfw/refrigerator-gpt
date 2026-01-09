@@ -54,17 +54,27 @@ class AppStrings {
   static const String settings = 'settings';
   static const String languageLabel = 'languageLabel';
   static const String selectLanguage = 'selectLanguage';
+  static const String useDeviceLanguage = 'useDeviceLanguage';
+  static const String defaultLabel = 'defaultLabel';
   static const String clearHistory = 'clearHistory';
   static const String historyCleared = 'historyCleared';
+  static const String clearHistoryTitle = 'clearHistoryTitle';
+  static const String clearHistoryBody = 'clearHistoryBody';
   static const String about = 'about';
   static const String aboutTitle = 'aboutTitle';
   static const String aboutContent = 'aboutContent';
-  static const String feedback = 'feedback';
-  static const String feedbackComingSoon = 'feedbackComingSoon';
+  static const String aboutDescription = 'aboutDescription';
+  static const String version = 'version';
   static const String privacy = 'privacy';
   static const String privacyTitle = 'privacyTitle';
   static const String privacyContent = 'privacyContent';
+  static const String privacyParagraph1 = 'privacyParagraph1';
+  static const String privacyParagraph2 = 'privacyParagraph2';
+  static const String privacyParagraph3 = 'privacyParagraph3';
+  static const String privacyParagraph4 = 'privacyParagraph4';
+  static const String privacyParagraph5 = 'privacyParagraph5';
   static const String ok = 'ok';
+  static const String cancel = 'cancel';
 
   // History Screen
   static const String history = 'history';
@@ -76,4 +86,8 @@ class AppStrings {
   static const String daysAgo = 'daysAgo';
   static const String weekAgo = 'weekAgo';
   static const String weeksAgo = 'weeksAgo';
+
+  // Diet Preferences
+  static const String dietPreferences = 'dietPreferences';
+  static const String dietPreferencesHelper = 'dietPreferencesHelper';
 }
