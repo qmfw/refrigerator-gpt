@@ -137,9 +137,11 @@ class _RecipeResultsScreenState extends State<RecipeResultsScreen> {
                                   text: context.l10n.editIngredients,
                                   icon: Icons.edit,
                                   onPressed: () {
+                                    // Pass empty list to start fresh
                                     Navigator.pushNamed(
                                       context,
                                       '/confirm-ingredients',
+                                      arguments: <Ingredient>[],
                                     );
                                   },
                                   fullWidth: true,

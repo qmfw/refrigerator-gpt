@@ -66,14 +66,15 @@ class UsageLimits(BaseModel):
 
 
 class HistoryEntry(BaseModel):
-    """History entry with full recipe data"""
-    recipe_id: str
-    emoji: str
-    badge: str  # fastLazy, actuallyGood, shouldntWork
-    title: str
-    steps: List[str]
-    ingredients: Optional[List[str]] = None
+    """History entry with full recipe data - supports single or grouped recipes"""
+    recipe_id: str  # Primary recipe ID (first recipe for grouped entries)
+    emoji: str  # Primary emoji (first recipe for grouped entries)
+    badge: str  # Primary badge (first recipe for grouped entries)
+    title: str  # Combined title for grouped recipes (e.g., "Recipe 1, Recipe 2, and Recipe 3")
+    steps: List[str]  # Steps from primary recipe (for backward compatibility)
+    ingredients: Optional[List[str]] = None  # Ingredients from primary recipe (for backward compatibility)
     created_at: datetime
+    recipes: Optional[List[Recipe]] = None  # All recipes in this batch (if grouped)
 
 
 class HistoryResponse(BaseModel):

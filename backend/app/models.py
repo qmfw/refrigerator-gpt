@@ -69,11 +69,13 @@ class History(Base):
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))  # Use String for SQLite compatibility
     app_account_token = Column(String(36), nullable=False, index=True)  # User identifier
     recipe_id = Column(String(255), nullable=False, index=True)  # Recipe identifier
+    generation_batch_id = Column(String(36), nullable=True, index=True)  # Groups recipes generated together
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     
     __table_args__ = (
         Index('idx_history_token', 'app_account_token'),
         Index('idx_history_token_created', 'app_account_token', 'created_at'),
+        Index('idx_history_batch', 'generation_batch_id'),
     )
 
 

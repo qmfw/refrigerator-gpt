@@ -74,15 +74,18 @@ def upgrade() -> None:
         sa.Column('id', sa.String(length=36), nullable=False),
         sa.Column('app_account_token', sa.String(length=36), nullable=False),
         sa.Column('recipe_id', sa.String(length=255), nullable=False),
+        sa.Column('generation_batch_id', sa.String(length=36), nullable=True),  # Groups recipes generated together
         sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
         sa.PrimaryKeyConstraint('id')
     )
     op.create_index('idx_history_token', 'history', ['app_account_token'], unique=False)
     op.create_index('idx_history_token_created', 'history', ['app_account_token', 'created_at'], unique=False)
+    op.create_index('idx_history_batch', 'history', ['generation_batch_id'], unique=False)
 
 
 def downgrade() -> None:
     # Drop tables in reverse order
+    op.drop_index('idx_history_batch', table_name='history')
     op.drop_index('idx_history_token_created', table_name='history')
     op.drop_index('idx_history_token', table_name='history')
     op.drop_table('history')

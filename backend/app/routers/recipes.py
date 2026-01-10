@@ -134,6 +134,10 @@ async def generate_recipes(
             diet_preferences=diet_preferences
         )
         
+        # Generate batch ID for grouping recipes generated together
+        import uuid as uuid_module
+        batch_id = str(uuid_module.uuid4()) if request.appAccountToken else None
+        
         # Cache recipes in database for multi-language support
         for recipe in result["recipes"]:
             # Check if recipe already exists in this language
@@ -159,8 +163,8 @@ async def generate_recipes(
                 )
                 db.add(recipe_cache)
             
-            # Save first recipe to history (if appAccountToken provided)
-            if recipe == result["recipes"][0] and request.appAccountToken:
+            # Save all recipes to history (if appAccountToken provided)
+            if request.appAccountToken:
                 # Check if history entry already exists (avoid duplicates)
                 existing_history = (
                     db.query(History)
@@ -174,7 +178,8 @@ async def generate_recipes(
                 if not existing_history:
                     history_entry = History(
                         app_account_token=str(request.appAccountToken),
-                        recipe_id=recipe["id"]
+                        recipe_id=recipe["id"],
+                        generation_batch_id=batch_id
                     )
                     db.add(history_entry)
         
@@ -334,74 +339,140 @@ async def get_history(
         # Create a map of recipe_id -> recipe for quick lookup
         recipe_map = {recipe.recipe_id: recipe for recipe in cached_recipes}
         
-        # Build history response with recipes
-        history_list = []
-        for entry in history_entries:
-            recipe = recipe_map.get(entry.recipe_id)
+        # Helper function to get or translate recipe
+        async def get_or_translate_recipe(recipe_id: str, entry_created_at: datetime) -> Optional[Recipe]:
+            """Get recipe in requested language, translate if needed"""
+            # Check if recipe exists in requested language
+            recipe = recipe_map.get(recipe_id)
             if recipe:
-                history_list.append(HistoryEntry(
-                    recipe_id=recipe.recipe_id,
+                return Recipe(
+                    id=recipe.recipe_id,
                     emoji=recipe.emoji,
                     badge=recipe.badge,
                     title=recipe.title,
                     steps=json.loads(recipe.steps),
                     ingredients=json.loads(recipe.ingredients) if recipe.ingredients else None,
-                    created_at=entry.created_at
-                ))
-            else:
-                # Recipe not found in cache for this language - try to translate
-                # First, find recipe in any language
-                any_language_recipe = (
-                    db.query(RecipeCache)
-                    .filter(RecipeCache.recipe_id == entry.recipe_id)
-                    .first()
+                    created_at=entry_created_at
                 )
-                
-                if any_language_recipe:
+            
+            # Recipe not found in requested language - find in any language and translate
+            any_language_recipe = (
+                db.query(RecipeCache)
+                .filter(RecipeCache.recipe_id == recipe_id)
+                .first()
+            )
+            
+            if any_language_recipe:
+                try:
+                    original_recipe = {
+                        "id": any_language_recipe.recipe_id,
+                        "emoji": any_language_recipe.emoji,
+                        "badge": any_language_recipe.badge,
+                        "title": any_language_recipe.title,
+                        "steps": json.loads(any_language_recipe.steps),
+                        "ingredients": json.loads(any_language_recipe.ingredients) if any_language_recipe.ingredients else []
+                    }
+                    
                     # Translate recipe to requested language
-                    try:
-                        original_recipe = {
-                            "id": any_language_recipe.recipe_id,
-                            "emoji": any_language_recipe.emoji,
-                            "badge": any_language_recipe.badge,
-                            "title": any_language_recipe.title,
-                            "steps": json.loads(any_language_recipe.steps),
-                            "ingredients": json.loads(any_language_recipe.ingredients) if any_language_recipe.ingredients else []
-                        }
-                        
-                        translated = await openai_service.translate_recipe(
-                            recipe=original_recipe,
-                            target_language=language
-                        )
-                        
-                        # Cache the translated recipe
-                        translated_cache = RecipeCache(
-                            recipe_id=translated["id"],
-                            language=language,
-                            emoji=translated.get("emoji", original_recipe["emoji"]),
-                            badge=translated.get("badge", original_recipe["badge"]),
-                            title=translated.get("title", ""),
-                            steps=json.dumps(translated.get("steps", [])),
-                            ingredients=json.dumps(translated.get("ingredients", [])) if translated.get("ingredients") else None
-                        )
-                        db.add(translated_cache)
-                        db.commit()
-                        
-                        history_list.append(HistoryEntry(
-                            recipe_id=translated["id"],
-                            emoji=translated.get("emoji", original_recipe["emoji"]),
-                            badge=translated.get("badge", original_recipe["badge"]),
-                            title=translated.get("title", ""),
-                            steps=translated.get("steps", []),
-                            ingredients=translated.get("ingredients"),
-                            created_at=entry.created_at
-                        ))
-                    except Exception as e:
-                        # Translation failed - skip this entry
-                        continue
-                else:
-                    # Recipe not found at all - skip this entry
-                    continue
+                    translated = await openai_service.translate_recipe(
+                        recipe=original_recipe,
+                        target_language=language
+                    )
+                    
+                    # Cache the translated recipe
+                    translated_cache = RecipeCache(
+                        recipe_id=translated["id"],
+                        language=language,
+                        emoji=translated.get("emoji", original_recipe["emoji"]),
+                        badge=translated.get("badge", original_recipe["badge"]),
+                        title=translated.get("title", ""),
+                        steps=json.dumps(translated.get("steps", [])),
+                        ingredients=json.dumps(translated.get("ingredients", [])) if translated.get("ingredients") else None
+                    )
+                    db.add(translated_cache)
+                    db.commit()
+                    
+                    # Update recipe_map for future lookups in this request
+                    recipe_map[recipe_id] = translated_cache
+                    
+                    return Recipe(
+                        id=translated["id"],
+                        emoji=translated.get("emoji", original_recipe["emoji"]),
+                        badge=translated.get("badge", original_recipe["badge"]),
+                        title=translated.get("title", ""),
+                        steps=translated.get("steps", []),
+                        ingredients=translated.get("ingredients"),
+                        created_at=entry_created_at
+                    )
+                except Exception as e:
+                    # Translation failed - return None (skip this recipe)
+                    return None
+            
+            return None
+        
+        # Group entries by batch_id (None means single recipe)
+        from collections import defaultdict
+        batch_groups = defaultdict(list)
+        single_entries = []
+        
+        for entry in history_entries:
+            if entry.generation_batch_id:
+                batch_groups[entry.generation_batch_id].append(entry)
+            else:
+                single_entries.append(entry)
+        
+        # Build history response with grouped recipes
+        history_list = []
+        
+        # Process batch groups (multiple recipes generated together)
+        for batch_id, entries in batch_groups.items():
+            # Get all recipes in this batch
+            batch_recipes = []
+            batch_created_at = None
+            
+            for entry in entries:
+                recipe = await get_or_translate_recipe(entry.recipe_id, entry.created_at)
+                if recipe:
+                    batch_recipes.append(recipe)
+                    if batch_created_at is None or entry.created_at < batch_created_at:
+                        batch_created_at = entry.created_at
+            
+            if batch_recipes:
+                # Create combined title (comma-separated, no "and")
+                titles = [r.title for r in batch_recipes]
+                combined_title = ', '.join(titles)
+                
+                # Use first recipe as primary
+                primary = batch_recipes[0]
+                
+                history_list.append(HistoryEntry(
+                    recipe_id=primary.id,
+                    emoji=primary.emoji,
+                    badge=primary.badge,
+                    title=combined_title,
+                    steps=primary.steps,
+                    ingredients=primary.ingredients,
+                    created_at=batch_created_at,
+                    recipes=batch_recipes if len(batch_recipes) > 1 else None
+                ))
+        
+        # Process single entries (no batch_id or old entries)
+        for entry in single_entries:
+            recipe = await get_or_translate_recipe(entry.recipe_id, entry.created_at)
+            if recipe:
+                history_list.append(HistoryEntry(
+                    recipe_id=recipe.id,
+                    emoji=recipe.emoji,
+                    badge=recipe.badge,
+                    title=recipe.title,
+                    steps=recipe.steps,
+                    ingredients=recipe.ingredients,
+                    created_at=entry.created_at,
+                    recipes=None
+                ))
+        
+        # Sort by created_at descending (newest first)
+        history_list.sort(key=lambda x: x.created_at, reverse=True)
         
         return HistoryResponse(history=history_list)
         
