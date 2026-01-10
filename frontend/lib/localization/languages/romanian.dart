@@ -25,6 +25,8 @@ const Map<String, String> romanianStrings = {
   AppStrings.mightBeWrong: 'Pot greși. Corectează orice.',
   AppStrings.addSomethingElse: 'Adaugă altceva…',
   AppStrings.cookWithThis: '🍳 Gătește cu asta',
+  AppStrings.noIngredientsFound:
+      'Nu pot identifica ingrediente alimentare în aceste imagini.',
   AppStrings.lookingClosely: 'Mă uit atent…',
   AppStrings.fridgeHasPotential: 'Acest frigider are potențial.',
   AppStrings.heresWhatYouCanMake: 'Iată ce poți face',

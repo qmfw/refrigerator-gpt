@@ -25,6 +25,8 @@ const Map<String, String> vietnameseStrings = {
   AppStrings.mightBeWrong: 'Tôi có thể sai. Sửa bất cứ thứ gì.',
   AppStrings.addSomethingElse: 'Thêm thứ khác…',
   AppStrings.cookWithThis: '🍳 Nấu với cái này',
+  AppStrings.noIngredientsFound:
+      'Tôi không thể xác định nguyên liệu thực phẩm nào trong những hình ảnh này.',
   AppStrings.lookingClosely: 'Đang xem kỹ…',
   AppStrings.fridgeHasPotential: 'Tủ lạnh này có tiềm năng.',
   AppStrings.heresWhatYouCanMake: 'Đây là những gì bạn có thể làm',

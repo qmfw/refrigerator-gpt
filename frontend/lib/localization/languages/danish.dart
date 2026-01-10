@@ -26,6 +26,8 @@ const Map<String, String> danishStrings = {
   AppStrings.mightBeWrong: 'Jeg kan tage fejl. Ret hvad som helst.',
   AppStrings.addSomethingElse: 'Tilføj noget andet…',
   AppStrings.cookWithThis: '🍳 Lav mad med dette',
+  AppStrings.noIngredientsFound:
+      'Jeg kan ikke identificere nogen fødevareingredienser i disse billeder.',
   AppStrings.lookingClosely: 'Ser nøje efter…',
   AppStrings.fridgeHasPotential: 'Dette køleskab har potentiale.',
   AppStrings.heresWhatYouCanMake: 'Her er hvad du kan lave',

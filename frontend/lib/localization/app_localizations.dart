@@ -124,6 +124,7 @@ class AppLocalizations {
   String get mightBeWrong => translate(AppStrings.mightBeWrong);
   String get addSomethingElse => translate(AppStrings.addSomethingElse);
   String get cookWithThis => translate(AppStrings.cookWithThis);
+  String get noIngredientsFound => translate(AppStrings.noIngredientsFound);
   String get lookingClosely => translate(AppStrings.lookingClosely);
   String get fridgeHasPotential => translate(AppStrings.fridgeHasPotential);
   String get heresWhatYouCanMake => translate(AppStrings.heresWhatYouCanMake);

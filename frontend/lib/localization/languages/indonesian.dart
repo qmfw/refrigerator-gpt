@@ -25,6 +25,8 @@ const Map<String, String> indonesianStrings = {
   AppStrings.mightBeWrong: 'Saya mungkin salah. Perbaiki apa saja.',
   AppStrings.addSomethingElse: 'Tambahkan sesuatu yang lain…',
   AppStrings.cookWithThis: '🍳 Masak dengan ini',
+  AppStrings.noIngredientsFound:
+      'Saya tidak dapat mengidentifikasi bahan makanan dalam gambar-gambar ini.',
   AppStrings.lookingClosely: 'Melihat dengan teliti…',
   AppStrings.fridgeHasPotential: 'Kulkas ini memiliki potensi.',
   AppStrings.heresWhatYouCanMake: 'Ini yang bisa Anda buat',

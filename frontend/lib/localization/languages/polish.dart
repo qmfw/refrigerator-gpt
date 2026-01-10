@@ -25,6 +25,8 @@ const Map<String, String> polishStrings = {
   AppStrings.mightBeWrong: 'Mogę się mylić. Popraw cokolwiek.',
   AppStrings.addSomethingElse: 'Dodaj coś innego…',
   AppStrings.cookWithThis: '🍳 Gotuj z tym',
+  AppStrings.noIngredientsFound:
+      'Nie mogę zidentyfikować żadnych składników żywności na tych obrazach.',
   AppStrings.lookingClosely: 'Przyglądam się uważnie…',
   AppStrings.fridgeHasPotential: 'Ta lodówka ma potencjał.',
   AppStrings.heresWhatYouCanMake: 'Oto co możesz zrobić',

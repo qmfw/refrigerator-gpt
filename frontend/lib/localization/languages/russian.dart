@@ -26,6 +26,8 @@ const Map<String, String> russianStrings = {
   AppStrings.mightBeWrong: 'Я могу ошибаться. Исправьте что угодно.',
   AppStrings.addSomethingElse: 'Добавить что-то еще…',
   AppStrings.cookWithThis: '🍳 Готовить с этим',
+  AppStrings.noIngredientsFound:
+      'Я не могу определить пищевые ингредиенты на этих изображениях.',
   AppStrings.lookingClosely: 'Присматриваюсь…',
   AppStrings.fridgeHasPotential: 'У этого холодильника есть потенциал.',
   AppStrings.heresWhatYouCanMake: 'Вот что вы можете приготовить',

@@ -25,6 +25,7 @@ const Map<String, String> chineseStrings = {
   AppStrings.mightBeWrong: '我可能错了。请修正任何内容。',
   AppStrings.addSomethingElse: '添加其他东西…',
   AppStrings.cookWithThis: '🍳 用这个烹饪',
+  AppStrings.noIngredientsFound: '抱歉，我无法从这些图像中识别出任何食品成分。',
   AppStrings.lookingClosely: '仔细查看中…',
   AppStrings.fridgeHasPotential: '这个冰箱有潜力。',
   AppStrings.heresWhatYouCanMake: '这是您可以做的',

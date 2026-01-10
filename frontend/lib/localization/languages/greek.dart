@@ -26,6 +26,8 @@ const Map<String, String> greekStrings = {
   AppStrings.mightBeWrong: 'Μπορεί να κάνω λάθος. Διορθώστε οτιδήποτε.',
   AppStrings.addSomethingElse: 'Προσθέστε κάτι άλλο…',
   AppStrings.cookWithThis: '🍳 Μαγειρέψτε με αυτό',
+  AppStrings.noIngredientsFound:
+      'Δεν μπορώ να εντοπίσω συστατικά φαγητού σε αυτές τις εικόνες.',
   AppStrings.lookingClosely: 'Κοιτάζω προσεκτικά…',
   AppStrings.fridgeHasPotential: 'Αυτό το ψυγείο έχει δυνατότητες.',
   AppStrings.heresWhatYouCanMake: 'Αυτά μπορείτε να φτιάξετε',

@@ -25,6 +25,7 @@ const Map<String, String> koreanStrings = {
   AppStrings.mightBeWrong: '틀릴 수 있습니다. 수정해주세요.',
   AppStrings.addSomethingElse: '다른 것 추가…',
   AppStrings.cookWithThis: '🍳 이것으로 요리하기',
+  AppStrings.noIngredientsFound: '죄송합니다. 이 이미지에서 식품 재료를 식별할 수 없습니다.',
   AppStrings.lookingClosely: '자세히 살펴보는 중…',
   AppStrings.fridgeHasPotential: '이 냉장고에는 가능성이 있습니다.',
   AppStrings.heresWhatYouCanMake: '만들 수 있는 것들',

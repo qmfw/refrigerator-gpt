@@ -25,6 +25,7 @@ const Map<String, String> hebrewStrings = {
   AppStrings.mightBeWrong: 'אני עלול לטעות. תקן כל דבר.',
   AppStrings.addSomethingElse: 'הוסף משהו אחר…',
   AppStrings.cookWithThis: '🍳 בישל עם זה',
+  AppStrings.noIngredientsFound: 'אני לא יכול לזהות מרכיבי מזון בתמונות אלה.',
   AppStrings.lookingClosely: 'מסתכל מקרוב…',
   AppStrings.fridgeHasPotential: 'למקרר הזה יש פוטנציאל.',
   AppStrings.heresWhatYouCanMake: 'הנה מה שאתה יכול להכין',

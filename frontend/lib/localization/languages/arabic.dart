@@ -25,6 +25,8 @@ const Map<String, String> arabicStrings = {
   AppStrings.mightBeWrong: 'قد أكون مخطئاً. صحح أي شيء.',
   AppStrings.addSomethingElse: 'أضف شيئاً آخر…',
   AppStrings.cookWithThis: '🍳 اطبخ بهذا',
+  AppStrings.noIngredientsFound:
+      'عذراً، لا يمكنني تحديد أي مكونات غذائية في هذه الصور.',
   AppStrings.lookingClosely: 'أبحث بعناية…',
   AppStrings.fridgeHasPotential: 'هذه الثلاجة لديها إمكانات.',
   AppStrings.heresWhatYouCanMake: 'هذا ما يمكنك صنعه',

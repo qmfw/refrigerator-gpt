@@ -45,62 +45,63 @@ class OpenAIService:
         
         # Create ultra-short prompt for cost optimization
         # COST REDUCTION: Return ONLY comma-separated list, no JSON, no descriptions, max 10 items
+        # IMPORTANT: Only food ingredients, ignore hands, backgrounds, surfaces, containers
         # Language order matches Flutter AppLanguage enum: english, arabic, bengali, chinese, danish, dutch, finnish, french, german, greek, hebrew, hindi, indonesian, italian, japanese, korean, norwegian, polish, portuguese, romanian, russian, spanish, swedish, thai, turkish, ukrainian, vietnamese
         language_prompts = {
             # English (first)
-            "en": "Return ONLY a comma-separated list of ingredients you see. No explanations. No sentences. Max 10 items.",
+            "en": "Return ONLY food ingredients separated by commas. Ignore hands, backgrounds, surfaces, containers. No explanations. Max 10 items.",
             # Arabic
-            "ar": "أعد فقط قائمة مكونات مفصولة بفواصل. لا تفسيرات. لا جمل. حد أقصى 10 عناصر.",
+            "ar": "أعد فقط مكونات الطعام مفصولة بفواصل. تجاهل الأيدي والخلفيات والأسطح والحاويات. لا تفسيرات. حد أقصى 10 عناصر.",
             # Bengali
-            "bn": "শুধুমাত্র কমা দ্বারা পৃথক করা উপাদানের তালিকা ফেরত দিন। কোন ব্যাখ্যা নেই। কোন বাক্য নেই। সর্বোচ্চ 10টি আইটেম।",
+            "bn": "শুধুমাত্র খাদ্য উপাদান কমা দ্বারা পৃথক করে ফেরত দিন। হাত, পটভূমি, পৃষ্ঠতল, পাত্র উপেক্ষা করুন। কোন ব্যাখ্যা নেই। সর্বোচ্চ 10টি আইটেম।",
             # Chinese
-            "zh": "只返回用逗号分隔的成分列表。无解释。无句子。最多10项。",
+            "zh": "只返回用逗号分隔的食物成分。忽略手、背景、表面、容器。无解释。最多10项。",
             # Danish
-            "da": "Returner kun komma-separeret liste af ingredienser. Ingen forklaringer. Ingen sætninger. Max 10 emner.",
+            "da": "Returner kun madingredienser adskilt af kommaer. Ignorer hænder, baggrunde, overflader, beholdere. Ingen forklaringer. Max 10 emner.",
             # Dutch
-            "nl": "Geef alleen een komma-gescheiden lijst van ingrediënten. Geen uitleg. Geen zinnen. Max 10 items.",
+            "nl": "Geef alleen voedselingrediënten gescheiden door komma's. Negeer handen, achtergronden, oppervlakken, containers. Geen uitleg. Max 10 items.",
             # Finnish
-            "fi": "Palauta vain pilkulla erotettu aineiden lista. Ei selityksiä. Ei lauseita. Max 10 kohdetta.",
+            "fi": "Palauta vain ruoka-aineet pilkuilla erotettuina. Ohita kädet, taustat, pinnat, astiat. Ei selityksiä. Max 10 kohdetta.",
             # French
-            "fr": "Retournez uniquement une liste d'ingrédients séparés par des virgules. Pas d'explications. Pas de phrases. Max 10 éléments.",
+            "fr": "Retournez uniquement des ingrédients alimentaires séparés par des virgules. Ignorez les mains, arrière-plans, surfaces, contenants. Pas d'explications. Max 10 éléments.",
             # German
-            "de": "Geben Sie nur eine kommagetrennte Liste von Zutaten zurück. Keine Erklärungen. Keine Sätze. Max 10 Artikel.",
+            "de": "Geben Sie nur Lebensmittelzutaten durch Kommas getrennt zurück. Ignorieren Sie Hände, Hintergründe, Oberflächen, Behälter. Keine Erklärungen. Max 10 Artikel.",
             # Greek
-            "el": "Επιστρέψτε μόνο λίστα συστατικών διαχωρισμένη με κόμματα. Χωρίς εξηγήσεις. Χωρίς προτάσεις. Μέγιστο 10 στοιχεία.",
+            "el": "Επιστρέψτε μόνο συστατικά φαγητού διαχωρισμένα με κόμματα. Αγνοήστε χέρια, φόντα, επιφάνειες, δοχεία. Χωρίς εξηγήσεις. Μέγιστο 10 στοιχεία.",
             # Hebrew
-            "he": "החזר רק רשימת מרכיבים מופרדת בפסיקים. ללא הסברים. ללא משפטים. מקסימום 10 פריטים.",
+            "he": "החזר רק מרכיבי מזון מופרדים בפסיקים. התעלם מידיים, רקעים, משטחים, מיכלים. ללא הסברים. מקסימום 10 פריטים.",
             # Hindi
-            "hi": "केवल अल्पविराम से अलग किए गए सामग्री की सूची लौटाएं। कोई स्पष्टीकरण नहीं। कोई वाक्य नहीं। अधिकतम 10 आइटम।",
+            "hi": "केवल खाद्य सामग्री अल्पविराम से अलग करके लौटाएं। हाथ, पृष्ठभूमि, सतह, कंटेनर को नजरअंदाज करें। कोई स्पष्टीकरण नहीं। अधिकतम 10 आइटम।",
             # Indonesian
-            "id": "Kembalikan hanya daftar bahan yang dipisahkan koma. Tanpa penjelasan. Tanpa kalimat. Maks 10 item.",
+            "id": "Kembalikan hanya bahan makanan yang dipisahkan koma. Abaikan tangan, latar belakang, permukaan, wadah. Tanpa penjelasan. Maks 10 item.",
             # Italian
-            "it": "Restituisci solo un elenco di ingredienti separati da virgole. Nessuna spiegazione. Nessuna frase. Max 10 elementi.",
+            "it": "Restituisci solo ingredienti alimentari separati da virgole. Ignora mani, sfondi, superfici, contenitori. Nessuna spiegazione. Max 10 elementi.",
             # Japanese
-            "ja": "見える材料をカンマ区切りのリストのみ返す。説明なし。文なし。最大10項目。",
+            "ja": "食品材料のみをカンマ区切りで返す。手、背景、床、光、表面、容器は無視。説明なし。最大10項目。",
             # Korean
-            "ko": "보이는 재료만 쉼표로 구분된 목록으로 반환. 설명 없음. 문장 없음. 최대 10개 항목.",
+            "ko": "음식 재료만 쉼표로 구분하여 반환. 손, 배경, 바닥, 표면, 용기는 무시. 설명 없음. 최대 10개 항목.",
             # Norwegian
-            "no": "Returner kun komma-separert liste av ingredienser. Ingen forklaringer. Ingen setninger. Maks 10 elementer.",
+            "no": "Returner kun matingredienser adskilt med kommaer. Ignorer hender, bakgrunner, overflater, beholdere. Ingen forklaringer. Maks 10 elementer.",
             # Polish
-            "pl": "Zwróć tylko listę składników oddzielonych przecinkami. Bez wyjaśnień. Bez zdań. Max 10 pozycji.",
+            "pl": "Zwróć tylko składniki żywności oddzielone przecinkami. Ignoruj dłonie, tła, powierzchnie, pojemniki. Bez wyjaśnień. Max 10 pozycji.",
             # Portuguese
-            "pt": "Retorne apenas uma lista de ingredientes separados por vírgulas. Sem explicações. Sem frases. Máx 10 itens.",
+            "pt": "Retorne apenas ingredientes alimentares separados por vírgulas. Ignore mãos, fundos, superfícies, recipientes. Sem explicações. Máx 10 itens.",
             # Romanian
-            "ro": "Returnează doar o listă de ingrediente separate prin virgulă. Fără explicații. Fără propoziții. Max 10 elemente.",
+            "ro": "Returnează doar ingrediente alimentare separate prin virgulă. Ignoră mâinile, fundalurile, suprafețele, containerele. Fără explicații. Max 10 elemente.",
             # Russian
-            "ru": "Верните только список ингредиентов через запятую. Без объяснений. Без предложений. Макс 10 элементов.",
+            "ru": "Верните только пищевые ингредиенты через запятую. Игнорируйте руки, фоны, поверхности, контейнеры. Без объяснений. Макс 10 элементов.",
             # Spanish
-            "es": "Devuelve solo una lista de ingredientes separados por comas. Sin explicaciones. Sin oraciones. Máx 10 elementos.",
+            "es": "Devuelve solo ingredientes alimentarios separados por comas. Ignora manos, fondos, superficies, contenedores. Sin explicaciones. Máx 10 elementos.",
             # Swedish
-            "sv": "Returnera endast en komma-separerad lista av ingredienser. Inga förklaringar. Inga meningar. Max 10 objekt.",
+            "sv": "Returnera endast livsmedelsingredienser separerade med kommatecken. Ignorera händer, bakgrunder, ytor, behållare. Inga förklaringar. Max 10 objekt.",
             # Thai
-            "th": "คืนเฉพาะรายการส่วนผสมที่คั่นด้วยจุลภาค ไม่มีคำอธิบาย ไม่มีประโยค สูงสุด 10 รายการ",
+            "th": "คืนเฉพาะส่วนผสมอาหารที่คั่นด้วยจุลภาค ไม่สนใจมือ พื้นหลัง พื้นผิว ภาชนะ ไม่มีคำอธิบาย สูงสุด 10 รายการ",
             # Turkish
-            "tr": "Sadece virgülle ayrılmış malzeme listesi döndür. Açıklama yok. Cümle yok. Maks 10 öğe.",
+            "tr": "Sadece virgülle ayrılmış gıda malzemeleri döndür. Elleri, arka planları, yüzeyleri, kapları yoksay. Açıklama yok. Maks 10 öğe.",
             # Ukrainian
-            "uk": "Поверніть лише список інгредієнтів через кому. Без пояснень. Без речень. Макс 10 елементів.",
+            "uk": "Поверніть лише харчові інгредієнти через кому. Ігноруйте руки, фони, поверхні, контейнери. Без пояснень. Макс 10 елементів.",
             # Vietnamese
-            "vi": "Chỉ trả về danh sách nguyên liệu cách nhau bằng dấu phẩy. Không giải thích. Không câu. Tối đa 10 mục.",
+            "vi": "Chỉ trả về nguyên liệu thực phẩm cách nhau bằng dấu phẩy. Bỏ qua tay, nền, bề mặt, hộp đựng. Không giải thích. Tối đa 10 mục.",
         }
         
         prompt = language_prompts.get(language, language_prompts["en"])
@@ -146,16 +147,59 @@ class OpenAIService:
             # Limit to max 10 items as per prompt
             ingredient_names = ingredient_names[:10]
             
+            # List of non-food items and error messages to filter out
+            non_food_keywords = {
+                'en': ['hand', 'hands', 'background', 'floor', 'surface', 'light', 'container', 'table', 'counter'],
+                'ja': ['手', '背景', '床', '光', '表面', '容器', 'テーブル', 'カウンター'],
+                'ar': ['يد', 'خلفية', 'أرضية', 'ضوء', 'سطح', 'حاوية'],
+                'zh': ['手', '背景', '地板', '光', '表面', '容器'],
+                'ko': ['손', '배경', '바닥', '빛', '표면', '용기'],
+                # Add more languages as needed
+            }
+            
+            # Error messages to filter out (apologies, can't identify, etc.)
+            error_messages = {
+                'en': ['sorry', "i'm sorry", "i can't", "can't identify", "cannot identify", "unable to identify", "no ingredients", "no food"],
+                'ja': ['申し訳', 'ごめん', '特定できません', '特定することはできません', '材料を特定', '食品材料を特定', '材料が見つかりません'],
+                'ar': ['آسف', 'عذراً', 'لا يمكن', 'لا أستطيع', 'لم أتمكن'],
+                'zh': ['抱歉', '对不起', '无法识别', '无法确定', '不能识别'],
+                'ko': ['죄송', '미안', '식별할 수 없', '재료를 찾을 수 없'],
+                # Add more languages as needed
+            }
+            
+            # Get language-specific keywords or use English as fallback
+            keywords_to_filter = non_food_keywords.get(language, non_food_keywords['en'])
+            error_keywords = error_messages.get(language, error_messages['en'])
+            
             # Create ingredient objects
             ingredients = []
             for name in ingredient_names:
-                # Clean up ingredient name (remove numbers, bullets, etc.)
-                clean_name = name.lstrip('0123456789.-• ').strip()
-                if clean_name:
-                    ingredients.append({
-                        "id": f"ing_{str(uuid.uuid4())[:8]}",
-                        "name": clean_name
-                    })
+                # Clean up ingredient name (remove leading/trailing numbers, bullets, periods, etc.)
+                clean_name = name.lstrip('0123456789.-• ').rstrip('.-• ').strip()
+                
+                # Remove trailing periods and other punctuation
+                while clean_name and clean_name[-1] in '.,;:!?•':
+                    clean_name = clean_name[:-1].strip()
+                
+                # Skip if empty after cleaning
+                if not clean_name:
+                    continue
+                
+                # Filter out error messages (case-insensitive check)
+                clean_lower = clean_name.lower()
+                is_error_message = any(error in clean_lower for error in error_keywords)
+                if is_error_message:
+                    continue  # Skip error messages
+                
+                # Filter out non-food items (case-insensitive check)
+                is_non_food = any(keyword.lower() in clean_lower for keyword in keywords_to_filter)
+                if is_non_food:
+                    continue  # Skip this ingredient
+                
+                ingredients.append({
+                    "id": f"ing_{str(uuid.uuid4())[:8]}",
+                    "name": clean_name
+                })
             
             # Generate detection ID
             detection_id = f"det_{str(uuid.uuid4())[:12]}"

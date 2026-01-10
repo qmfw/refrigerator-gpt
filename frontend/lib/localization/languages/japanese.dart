@@ -25,6 +25,7 @@ const Map<String, String> japaneseStrings = {
   AppStrings.mightBeWrong: '間違っているかもしれません。何でも修正してください。',
   AppStrings.addSomethingElse: '他に追加…',
   AppStrings.cookWithThis: '🍳 これで料理する',
+  AppStrings.noIngredientsFound: '申し訳ありませんが、画像から食品材料を特定することはできません。',
   AppStrings.lookingClosely: 'よく見ています…',
   AppStrings.fridgeHasPotential: 'この冷蔵庫には可能性があります。',
   AppStrings.heresWhatYouCanMake: 'これが作れるものです',

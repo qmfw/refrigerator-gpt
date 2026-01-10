@@ -27,6 +27,8 @@ const Map<String, String> germanStrings = {
   AppStrings.mightBeWrong: 'Ich könnte mich irren. Korrigieren Sie alles.',
   AppStrings.addSomethingElse: 'Etwas anderes hinzufügen…',
   AppStrings.cookWithThis: '🍳 Damit kochen',
+  AppStrings.noIngredientsFound:
+      'Ich kann keine Lebensmittelzutaten in diesen Bildern identifizieren.',
   AppStrings.lookingClosely: 'Genau ansehen…',
   AppStrings.fridgeHasPotential: 'Dieser Kühlschrank hat Potenzial.',
   AppStrings.heresWhatYouCanMake: 'Das können Sie machen',

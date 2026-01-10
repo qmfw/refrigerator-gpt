@@ -25,6 +25,8 @@ const Map<String, String> dutchStrings = {
   AppStrings.mightBeWrong: 'Ik kan het mis hebben. Corrigeer alles.',
   AppStrings.addSomethingElse: 'Iets anders toevoegen…',
   AppStrings.cookWithThis: '🍳 Koken met dit',
+  AppStrings.noIngredientsFound:
+      'Ik kan geen voedselingrediënten in deze afbeeldingen identificeren.',
   AppStrings.lookingClosely: 'Goed bekijken…',
   AppStrings.fridgeHasPotential: 'Deze koelkast heeft potentieel.',
   AppStrings.heresWhatYouCanMake: 'Dit kun je maken',

@@ -26,6 +26,8 @@ const Map<String, String> ukrainianStrings = {
   AppStrings.mightBeWrong: 'Я можу помилятися. Виправте що завгодно.',
   AppStrings.addSomethingElse: 'Додати щось інше…',
   AppStrings.cookWithThis: '🍳 Готувати з цим',
+  AppStrings.noIngredientsFound:
+      'Я не можу визначити харчові інгредієнти на цих зображеннях.',
   AppStrings.lookingClosely: 'Придивляюся…',
   AppStrings.fridgeHasPotential: 'У цього холодильника є потенціал.',
   AppStrings.heresWhatYouCanMake: 'Ось що ви можете приготувати',

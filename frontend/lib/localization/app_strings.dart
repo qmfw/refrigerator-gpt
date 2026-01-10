@@ -35,6 +35,7 @@ class AppStrings {
   static const String mightBeWrong = 'mightBeWrong';
   static const String addSomethingElse = 'addSomethingElse';
   static const String cookWithThis = 'cookWithThis';
+  static const String noIngredientsFound = 'noIngredientsFound';
 
   // Loading Screens
   static const String lookingClosely = 'lookingClosely';

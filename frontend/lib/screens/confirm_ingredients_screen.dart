@@ -132,6 +132,28 @@ class _ConfirmIngredientsScreenState extends State<ConfirmIngredientsScreen> {
                           child: CircularProgressIndicator(),
                         ),
                       )
+                    else if (_ingredients.isEmpty)
+                      // Show message when no ingredients found
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppColors.chipBackground,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                context.l10n.noIngredientsFound,
+                                style: const TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
                     else
                       Wrap(
                         spacing: 10,

@@ -25,6 +25,8 @@ const Map<String, String> swedishStrings = {
   AppStrings.mightBeWrong: 'Jag kan ha fel. Rätta till vad som helst.',
   AppStrings.addSomethingElse: 'Lägg till något annat…',
   AppStrings.cookWithThis: '🍳 Laga mat med detta',
+  AppStrings.noIngredientsFound:
+      'Jag kan inte identifiera några livsmedelsingredienser i dessa bilder.',
   AppStrings.lookingClosely: 'Tittar noga…',
   AppStrings.fridgeHasPotential: 'Detta kylskåp har potential.',
   AppStrings.heresWhatYouCanMake: 'Här är vad du kan göra',

@@ -25,6 +25,8 @@ const Map<String, String> finnishStrings = {
   AppStrings.mightBeWrong: 'Voin olla väärässä. Korjaa mitä tahansa.',
   AppStrings.addSomethingElse: 'Lisää jotain muuta…',
   AppStrings.cookWithThis: '🍳 Keitä tällä',
+  AppStrings.noIngredientsFound:
+      'En voi tunnistaa ruoka-aineita näistä kuvista.',
   AppStrings.lookingClosely: 'Katselen tarkasti…',
   AppStrings.fridgeHasPotential: 'Tällä jääkaapilla on potentiaalia.',
   AppStrings.heresWhatYouCanMake: 'Tässä on mitä voit tehdä',

@@ -25,6 +25,8 @@ const Map<String, String> turkishStrings = {
   AppStrings.mightBeWrong: 'Yanılıyor olabilirim. İstediğin gibi düzelt.',
   AppStrings.addSomethingElse: 'Başka bir şey ekle…',
   AppStrings.cookWithThis: '🍳 Bununla pişir',
+  AppStrings.noIngredientsFound:
+      'Bu görüntülerde herhangi bir gıda malzemesi tanımlayamıyorum.',
   AppStrings.lookingClosely: 'Yakından bakıyorum…',
   AppStrings.fridgeHasPotential: 'Bu buzdolabının potansiyeli var.',
   AppStrings.heresWhatYouCanMake: 'Yapabileceğin şeyler',
