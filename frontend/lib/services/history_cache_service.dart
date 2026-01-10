@@ -1,4 +1,5 @@
 import '../models/models.dart';
+import 'package:flutter/foundation.dart';
 
 /// Global service for managing history cache and refresh state
 /// Uses Future-based approach to prevent duplicate API calls
@@ -14,6 +15,9 @@ class HistoryCacheService {
   String? cachedLanguage;
   bool shouldRefresh = false;
 
+  // Notifier for cache updates
+  final ValueNotifier<List<HistoryEntry>?> cacheNotifier = ValueNotifier(null);
+
   // Future-based deduplication: store ongoing fetch Future per language
   Future<List<HistoryEntry>>? _ongoingFetch;
   String? _ongoingFetchLanguage;
@@ -25,6 +29,7 @@ class HistoryCacheService {
     cachedLanguage = null;
     _ongoingFetch = null; // Cancel ongoing fetch
     _ongoingFetchLanguage = null;
+    cacheNotifier.value = null; // Notify listeners
   }
 
   /// Clear all cache (e.g., on app restart)
@@ -34,6 +39,7 @@ class HistoryCacheService {
     shouldRefresh = false;
     _ongoingFetch = null;
     _ongoingFetchLanguage = null;
+    cacheNotifier.value = null; // Notify listeners
   }
 
   /// Update cache with new history data
@@ -43,6 +49,8 @@ class HistoryCacheService {
     shouldRefresh = false; // Clear refresh flag after successful load
     _ongoingFetch = null; // Clear ongoing fetch
     _ongoingFetchLanguage = null;
+    // Notify listeners of cache change
+    cacheNotifier.value = history;
   }
 
   /// Get or create a Future for fetching history

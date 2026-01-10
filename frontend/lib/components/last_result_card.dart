@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../localization/app_localizations_extension.dart';
 import '../models/models.dart';
@@ -27,15 +26,44 @@ class _LastResultCardState extends State<LastResultCard> {
   @override
   void initState() {
     super.initState();
-    if (kDebugMode) {
-      print('🚀 [LastResultCard] initState() called');
-    }
+    // Listen to cache changes
+    HistoryCacheService().cacheNotifier.addListener(_onCacheChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        if (kDebugMode) {
-          print('   PostFrameCallback: calling _loadFromCache()');
-        }
         _loadFromCache();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    HistoryCacheService().cacheNotifier.removeListener(_onCacheChanged);
+    super.dispose();
+  }
+
+  void _onCacheChanged() {
+    // Use postFrameCallback to ensure context is available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final cacheService = HistoryCacheService();
+
+      // Get language code safely
+      String? currentLanguage;
+      try {
+        currentLanguage = context.languageCode;
+      } catch (e) {
+        return;
+      }
+
+      // If cache is empty for current language, clear entry
+      if (cacheService.cachedHistory != null &&
+          cacheService.cachedHistory!.isEmpty &&
+          cacheService.cachedLanguage == currentLanguage &&
+          _lastEntry != null) {
+        setState(() {
+          _lastEntry = null;
+          _isLoading = false;
+        });
       }
     });
   }
