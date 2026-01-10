@@ -7,6 +7,7 @@ import '../theme/app_colors.dart';
 import '../localization/app_localizations_extension.dart';
 import '../models/models.dart' show HistoryEntry;
 import '../services/api/recipe_service.dart';
+import '../services/history_cache_service.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -14,24 +15,14 @@ class HistoryScreen extends StatefulWidget {
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
 
-  // Static flag to indicate history should be refreshed
-  static bool shouldRefresh = false;
-
-  // Static cache for history items (persists across widget recreations)
-  static List<HistoryEntry>? cachedHistory;
-  static String? cachedLanguage;
-
-  // Static method to mark history for refresh
+  // Static method to mark history for refresh (delegates to global service)
   static void markForRefresh() {
-    shouldRefresh = true;
-    cachedHistory = null; // Clear cache when refresh is needed
+    HistoryCacheService().markForRefresh();
   }
 
-  // Static method to clear cache (e.g., on app restart)
+  // Static method to clear cache (delegates to global service)
   static void clearCache() {
-    cachedHistory = null;
-    cachedLanguage = null;
-    shouldRefresh = false;
+    HistoryCacheService().clearCache();
   }
 }
 
@@ -68,9 +59,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         }
         // Clear cache when language changes and set refresh flag
         // API will be called when user navigates to history screen
-        HistoryScreen.cachedHistory = null;
-        HistoryScreen.cachedLanguage = null;
-        HistoryScreen.shouldRefresh = true;
+        HistoryCacheService().markForRefresh();
       }
       _lastLanguage = currentLanguage;
     }
@@ -81,15 +70,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     // Check if we have cached data and language matches
     final currentLanguage = context.languageCode;
-    if (HistoryScreen.cachedHistory != null &&
-        HistoryScreen.cachedLanguage == currentLanguage &&
-        !HistoryScreen.shouldRefresh) {
+    final cacheService = HistoryCacheService();
+
+    if (cacheService.isCacheValid(currentLanguage)) {
       // Use cached data - no API call needed!
       if (kDebugMode) {
         print('History: Using cached data, no API call');
       }
       setState(() {
-        _historyItems = HistoryScreen.cachedHistory!;
+        _historyItems = cacheService.cachedHistory!;
         _isLoading = false;
         _hasLoadedInitially = true;
         _lastLanguage = currentLanguage;
@@ -98,9 +87,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
       // Need to load - either no cache, language changed, or refresh needed
       if (kDebugMode) {
         print(
-          'History: Loading - cache=${HistoryScreen.cachedHistory != null}, '
-          'langMatch=${HistoryScreen.cachedLanguage == currentLanguage}, '
-          'shouldRefresh=${HistoryScreen.shouldRefresh}',
+          'History: Loading - cache=${cacheService.cachedHistory != null}, '
+          'langMatch=${cacheService.cachedLanguage == currentLanguage}, '
+          'shouldRefresh=${cacheService.shouldRefresh}',
         );
       }
       _initializeHistory();
@@ -126,6 +115,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
     final language = context.languageCode;
     _lastLanguage = language; // Update last language
 
+    final cacheService = HistoryCacheService();
+
     // Get or generate device ID
     final prefs = await SharedPreferences.getInstance();
     String? appAccountToken = prefs.getString('device_id');
@@ -135,23 +126,19 @@ class _HistoryScreenState extends State<HistoryScreen> {
     }
 
     try {
-      // Fetch history from server (bulk API - only needs language)
-      final history = await _recipeService.getHistory(
-        appAccountToken: appAccountToken,
+      // Use Future-based getHistory - automatically deduplicates concurrent requests
+      final history = await cacheService.getHistory(
         language: language,
+        fetchFunction:
+            () => _recipeService.getHistory(
+              appAccountToken: appAccountToken!,
+              language: language,
+            ),
       );
 
       if (mounted) {
-        // Cache the history data
-        HistoryScreen.cachedHistory = history;
-        HistoryScreen.cachedLanguage = language;
-        // Clear refresh flag after successful load
-        HistoryScreen.shouldRefresh = false;
-
         if (kDebugMode) {
-          print(
-            'History: Loaded ${history.length} items, cached, refresh flag cleared',
-          );
+          print('📡 [HistoryScreen] Loaded ${history.length} items, cached');
         }
 
         setState(() {
@@ -161,7 +148,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Failed to load history: $e');
+        print('📡 [HistoryScreen] Failed to load history: $e');
       }
       if (mounted) {
         setState(() {
@@ -235,13 +222,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                   item.createdAt,
                                 ),
                                 onTap: () {
-                                  // Pass full recipe data - no API call needed!
+                                  // Pass all recipes if grouped, otherwise just the single recipe
+                                  final recipes =
+                                      item.recipes ?? [item.toRecipe()];
                                   Navigator.pushNamed(
                                     context,
                                     '/recipe-results',
-                                    arguments: [
-                                      item.toRecipe(),
-                                    ], // Pass Recipe object
+                                    arguments: recipes, // Pass List<Recipe>
                                   );
                                 },
                               ),

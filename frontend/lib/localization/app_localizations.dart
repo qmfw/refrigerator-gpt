@@ -116,6 +116,9 @@ class AppLocalizations {
       translate(AppStrings.tapThumbnailToPreview);
   String get thisIsEnough => translate(AppStrings.thisIsEnough);
   String get addAnotherPhoto => translate(AppStrings.addAnotherPhoto);
+  String get addPhoto => translate(AppStrings.addPhoto);
+  String get takePhoto => translate(AppStrings.takePhoto);
+  String get chooseFromGallery => translate(AppStrings.chooseFromGallery);
   String get confirmIngredients => translate(AppStrings.confirmIngredients);
   String get heresWhatIThink => translate(AppStrings.heresWhatIThink);
   String get mightBeWrong => translate(AppStrings.mightBeWrong);

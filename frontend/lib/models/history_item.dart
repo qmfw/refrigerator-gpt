@@ -3,14 +3,20 @@ import 'recipe.dart';
 /// History entry model representing a past recipe scan
 ///
 /// Now fetched from server via bulk API with full recipe data - no additional API call needed
+/// Supports single recipes or grouped recipes (multiple recipes generated together)
 class HistoryEntry {
-  final String id; // recipe_id
-  final String emoji;
+  final String id; // recipe_id (primary recipe ID)
+  final String emoji; // Primary emoji
   final String badge; // fastLazy, actuallyGood, shouldntWork
-  final String title; // Already in requested language from server
-  final List<String> steps;
-  final List<String>? ingredients;
+  final String
+  title; // Combined title for grouped recipes (e.g., "Recipe 1, Recipe 2, and Recipe 3")
+  final List<String>
+  steps; // Steps from primary recipe (for backward compatibility)
+  final List<String>?
+  ingredients; // Ingredients from primary recipe (for backward compatibility)
   final DateTime createdAt;
+  final List<Recipe>?
+  recipes; // All recipes in this batch (if grouped, null for single recipes)
 
   const HistoryEntry({
     required this.id,
@@ -20,6 +26,7 @@ class HistoryEntry {
     required this.steps,
     this.ingredients,
     required this.createdAt,
+    this.recipes,
   });
 
   /// Convert to Recipe object for recipe results screen

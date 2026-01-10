@@ -5,7 +5,7 @@ import '../components/components.dart';
 import '../theme/app_colors.dart';
 import '../localization/app_localizations_extension.dart';
 import '../services/api/recipe_service.dart';
-import 'history_screen.dart';
+import '../services/history_cache_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -78,8 +78,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             appAccountToken: appAccountToken,
                           );
 
-                          // Mark history screen for refresh
-                          HistoryScreen.markForRefresh();
+                          // Immediately fetch history to update cache with empty result
+                          final currentLanguage = context.languageCode;
+                          final history = await _recipeService.getHistory(
+                            appAccountToken: appAccountToken,
+                            language: currentLanguage,
+                          );
+
+                          // Update global cache with empty history
+                          HistoryCacheService().updateCache(
+                            history,
+                            currentLanguage,
+                          );
 
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(

@@ -25,6 +25,9 @@ class AppStrings {
   static const String photos = 'photos';
   static const String thisIsEnough = 'thisIsEnough';
   static const String addAnotherPhoto = 'addAnotherPhoto';
+  static const String addPhoto = 'addPhoto';
+  static const String takePhoto = 'takePhoto';
+  static const String chooseFromGallery = 'chooseFromGallery';
 
   // Confirm Ingredients Screen
   static const String confirmIngredients = 'confirmIngredients';

@@ -58,18 +58,18 @@ class _PhotoReviewScreenState extends State<PhotoReviewScreen> {
         context: context,
         builder:
             (context) => AlertDialog(
-              title: Text('Add Photo'),
+              title: Text(context.l10n.addPhoto),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ListTile(
                     leading: const Icon(Icons.camera_alt),
-                    title: const Text('Take Photo'),
+                    title: Text(context.l10n.takePhoto),
                     onTap: () => Navigator.pop(context, ImageSource.camera),
                   ),
                   ListTile(
                     leading: const Icon(Icons.photo_library),
-                    title: const Text('Choose from Gallery'),
+                    title: Text(context.l10n.chooseFromGallery),
                     onTap: () => Navigator.pop(context, ImageSource.gallery),
                   ),
                 ],
