@@ -6,7 +6,8 @@ import '../localization/app_localizations_extension.dart';
 /// Recipe card component
 /// Used on Recipe Results screen
 class RecipeCard extends StatelessWidget {
-  final String emoji; // Food emoji
+  final String emoji; // Food emoji (fallback)
+  final String? imageUrl; // Foodish API image URL
   final String badge; // e.g., "Fast & Lazy", "Actually Good"
   final String title;
   final List<String> steps;
@@ -15,6 +16,7 @@ class RecipeCard extends StatelessWidget {
   const RecipeCard({
     super.key,
     required this.emoji,
+    this.imageUrl,
     required this.badge,
     required this.title,
     required this.steps,
@@ -40,20 +42,76 @@ class RecipeCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Recipe Image/Emoji
-          Container(
-            width: double.infinity,
-            height: 180,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFFFEF3C7), Color(0xFFFDE68A)],
-              ),
+          // Recipe Image/Emoji - Show Foodish image if available, otherwise emoji
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
             ),
-            child: Center(
-              child: Text(emoji, style: const TextStyle(fontSize: 64)),
-            ),
+            child:
+                imageUrl != null && imageUrl!.isNotEmpty
+                    ? Image.network(
+                      imageUrl!,
+                      width: double.infinity,
+                      height: 180,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          width: double.infinity,
+                          height: 180,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Color(0xFFFEF3C7), Color(0xFFFDE68A)],
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              emoji,
+                              style: const TextStyle(fontSize: 64),
+                            ),
+                          ),
+                        );
+                      },
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          width: double.infinity,
+                          height: 180,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [Color(0xFFFEF3C7), Color(0xFFFDE68A)],
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              emoji,
+                              style: const TextStyle(fontSize: 64),
+                            ),
+                          ),
+                        );
+                      },
+                    )
+                    : Container(
+                      width: double.infinity,
+                      height: 180,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Color(0xFFFEF3C7), Color(0xFFFDE68A)],
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          emoji,
+                          style: const TextStyle(fontSize: 64),
+                        ),
+                      ),
+                    ),
           ),
           // Recipe Content
           Padding(

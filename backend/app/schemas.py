@@ -40,6 +40,7 @@ class Recipe(BaseModel):
     steps: List[str]
     ingredients: Optional[List[str]] = None
     created_at: Optional[datetime] = None
+    image_url: Optional[str] = None  # Foodish API image URL (free food images)
 
 
 class RecipeGenerationResponse(BaseModel):

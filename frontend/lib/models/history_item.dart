@@ -17,6 +17,7 @@ class HistoryEntry {
   final DateTime createdAt;
   final List<Recipe>?
   recipes; // All recipes in this batch (if grouped, null for single recipes)
+  final String? imageUrl; // Foodish API image URL
 
   const HistoryEntry({
     required this.id,
@@ -27,6 +28,7 @@ class HistoryEntry {
     this.ingredients,
     required this.createdAt,
     this.recipes,
+    this.imageUrl,
   });
 
   /// Convert to Recipe object for recipe results screen
@@ -51,6 +53,7 @@ class HistoryEntry {
       title: title,
       steps: steps,
       ingredients: ingredients,
+      imageUrl: imageUrl,
     );
   }
 

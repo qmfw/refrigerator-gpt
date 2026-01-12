@@ -5,7 +5,8 @@ import '../theme/app_text_styles.dart';
 /// History list item component
 /// Used on History screen
 class HistoryItem extends StatefulWidget {
-  final String emoji; // Food emoji
+  final String emoji; // Food emoji (fallback)
+  final String? imageUrl; // Foodish API image URL
   final String title;
   final String timeAgo;
   final VoidCallback? onTap;
@@ -13,6 +14,7 @@ class HistoryItem extends StatefulWidget {
   const HistoryItem({
     super.key,
     required this.emoji,
+    this.imageUrl,
     required this.title,
     required this.timeAgo,
     this.onTap,
@@ -43,22 +45,76 @@ class _HistoryItemState extends State<HistoryItem> {
         padding: const EdgeInsets.all(14),
         child: Row(
           children: [
-            // Thumbnail
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFFFEF3C7), Color(0xFFFDE68A)],
+            // Thumbnail - Show Foodish image if available, otherwise emoji
+            widget.imageUrl != null && widget.imageUrl!.isNotEmpty
+                ? ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    widget.imageUrl!,
+                    width: 56,
+                    height: 56,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        width: 56,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          gradient: const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [Color(0xFFFEF3C7), Color(0xFFFDE68A)],
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            widget.emoji,
+                            style: const TextStyle(fontSize: 24),
+                          ),
+                        ),
+                      );
+                    },
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        width: 56,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          gradient: const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [Color(0xFFFEF3C7), Color(0xFFFDE68A)],
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            widget.emoji,
+                            style: const TextStyle(fontSize: 24),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                )
+                : Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFFFEF3C7), Color(0xFFFDE68A)],
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      widget.emoji,
+                      style: const TextStyle(fontSize: 24),
+                    ),
+                  ),
                 ),
-              ),
-              child: Center(
-                child: Text(widget.emoji, style: const TextStyle(fontSize: 24)),
-              ),
-            ),
             const SizedBox(width: 16),
             // Details
             Expanded(

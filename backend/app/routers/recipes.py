@@ -9,8 +9,10 @@ from app.db import get_db
 from app.models import Subscription, RecipeCache, History
 from app.services.usage_service import usage_service
 from app.services.openai_service import openai_service
+from app.services.foodish_service import foodish_service
 from app.schemas import RecipeGenerationResponse, Recipe, ErrorResponse, HistoryResponse, HistoryEntry
 import json
+import asyncio
 
 router = APIRouter(prefix="/api/v1", tags=["Recipes"])
 
@@ -139,7 +141,39 @@ async def generate_recipes(
         batch_id = str(uuid_module.uuid4()) if request.appAccountToken else None
         
         # Cache recipes in database for multi-language support
+        # Fetch images from Foodish API in parallel (fast and free)
+        image_tasks = []
         for recipe in result["recipes"]:
+            # Fetch image from Foodish API (non-blocking, fast)
+            recipe_ingredients = recipe.get("ingredients", [])
+            image_task = foodish_service.get_food_image(
+                recipe_title=recipe.get("title", ""),
+                ingredients=recipe_ingredients
+            )
+            image_tasks.append(image_task)
+        
+        # Fetch all images in parallel
+        image_urls = await asyncio.gather(*image_tasks, return_exceptions=True)
+        
+        # Add image URLs to recipes in the response BEFORE caching
+        # This ensures frontend receives images immediately in the response
+        for idx, recipe in enumerate(result["recipes"]):
+            # Get image URL (handle exceptions)
+            image_url = None
+            if idx < len(image_urls) and not isinstance(image_urls[idx], Exception):
+                image_url = image_urls[idx]
+            
+            # Add image_url to recipe response so frontend gets it immediately
+            recipe["image_url"] = image_url
+            
+            # Debug: Log image URL assignment (can be removed in production)
+            if image_url:
+                print(f"✅ Added image_url to recipe {recipe.get('id', 'unknown')}: {image_url[:50]}...")
+            else:
+                print(f"⚠️  No image_url for recipe {recipe.get('id', 'unknown')} (will use emoji fallback)")
+        
+        # Cache recipes in database with image URLs
+        for idx, recipe in enumerate(result["recipes"]):
             # Check if recipe already exists in this language
             existing = (
                 db.query(RecipeCache)
@@ -151,6 +185,9 @@ async def generate_recipes(
             )
             
             if not existing:
+                # Get image URL (already fetched above)
+                image_url = recipe.get("image_url")
+                
                 # Store recipe in database
                 recipe_cache = RecipeCache(
                     recipe_id=recipe["id"],
@@ -159,7 +196,8 @@ async def generate_recipes(
                     badge=recipe.get("badge", "fastLazy"),
                     title=recipe.get("title", ""),
                     steps=json.dumps(recipe.get("steps", [])),
-                    ingredients=json.dumps(recipe.get("ingredients", [])) if recipe.get("ingredients") else None
+                    ingredients=json.dumps(recipe.get("ingredients", [])) if recipe.get("ingredients") else None,
+                    image_url=image_url  # Store Foodish image URL
                 )
                 db.add(recipe_cache)
             
@@ -185,7 +223,23 @@ async def generate_recipes(
         
         db.commit()
         
-        return RecipeGenerationResponse(**result)
+        # Debug: Verify image_urls are in recipes before returning
+        for recipe in result["recipes"]:
+            if recipe.get("image_url"):
+                print(f"✅ Recipe {recipe.get('id')} has image_url: {recipe.get('image_url')[:50]}...")
+            else:
+                print(f"⚠️  Recipe {recipe.get('id')} missing image_url (will use emoji)")
+        
+        response = RecipeGenerationResponse(**result)
+        
+        # Debug: Verify response includes image_urls
+        for recipe in response.recipes:
+            if recipe.image_url:
+                print(f"✅ Response recipe {recipe.id} has image_url: {recipe.image_url[:50]}...")
+            else:
+                print(f"⚠️  Response recipe {recipe.id} missing image_url")
+        
+        return response
     except Exception as e:
         db.rollback()
         raise HTTPException(
@@ -229,7 +283,8 @@ async def get_recipe(
             title=recipe_cache.title,
             steps=json.loads(recipe_cache.steps),
             ingredients=json.loads(recipe_cache.ingredients) if recipe_cache.ingredients else None,
-            created_at=recipe_cache.created_at
+            created_at=recipe_cache.created_at,
+            image_url=recipe_cache.image_url  # Foodish API image URL
         )
     
     # Try to find recipe in any language (for translation)
@@ -265,7 +320,8 @@ async def get_recipe(
                 badge=translated.get("badge", original_recipe["badge"]),
                 title=translated.get("title", ""),
                 steps=json.dumps(translated.get("steps", [])),
-                ingredients=json.dumps(translated.get("ingredients", [])) if translated.get("ingredients") else None
+                ingredients=json.dumps(translated.get("ingredients", [])) if translated.get("ingredients") else None,
+                image_url=any_language_recipe.image_url  # Use same image for translated recipe
             )
             db.add(translated_cache)
             db.commit()
@@ -277,7 +333,8 @@ async def get_recipe(
                 title=translated.get("title", ""),
                 steps=translated.get("steps", []),
                 ingredients=translated.get("ingredients"),
-                created_at=any_language_recipe.created_at
+                created_at=any_language_recipe.created_at,
+                image_url=any_language_recipe.image_url  # Use same image for translated recipe
             )
             
         except Exception as e:
@@ -352,7 +409,8 @@ async def get_history(
                     title=recipe.title,
                     steps=json.loads(recipe.steps),
                     ingredients=json.loads(recipe.ingredients) if recipe.ingredients else None,
-                    created_at=entry_created_at
+                    created_at=entry_created_at,
+                    image_url=recipe.image_url  # Foodish API image URL
                 )
             
             # Recipe not found in requested language - find in any language and translate
@@ -387,7 +445,8 @@ async def get_history(
                         badge=translated.get("badge", original_recipe["badge"]),
                         title=translated.get("title", ""),
                         steps=json.dumps(translated.get("steps", [])),
-                        ingredients=json.dumps(translated.get("ingredients", [])) if translated.get("ingredients") else None
+                        ingredients=json.dumps(translated.get("ingredients", [])) if translated.get("ingredients") else None,
+                        image_url=any_language_recipe.image_url  # Use same image for translated recipe
                     )
                     db.add(translated_cache)
                     db.commit()
@@ -402,7 +461,8 @@ async def get_history(
                         title=translated.get("title", ""),
                         steps=translated.get("steps", []),
                         ingredients=translated.get("ingredients"),
-                        created_at=entry_created_at
+                        created_at=entry_created_at,
+                        image_url=any_language_recipe.image_url  # Use same image for translated recipe
                     )
                 except Exception as e:
                     # Translation failed - return None (skip this recipe)

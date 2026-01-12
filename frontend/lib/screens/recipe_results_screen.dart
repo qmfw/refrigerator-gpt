@@ -119,6 +119,7 @@ class _RecipeResultsScreenState extends State<RecipeResultsScreen> {
                             ..._recipes.map((recipe) {
                               return RecipeCard(
                                 emoji: recipe.emoji,
+                                imageUrl: recipe.imageUrl,
                                 badge: recipe.getBadgeString(context),
                                 title: recipe.title,
                                 steps: recipe.steps,

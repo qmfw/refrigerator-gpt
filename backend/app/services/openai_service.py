@@ -4,6 +4,11 @@ from typing import List, Dict, Any, Optional
 import base64
 import uuid
 from app.config import settings
+from app.services.language_strings import (
+    INGREDIENT_DETECTION_PROMPTS,
+    NON_FOOD_KEYWORDS,
+    ERROR_MESSAGES,
+)
 
 
 class OpenAIService:
@@ -43,68 +48,8 @@ class OpenAIService:
                 }
             })
         
-        # Create ultra-short prompt for cost optimization
-        # COST REDUCTION: Return ONLY comma-separated list, no JSON, no descriptions, max 10 items
-        # IMPORTANT: Only food ingredients, ignore hands, backgrounds, surfaces, containers
-        # Language order matches Flutter AppLanguage enum: english, arabic, bengali, chinese, danish, dutch, finnish, french, german, greek, hebrew, hindi, indonesian, italian, japanese, korean, norwegian, polish, portuguese, romanian, russian, spanish, swedish, thai, turkish, ukrainian, vietnamese
-        language_prompts = {
-            # English (first)
-            "en": "Return ONLY food ingredients separated by commas. Ignore hands, backgrounds, surfaces, containers. No explanations. Max 10 items.",
-            # Arabic
-            "ar": "أعد فقط مكونات الطعام مفصولة بفواصل. تجاهل الأيدي والخلفيات والأسطح والحاويات. لا تفسيرات. حد أقصى 10 عناصر.",
-            # Bengali
-            "bn": "শুধুমাত্র খাদ্য উপাদান কমা দ্বারা পৃথক করে ফেরত দিন। হাত, পটভূমি, পৃষ্ঠতল, পাত্র উপেক্ষা করুন। কোন ব্যাখ্যা নেই। সর্বোচ্চ 10টি আইটেম।",
-            # Chinese
-            "zh": "只返回用逗号分隔的食物成分。忽略手、背景、表面、容器。无解释。最多10项。",
-            # Danish
-            "da": "Returner kun madingredienser adskilt af kommaer. Ignorer hænder, baggrunde, overflader, beholdere. Ingen forklaringer. Max 10 emner.",
-            # Dutch
-            "nl": "Geef alleen voedselingrediënten gescheiden door komma's. Negeer handen, achtergronden, oppervlakken, containers. Geen uitleg. Max 10 items.",
-            # Finnish
-            "fi": "Palauta vain ruoka-aineet pilkuilla erotettuina. Ohita kädet, taustat, pinnat, astiat. Ei selityksiä. Max 10 kohdetta.",
-            # French
-            "fr": "Retournez uniquement des ingrédients alimentaires séparés par des virgules. Ignorez les mains, arrière-plans, surfaces, contenants. Pas d'explications. Max 10 éléments.",
-            # German
-            "de": "Geben Sie nur Lebensmittelzutaten durch Kommas getrennt zurück. Ignorieren Sie Hände, Hintergründe, Oberflächen, Behälter. Keine Erklärungen. Max 10 Artikel.",
-            # Greek
-            "el": "Επιστρέψτε μόνο συστατικά φαγητού διαχωρισμένα με κόμματα. Αγνοήστε χέρια, φόντα, επιφάνειες, δοχεία. Χωρίς εξηγήσεις. Μέγιστο 10 στοιχεία.",
-            # Hebrew
-            "he": "החזר רק מרכיבי מזון מופרדים בפסיקים. התעלם מידיים, רקעים, משטחים, מיכלים. ללא הסברים. מקסימום 10 פריטים.",
-            # Hindi
-            "hi": "केवल खाद्य सामग्री अल्पविराम से अलग करके लौटाएं। हाथ, पृष्ठभूमि, सतह, कंटेनर को नजरअंदाज करें। कोई स्पष्टीकरण नहीं। अधिकतम 10 आइटम।",
-            # Indonesian
-            "id": "Kembalikan hanya bahan makanan yang dipisahkan koma. Abaikan tangan, latar belakang, permukaan, wadah. Tanpa penjelasan. Maks 10 item.",
-            # Italian
-            "it": "Restituisci solo ingredienti alimentari separati da virgole. Ignora mani, sfondi, superfici, contenitori. Nessuna spiegazione. Max 10 elementi.",
-            # Japanese
-            "ja": "食品材料のみをカンマ区切りで返す。手、背景、床、光、表面、容器は無視。説明なし。最大10項目。",
-            # Korean
-            "ko": "음식 재료만 쉼표로 구분하여 반환. 손, 배경, 바닥, 표면, 용기는 무시. 설명 없음. 최대 10개 항목.",
-            # Norwegian
-            "no": "Returner kun matingredienser adskilt med kommaer. Ignorer hender, bakgrunner, overflater, beholdere. Ingen forklaringer. Maks 10 elementer.",
-            # Polish
-            "pl": "Zwróć tylko składniki żywności oddzielone przecinkami. Ignoruj dłonie, tła, powierzchnie, pojemniki. Bez wyjaśnień. Max 10 pozycji.",
-            # Portuguese
-            "pt": "Retorne apenas ingredientes alimentares separados por vírgulas. Ignore mãos, fundos, superfícies, recipientes. Sem explicações. Máx 10 itens.",
-            # Romanian
-            "ro": "Returnează doar ingrediente alimentare separate prin virgulă. Ignoră mâinile, fundalurile, suprafețele, containerele. Fără explicații. Max 10 elemente.",
-            # Russian
-            "ru": "Верните только пищевые ингредиенты через запятую. Игнорируйте руки, фоны, поверхности, контейнеры. Без объяснений. Макс 10 элементов.",
-            # Spanish
-            "es": "Devuelve solo ingredientes alimentarios separados por comas. Ignora manos, fondos, superficies, contenedores. Sin explicaciones. Máx 10 elementos.",
-            # Swedish
-            "sv": "Returnera endast livsmedelsingredienser separerade med kommatecken. Ignorera händer, bakgrunder, ytor, behållare. Inga förklaringar. Max 10 objekt.",
-            # Thai
-            "th": "คืนเฉพาะส่วนผสมอาหารที่คั่นด้วยจุลภาค ไม่สนใจมือ พื้นหลัง พื้นผิว ภาชนะ ไม่มีคำอธิบาย สูงสุด 10 รายการ",
-            # Turkish
-            "tr": "Sadece virgülle ayrılmış gıda malzemeleri döndür. Elleri, arka planları, yüzeyleri, kapları yoksay. Açıklama yok. Maks 10 öğe.",
-            # Ukrainian
-            "uk": "Поверніть лише харчові інгредієнти через кому. Ігноруйте руки, фони, поверхні, контейнери. Без пояснень. Макс 10 елементів.",
-            # Vietnamese
-            "vi": "Chỉ trả về nguyên liệu thực phẩm cách nhau bằng dấu phẩy. Bỏ qua tay, nền, bề mặt, hộp đựng. Không giải thích. Tối đa 10 mục.",
-        }
-        
-        prompt = language_prompts.get(language, language_prompts["en"])
+        # Get language-specific prompt for ingredient detection
+        prompt = INGREDIENT_DETECTION_PROMPTS.get(language, INGREDIENT_DETECTION_PROMPTS["en"])
         
         try:
             # COST REDUCTION: Strict token limit for ingredient detection (100-200 tokens is enough)
@@ -129,47 +74,57 @@ class OpenAIService:
             # Parse response - handle comma-separated list format
             content = response.choices[0].message.content.strip()
             
-            # Split by comma and clean up
-            ingredient_names = []
-            if ',' in content:
-                # Comma-separated format
-                ingredient_names = [name.strip() for name in content.split(',') if name.strip()]
-            else:
-                # Fallback: try line-separated format
-                ingredient_lines = [line.strip() for line in content.split('\n') if line.strip()]
-                for line in ingredient_lines:
-                    # If line contains commas, split it
-                    if ',' in line:
-                        ingredient_names.extend([name.strip() for name in line.split(',') if name.strip()])
-                    else:
-                        ingredient_names.append(line)
+            # Split by various separators (comma, Japanese comma, semicolon, etc.)
+            # Handle multiple separator types to ensure proper splitting
+            # Define all possible separators (order matters - try most common first)
+            # Japanese comma (、), regular comma (,), semicolon (;), pipe (|), and newlines
+            separators = ['、', ',', ';', '|', '\n']
+            
+            # Split by ALL separators iteratively to handle mixed separators
+            # This ensures "卵、にんじん, avocado" gets split properly
+            parts = [content]  # Start with the whole content
+            for separator in separators:
+                # Split all current parts by this separator
+                new_parts = []
+                for part in parts:
+                    new_parts.extend(part.split(separator))
+                parts = new_parts
+            
+            # Clean up each part and filter out empty strings
+            ingredient_names = [name.strip() for name in parts if name.strip()]
+            
+            # Second pass: check if any item still contains separators (nested splitting)
+            # This handles edge cases where separators weren't caught in first pass
+            final_ingredient_names = []
+            for name in ingredient_names:
+                # Check if this item contains any separators that weren't split
+                needs_split = False
+                for sep in separators:
+                    if sep in name:
+                        needs_split = True
+                        break
+                
+                if needs_split:
+                    # Split this item further by all separators
+                    sub_parts = [name]
+                    for sep in separators:
+                        new_sub_parts = []
+                        for sub_part in sub_parts:
+                            new_sub_parts.extend(sub_part.split(sep))
+                        sub_parts = new_sub_parts
+                    final_ingredient_names.extend([sub.strip() for sub in sub_parts if sub.strip()])
+                else:
+                    # No additional separators found, keep as is
+                    final_ingredient_names.append(name)
+            
+            ingredient_names = final_ingredient_names
             
             # Limit to max 10 items as per prompt
             ingredient_names = ingredient_names[:10]
             
-            # List of non-food items and error messages to filter out
-            non_food_keywords = {
-                'en': ['hand', 'hands', 'background', 'floor', 'surface', 'light', 'container', 'table', 'counter'],
-                'ja': ['手', '背景', '床', '光', '表面', '容器', 'テーブル', 'カウンター'],
-                'ar': ['يد', 'خلفية', 'أرضية', 'ضوء', 'سطح', 'حاوية'],
-                'zh': ['手', '背景', '地板', '光', '表面', '容器'],
-                'ko': ['손', '배경', '바닥', '빛', '표면', '용기'],
-                # Add more languages as needed
-            }
-            
-            # Error messages to filter out (apologies, can't identify, etc.)
-            error_messages = {
-                'en': ['sorry', "i'm sorry", "i can't", "can't identify", "cannot identify", "unable to identify", "no ingredients", "no food"],
-                'ja': ['申し訳', 'ごめん', '特定できません', '特定することはできません', '材料を特定', '食品材料を特定', '材料が見つかりません'],
-                'ar': ['آسف', 'عذراً', 'لا يمكن', 'لا أستطيع', 'لم أتمكن'],
-                'zh': ['抱歉', '对不起', '无法识别', '无法确定', '不能识别'],
-                'ko': ['죄송', '미안', '식별할 수 없', '재료를 찾을 수 없'],
-                # Add more languages as needed
-            }
-            
             # Get language-specific keywords or use English as fallback
-            keywords_to_filter = non_food_keywords.get(language, non_food_keywords['en'])
-            error_keywords = error_messages.get(language, error_messages['en'])
+            keywords_to_filter = NON_FOOD_KEYWORDS.get(language, NON_FOOD_KEYWORDS['en'])
+            error_keywords = ERROR_MESSAGES.get(language, ERROR_MESSAGES['en'])
             
             # Create ingredient objects
             ingredients = []

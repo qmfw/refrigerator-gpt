@@ -12,6 +12,7 @@ class Recipe {
   final String title;
   final List<String> steps;
   final List<String>? ingredients;
+  final String? imageUrl; // Foodish API image URL
 
   const Recipe({
     required this.id,
@@ -20,6 +21,7 @@ class Recipe {
     required this.title,
     required this.steps,
     this.ingredients,
+    this.imageUrl,
   });
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
@@ -46,6 +48,7 @@ class Recipe {
           json['ingredients'] != null
               ? List<String>.from(json['ingredients'] as List)
               : null,
+      imageUrl: json['image_url'] as String?,
     );
   }
 

@@ -217,6 +217,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               padding: const EdgeInsets.only(bottom: 12),
                               child: HistoryItem(
                                 emoji: item.emoji,
+                                imageUrl: item.imageUrl,
                                 title: item.title,
                                 timeAgo: context.l10n.formatTimeAgo(
                                   item.createdAt,

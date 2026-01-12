@@ -53,6 +53,7 @@ class RecipeCache(Base):
     title = Column(String(500), nullable=False)
     steps = Column(String, nullable=False)  # JSON array of steps
     ingredients = Column(String, nullable=True)  # JSON array of ingredients
+    image_url = Column(String(500), nullable=True)  # Foodish API image URL (free food images)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     __table_args__ = (

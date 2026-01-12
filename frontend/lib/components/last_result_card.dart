@@ -237,24 +237,76 @@ class _LastResultCardState extends State<LastResultCard> {
             const SizedBox(height: 12),
             Row(
               children: [
-                Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    gradient: const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [Color(0xFFFEF3C7), Color(0xFFFDE68A)],
+                // Thumbnail - Show Foodish image if available, otherwise emoji
+                _lastEntry!.imageUrl != null && _lastEntry!.imageUrl!.isNotEmpty
+                    ? ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(
+                        _lastEntry!.imageUrl!,
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              gradient: const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [Color(0xFFFEF3C7), Color(0xFFFDE68A)],
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                _lastEntry!.emoji,
+                                style: const TextStyle(fontSize: 28),
+                              ),
+                            ),
+                          );
+                        },
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              gradient: const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [Color(0xFFFEF3C7), Color(0xFFFDE68A)],
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                _lastEntry!.emoji,
+                                style: const TextStyle(fontSize: 28),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                    : Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Color(0xFFFEF3C7), Color(0xFFFDE68A)],
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          _lastEntry!.emoji,
+                          style: const TextStyle(fontSize: 28),
+                        ),
+                      ),
                     ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      _lastEntry!.emoji,
-                      style: const TextStyle(fontSize: 28),
-                    ),
-                  ),
-                ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(

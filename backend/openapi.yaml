@@ -7,6 +7,7 @@ info:
     **Features:**
     - Ingredient detection from images (OpenAI Vision)
     - Recipe generation (OpenAI GPT-4)
+    - Free food images via Foodish API (fast and free alternative to DALL-E)
     - App Store/Play Store receipt verification
     - Premium subscription status checking
     - Usage tracking and limits
@@ -465,6 +466,12 @@ components:
           format: date-time
           description: Recipe creation timestamp
           example: 2024-01-15T10:30:00Z
+        image_url:
+          type: string
+          format: uri
+          nullable: true
+          description: Foodish API image URL (free food images). Falls back to emoji if not available.
+          example: https://foodish-api.com/images/pizza/pizza101.jpg
 
     RecipeGenerationResponse:
       type: object

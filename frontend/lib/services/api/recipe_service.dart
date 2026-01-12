@@ -141,6 +141,7 @@ class RecipeService {
                         : null,
                 createdAt: DateTime.parse(item['created_at'] as String),
                 recipes: recipes,
+                imageUrl: item['image_url'] as String?,
               );
             }).toList();
 
