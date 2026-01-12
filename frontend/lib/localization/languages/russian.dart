@@ -18,11 +18,16 @@ const Map<String, String> russianStrings = {
   AppStrings.photos: 'фотографии',
   AppStrings.thisIsEnough: 'Этого достаточно',
   AppStrings.addAnotherPhoto: 'Добавить еще одну фотографию',
+  AppStrings.addPhoto: 'Добавить фото',
+  AppStrings.takePhoto: 'Сделать фото',
+  AppStrings.chooseFromGallery: 'Выбрать из галереи',
   AppStrings.confirmIngredients: 'Подтвердить ингредиенты',
   AppStrings.heresWhatIThink: 'Вот что, я думаю, у вас есть.',
   AppStrings.mightBeWrong: 'Я могу ошибаться. Исправьте что угодно.',
   AppStrings.addSomethingElse: 'Добавить что-то еще…',
   AppStrings.cookWithThis: '🍳 Готовить с этим',
+  AppStrings.noIngredientsFound:
+      'Я не могу определить пищевые ингредиенты на этих изображениях.',
   AppStrings.lookingClosely: 'Присматриваюсь…',
   AppStrings.fridgeHasPotential: 'У этого холодильника есть потенциал.',
   AppStrings.heresWhatYouCanMake: 'Вот что вы можете приготовить',
@@ -67,12 +72,40 @@ const Map<String, String> russianStrings = {
   AppStrings.cancel: 'Отмена',
   AppStrings.history: 'История',
   AppStrings.emptyHistory: 'Истории пока нет',
+  AppStrings.minutesAgo: '{minutes} минут назад',
   AppStrings.hoursAgo: '{hours} часов назад',
   AppStrings.yesterday: 'Вчера',
   AppStrings.daysAgo: '{days} дней назад',
   AppStrings.weekAgo: '1 неделю назад',
   AppStrings.weeksAgo: '{weeks} недель назад',
-  AppStrings.dietPreferences: 'Русский',
+  AppStrings.dietPreferences: 'Диетические Предпочтения',
   AppStrings.dietPreferencesHelper:
       'Мы постараемся избегать их при предложении рецептов.',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: 'Избегать Ингредиентов',
+  AppStrings.dietStyle: 'Стиль Питания',
+  AppStrings.cookingPreferences: 'Кулинарные Предпочтения',
+  AppStrings.religious: 'Религиозные',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'Орехи',
+  AppStrings.shellfish: 'Морепродукты',
+  AppStrings.dairy: 'Молочные Продукты',
+  AppStrings.eggs: 'Яйца',
+  AppStrings.gluten: 'Глютен',
+  AppStrings.soy: 'Соя',
+
+  // Diet Style
+  AppStrings.vegan: 'Веган',
+  AppStrings.vegetarian: 'Вегетарианец',
+  AppStrings.pescatarian: 'Пескетарианец',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: 'Низкоуглеводная',
+  AppStrings.lowFat: 'Низкожировая',
+
+  // Religious
+  AppStrings.halal: 'Халяль',
+  AppStrings.kosher: 'Кошер',
 };

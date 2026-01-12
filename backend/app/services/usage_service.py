@@ -4,7 +4,6 @@ from sqlalchemy import func, and_
 from datetime import date
 from app.models import UsageLog
 from typing import Dict, Any
-import uuid
 
 
 class UsageService:
@@ -47,7 +46,7 @@ class UsageService:
             db.query(UsageLog.feature, func.sum(UsageLog.count).label('total'))
             .filter(
                 and_(
-                    UsageLog.app_account_token == uuid.UUID(app_account_token),
+                    UsageLog.app_account_token == str(app_account_token),
                     UsageLog.date == today
                 )
             )
@@ -81,14 +80,14 @@ class UsageService:
             feature: Feature name ('scan' or 'recipe_generation')
         """
         today = date.today()
-        token_uuid = uuid.UUID(app_account_token)
+        token_str = str(app_account_token)
         
         # Try to get existing record
         usage = (
             db.query(UsageLog)
             .filter(
                 and_(
-                    UsageLog.app_account_token == token_uuid,
+                    UsageLog.app_account_token == token_str,
                     UsageLog.feature == feature,
                     UsageLog.date == today
                 )
@@ -102,7 +101,7 @@ class UsageService:
         else:
             # Create new record
             usage = UsageLog(
-                app_account_token=token_uuid,
+                app_account_token=token_str,
                 feature=feature,
                 date=today,
                 count=1
@@ -139,13 +138,13 @@ class UsageService:
         
         # Get today's usage
         today = date.today()
-        token_uuid = uuid.UUID(app_account_token)
+        token_str = str(app_account_token)
         
         total = (
             db.query(func.sum(UsageLog.count))
             .filter(
                 and_(
-                    UsageLog.app_account_token == token_uuid,
+                    UsageLog.app_account_token == token_str,
                     UsageLog.feature == feature,
                     UsageLog.date == today
                 )

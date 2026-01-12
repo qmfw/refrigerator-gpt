@@ -58,16 +58,8 @@ class HomeScreen extends StatelessWidget {
 
                     const SizedBox(height: 24),
 
-                    // Last Result Card (optional)
-                    LastResultCard(
-                      recipeName: 'Creamy Tomato Pasta',
-                      timeAgo: '2 hours ago',
-                      emoji: '🍝',
-                      recipeCount: 3,
-                      onTap: () {
-                        Navigator.pushNamed(context, '/recipe-results');
-                      },
-                    ),
+                    // Last Result Card (fetches and displays actual last result)
+                    const LastResultCard(),
                   ],
                 ),
               ),

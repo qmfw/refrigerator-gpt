@@ -17,11 +17,16 @@ const Map<String, String> englishStrings = {
   AppStrings.photos: 'photos',
   AppStrings.thisIsEnough: 'This is enough',
   AppStrings.addAnotherPhoto: 'Add another photo',
+  AppStrings.addPhoto: 'Add Photo',
+  AppStrings.takePhoto: 'Take Photo',
+  AppStrings.chooseFromGallery: 'Choose from Gallery',
   AppStrings.confirmIngredients: 'Confirm Ingredients',
   AppStrings.heresWhatIThink: "Here's what I think you have.",
   AppStrings.mightBeWrong: 'I might be wrong. Fix anything.',
   AppStrings.addSomethingElse: 'Add something else…',
   AppStrings.cookWithThis: '🍳 Cook with this',
+  AppStrings.noIngredientsFound:
+      "I can't identify any food ingredients in these images.",
   AppStrings.lookingClosely: 'Looking closely…',
   AppStrings.fridgeHasPotential: 'This fridge has potential.',
   AppStrings.heresWhatYouCanMake: "Here's what you can make",
@@ -66,6 +71,7 @@ const Map<String, String> englishStrings = {
   AppStrings.cancel: 'Cancel',
   AppStrings.history: 'History',
   AppStrings.emptyHistory: 'No history yet',
+  AppStrings.minutesAgo: '{minutes} minutes ago',
   AppStrings.hoursAgo: '{hours} hours ago',
   AppStrings.yesterday: 'Yesterday',
   AppStrings.daysAgo: '{days} days ago',
@@ -74,4 +80,31 @@ const Map<String, String> englishStrings = {
   AppStrings.dietPreferences: 'Diet Preferences',
   AppStrings.dietPreferencesHelper:
       "We'll try to avoid these when suggesting recipes.",
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: 'Avoid Ingredients',
+  AppStrings.dietStyle: 'Diet Style',
+  AppStrings.cookingPreferences: 'Cooking Preferences',
+  AppStrings.religious: 'Religious',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'Nuts',
+  AppStrings.shellfish: 'Shellfish',
+  AppStrings.dairy: 'Dairy',
+  AppStrings.eggs: 'Eggs',
+  AppStrings.gluten: 'Gluten',
+  AppStrings.soy: 'Soy',
+
+  // Diet Style
+  AppStrings.vegan: 'Vegan',
+  AppStrings.vegetarian: 'Vegetarian',
+  AppStrings.pescatarian: 'Pescatarian',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: 'Low carb',
+  AppStrings.lowFat: 'Low fat',
+
+  // Religious
+  AppStrings.halal: 'Halal',
+  AppStrings.kosher: 'Kosher',
 };

@@ -36,8 +36,17 @@ class _IngredientChipState extends State<IngredientChip> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.ingredient, style: AppTextStyles.bodyMedium),
+            Flexible(
+              child: Text(
+                widget.ingredient,
+                style: AppTextStyles.bodyMedium,
+                softWrap: true,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
             if (widget.onRemove != null) ...[
               const SizedBox(width: 8),
               GestureDetector(

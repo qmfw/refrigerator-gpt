@@ -17,11 +17,15 @@ const Map<String, String> thaiStrings = {
   AppStrings.photos: 'รูปภาพ',
   AppStrings.thisIsEnough: 'พอแล้ว',
   AppStrings.addAnotherPhoto: 'เพิ่มรูปภาพอีก',
+  AppStrings.addPhoto: 'เพิ่มรูปภาพ',
+  AppStrings.takePhoto: 'ถ่ายรูป',
+  AppStrings.chooseFromGallery: 'เลือกจากแกลเลอรี',
   AppStrings.confirmIngredients: 'ยืนยันส่วนผสม',
   AppStrings.heresWhatIThink: 'นี่คือสิ่งที่ฉันคิดว่าคุณมี',
   AppStrings.mightBeWrong: 'ฉันอาจผิดได้ แก้ไขอะไรก็ได้',
   AppStrings.addSomethingElse: 'เพิ่มอย่างอื่น…',
   AppStrings.cookWithThis: '🍳 ปรุงด้วยสิ่งนี้',
+  AppStrings.noIngredientsFound: 'ฉันไม่สามารถระบุส่วนผสมอาหารในภาพเหล่านี้ได้',
   AppStrings.lookingClosely: 'กำลังดูอย่างใกล้ชิด…',
   AppStrings.fridgeHasPotential: 'ตู้เย็นนี้มีศักยภาพ',
   AppStrings.heresWhatYouCanMake: 'นี่คือสิ่งที่คุณสามารถทำได้',
@@ -47,12 +51,40 @@ const Map<String, String> thaiStrings = {
   AppStrings.ok: 'ตกลง',
   AppStrings.history: 'ประวัติ',
   AppStrings.emptyHistory: 'ยังไม่มีประวัติ',
+  AppStrings.minutesAgo: '{minutes} นาทีที่แล้ว',
   AppStrings.hoursAgo: '{hours} ชั่วโมงที่แล้ว',
   AppStrings.yesterday: 'เมื่อวาน',
   AppStrings.daysAgo: '{days} วันที่แล้ว',
   AppStrings.weekAgo: '1 สัปดาห์ที่แล้ว',
   AppStrings.weeksAgo: '{weeks} สัปดาห์ที่แล้ว',
-  AppStrings.dietPreferences: 'ไทย',
+  AppStrings.dietPreferences: 'ความชอบด้านอาหาร',
   AppStrings.dietPreferencesHelper:
       'เราจะพยายามหลีกเลี่ยงสิ่งเหล่านี้เมื่อแนะนำสูตรอาหาร',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: 'หลีกเลี่ยงส่วนผสม',
+  AppStrings.dietStyle: 'สไตล์อาหาร',
+  AppStrings.cookingPreferences: 'ความชอบในการทำอาหาร',
+  AppStrings.religious: 'ศาสนา',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'ถั่ว',
+  AppStrings.shellfish: 'หอย',
+  AppStrings.dairy: 'ผลิตภัณฑ์นม',
+  AppStrings.eggs: 'ไข่',
+  AppStrings.gluten: 'กลูเตน',
+  AppStrings.soy: 'ถั่วเหลือง',
+
+  // Diet Style
+  AppStrings.vegan: 'วีแกน',
+  AppStrings.vegetarian: 'มังสวิรัติ',
+  AppStrings.pescatarian: 'เพสคาทาเรียน',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: 'คาร์บต่ำ',
+  AppStrings.lowFat: 'ไขมันต่ำ',
+
+  // Religious
+  AppStrings.halal: 'ฮาลาล',
+  AppStrings.kosher: 'โคเชอร์',
 };

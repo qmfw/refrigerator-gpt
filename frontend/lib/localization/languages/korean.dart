@@ -17,11 +17,15 @@ const Map<String, String> koreanStrings = {
   AppStrings.photos: '사진',
   AppStrings.thisIsEnough: '이것으로 충분합니다',
   AppStrings.addAnotherPhoto: '다른 사진 추가',
+  AppStrings.addPhoto: '사진 추가',
+  AppStrings.takePhoto: '사진 촬영',
+  AppStrings.chooseFromGallery: '갤러리에서 선택',
   AppStrings.confirmIngredients: '재료 확인',
   AppStrings.heresWhatIThink: '이것이 가지고 계신 것 같습니다.',
   AppStrings.mightBeWrong: '틀릴 수 있습니다. 수정해주세요.',
   AppStrings.addSomethingElse: '다른 것 추가…',
   AppStrings.cookWithThis: '🍳 이것으로 요리하기',
+  AppStrings.noIngredientsFound: '죄송합니다. 이 이미지에서 식품 재료를 식별할 수 없습니다.',
   AppStrings.lookingClosely: '자세히 살펴보는 중…',
   AppStrings.fridgeHasPotential: '이 냉장고에는 가능성이 있습니다.',
   AppStrings.heresWhatYouCanMake: '만들 수 있는 것들',
@@ -62,11 +66,39 @@ const Map<String, String> koreanStrings = {
   AppStrings.cancel: '취소',
   AppStrings.history: '기록',
   AppStrings.emptyHistory: '아직 기록이 없습니다',
+  AppStrings.minutesAgo: '{minutes}분 전',
   AppStrings.hoursAgo: '{hours}시간 전',
   AppStrings.yesterday: '어제',
   AppStrings.daysAgo: '{days}일 전',
   AppStrings.weekAgo: '1주일 전',
   AppStrings.weeksAgo: '{weeks}주 전',
-  AppStrings.dietPreferences: '한국어',
+  AppStrings.dietPreferences: '식이 선호도',
   AppStrings.dietPreferencesHelper: '레시피를 제안할 때 이것들을 피하려고 합니다.',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: '피할 재료',
+  AppStrings.dietStyle: '식이 스타일',
+  AppStrings.cookingPreferences: '요리 선호도',
+  AppStrings.religious: '종교적',
+
+  // Avoid Ingredients
+  AppStrings.nuts: '견과류',
+  AppStrings.shellfish: '갑각류',
+  AppStrings.dairy: '유제품',
+  AppStrings.eggs: '계란',
+  AppStrings.gluten: '글루텐',
+  AppStrings.soy: '콩',
+
+  // Diet Style
+  AppStrings.vegan: '비건',
+  AppStrings.vegetarian: '채식주의자',
+  AppStrings.pescatarian: '페스카타리안',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: '저탄수화물',
+  AppStrings.lowFat: '저지방',
+
+  // Religious
+  AppStrings.halal: '할랄',
+  AppStrings.kosher: '코셔',
 };

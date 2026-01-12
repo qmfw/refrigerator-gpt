@@ -17,11 +17,16 @@ const Map<String, String> vietnameseStrings = {
   AppStrings.photos: 'ảnh',
   AppStrings.thisIsEnough: 'Đủ rồi',
   AppStrings.addAnotherPhoto: 'Thêm ảnh khác',
+  AppStrings.addPhoto: 'Thêm ảnh',
+  AppStrings.takePhoto: 'Chụp ảnh',
+  AppStrings.chooseFromGallery: 'Chọn từ thư viện',
   AppStrings.confirmIngredients: 'Xác nhận nguyên liệu',
   AppStrings.heresWhatIThink: 'Đây là những gì tôi nghĩ bạn có.',
   AppStrings.mightBeWrong: 'Tôi có thể sai. Sửa bất cứ thứ gì.',
   AppStrings.addSomethingElse: 'Thêm thứ khác…',
   AppStrings.cookWithThis: '🍳 Nấu với cái này',
+  AppStrings.noIngredientsFound:
+      'Tôi không thể xác định nguyên liệu thực phẩm nào trong những hình ảnh này.',
   AppStrings.lookingClosely: 'Đang xem kỹ…',
   AppStrings.fridgeHasPotential: 'Tủ lạnh này có tiềm năng.',
   AppStrings.heresWhatYouCanMake: 'Đây là những gì bạn có thể làm',
@@ -47,12 +52,40 @@ const Map<String, String> vietnameseStrings = {
   AppStrings.ok: 'OK',
   AppStrings.history: 'Lịch sử',
   AppStrings.emptyHistory: 'Chưa có lịch sử',
+  AppStrings.minutesAgo: '{minutes} phút trước',
   AppStrings.hoursAgo: '{hours} giờ trước',
   AppStrings.yesterday: 'Hôm qua',
   AppStrings.daysAgo: '{days} ngày trước',
   AppStrings.weekAgo: '1 tuần trước',
   AppStrings.weeksAgo: '{weeks} tuần trước',
-  AppStrings.dietPreferences: 'Tiếng Việt',
+  AppStrings.dietPreferences: 'Sở Thích Ăn Uống',
   AppStrings.dietPreferencesHelper:
       'Chúng tôi sẽ cố gắng tránh những điều này khi đề xuất công thức.',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: 'Tránh Nguyên Liệu',
+  AppStrings.dietStyle: 'Phong Cách Ăn Uống',
+  AppStrings.cookingPreferences: 'Sở Thích Nấu Ăn',
+  AppStrings.religious: 'Tôn Giáo',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'Hạt',
+  AppStrings.shellfish: 'Hải Sản Có Vỏ',
+  AppStrings.dairy: 'Sữa',
+  AppStrings.eggs: 'Trứng',
+  AppStrings.gluten: 'Gluten',
+  AppStrings.soy: 'Đậu Nành',
+
+  // Diet Style
+  AppStrings.vegan: 'Thuần Chay',
+  AppStrings.vegetarian: 'Chay',
+  AppStrings.pescatarian: 'Pescatarian',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: 'Ít Carb',
+  AppStrings.lowFat: 'Ít Béo',
+
+  // Religious
+  AppStrings.halal: 'Halal',
+  AppStrings.kosher: 'Kosher',
 };

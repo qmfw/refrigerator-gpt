@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../components/components.dart';
 import '../theme/app_colors.dart';
 import '../localization/app_localizations_extension.dart';
-import '../services/history_storage_service.dart';
+import '../services/api/recipe_service.dart';
+import '../services/history_cache_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -12,7 +15,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  final HistoryStorageService _historyService = HistoryStorageService();
+  final RecipeService _recipeService = RecipeService();
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +61,52 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         isDestructive: true,
                       );
                       if (confirmed == true && context.mounted) {
-                        await _historyService.clearHistory();
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(context.l10n.historyCleared),
-                            ),
+                        try {
+                          // Get device ID
+                          final prefs = await SharedPreferences.getInstance();
+                          String? appAccountToken = prefs.getString(
+                            'device_id',
                           );
+                          if (appAccountToken == null ||
+                              appAccountToken.isEmpty) {
+                            appAccountToken = const Uuid().v4();
+                            await prefs.setString('device_id', appAccountToken);
+                          }
+
+                          // Clear history from server
+                          await _recipeService.clearHistory(
+                            appAccountToken: appAccountToken,
+                          );
+
+                          // Immediately fetch history to update cache with empty result
+                          final currentLanguage = context.languageCode;
+                          final history = await _recipeService.getHistory(
+                            appAccountToken: appAccountToken,
+                            language: currentLanguage,
+                          );
+
+                          // Update global cache with empty history
+                          HistoryCacheService().updateCache(
+                            history,
+                            currentLanguage,
+                          );
+
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(context.l10n.historyCleared),
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Failed to clear history: $e'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
                         }
                       }
                     },

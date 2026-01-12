@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import '../../models/ingredient_detection_response.dart';
 import '../../config/url.dart';
 import '../image_preprocessing_service.dart';
+import 'api_error_handler.dart';
 
 /// Detection service for ingredient detection from images
 ///
@@ -56,14 +57,28 @@ class DetectionService {
     }
 
     // Send request
-    final streamedResponse = await request.send();
-    final response = await http.Response.fromStream(streamedResponse);
+    return ApiErrorHandler.handleApiCall<IngredientDetectionResponse>(
+      method: 'POST',
+      endpoint: '/detect-ingredients',
+      uri: request.url,
+      errorPrefix: 'Failed to detect ingredients',
+      apiCall: () async {
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
 
-    if (response.statusCode != 200) {
-      throw Exception('Failed to detect ingredients: ${response.body}');
-    }
+        if (response.statusCode != 200) {
+          ApiErrorHandler.handleHttpError(
+            'POST',
+            '/detect-ingredients',
+            response,
+            request.url,
+          );
+          throw Exception('Failed to detect ingredients: ${response.body}');
+        }
 
-    final jsonData = json.decode(response.body);
-    return IngredientDetectionResponse.fromJson(jsonData);
+        final jsonData = json.decode(response.body);
+        return IngredientDetectionResponse.fromJson(jsonData);
+      },
+    );
   }
 }

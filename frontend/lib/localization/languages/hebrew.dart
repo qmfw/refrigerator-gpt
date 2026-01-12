@@ -17,11 +17,15 @@ const Map<String, String> hebrewStrings = {
   AppStrings.photos: 'תמונות',
   AppStrings.thisIsEnough: 'זה מספיק',
   AppStrings.addAnotherPhoto: 'הוסף תמונה נוספת',
+  AppStrings.addPhoto: 'הוסף תמונה',
+  AppStrings.takePhoto: 'צלם תמונה',
+  AppStrings.chooseFromGallery: 'בחר מהגלריה',
   AppStrings.confirmIngredients: 'אשר מרכיבים',
   AppStrings.heresWhatIThink: 'הנה מה שאני חושב שיש לך.',
   AppStrings.mightBeWrong: 'אני עלול לטעות. תקן כל דבר.',
   AppStrings.addSomethingElse: 'הוסף משהו אחר…',
   AppStrings.cookWithThis: '🍳 בישל עם זה',
+  AppStrings.noIngredientsFound: 'אני לא יכול לזהות מרכיבי מזון בתמונות אלה.',
   AppStrings.lookingClosely: 'מסתכל מקרוב…',
   AppStrings.fridgeHasPotential: 'למקרר הזה יש פוטנציאל.',
   AppStrings.heresWhatYouCanMake: 'הנה מה שאתה יכול להכין',
@@ -47,11 +51,39 @@ const Map<String, String> hebrewStrings = {
   AppStrings.ok: 'אישור',
   AppStrings.history: 'היסטוריה',
   AppStrings.emptyHistory: 'אין היסטוריה עדיין',
+  AppStrings.minutesAgo: 'לפני {minutes} דקות',
   AppStrings.hoursAgo: 'לפני {hours} שעות',
   AppStrings.yesterday: 'אתמול',
   AppStrings.daysAgo: 'לפני {days} ימים',
   AppStrings.weekAgo: 'לפני שבוע אחד',
   AppStrings.weeksAgo: 'לפני {weeks} שבועות',
-  AppStrings.dietPreferences: 'עברית',
+  AppStrings.dietPreferences: 'העדפות תזונה',
   AppStrings.dietPreferencesHelper: 'ננסה להימנע מהם בעת הצעת מתכונים.',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: 'הימנע ממרכיבים',
+  AppStrings.dietStyle: 'סגנון תזונה',
+  AppStrings.cookingPreferences: 'העדפות בישול',
+  AppStrings.religious: 'דתי',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'אגוזים',
+  AppStrings.shellfish: 'פירות ים',
+  AppStrings.dairy: 'מוצרי חלב',
+  AppStrings.eggs: 'ביצים',
+  AppStrings.gluten: 'גלוטן',
+  AppStrings.soy: 'סויה',
+
+  // Diet Style
+  AppStrings.vegan: 'טבעוני',
+  AppStrings.vegetarian: 'צמחוני',
+  AppStrings.pescatarian: 'פסקטריאני',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: 'פחמימות נמוכות',
+  AppStrings.lowFat: 'שומן נמוך',
+
+  // Religious
+  AppStrings.halal: 'חלאל',
+  AppStrings.kosher: 'כשר',
 };

@@ -3,6 +3,7 @@ import '../components/components.dart';
 import '../theme/app_colors.dart';
 import '../localization/app_localizations_extension.dart';
 import '../models/models.dart';
+import '../services/api/recipe_service.dart';
 
 class RecipeResultsScreen extends StatefulWidget {
   const RecipeResultsScreen({super.key});
@@ -18,17 +19,59 @@ class _RecipeResultsScreenState extends State<RecipeResultsScreen> {
   @override
   void initState() {
     super.initState();
-    _loadRecipes();
+    // Defer loading until after first frame is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _loadRecipes();
+      }
+    });
   }
 
-  void _loadRecipes() {
-    // Get recipes from route arguments
-    final recipes = ModalRoute.of(context)?.settings.arguments as List<Recipe>?;
+  Future<void> _loadRecipes() async {
+    // Get recipes or recipe ID from route arguments
+    final args = ModalRoute.of(context)?.settings.arguments;
 
-    setState(() {
-      _recipes = recipes ?? [];
-      _isLoading = false;
-    });
+    if (args is List<Recipe>) {
+      // Recipes passed directly (from recipe generation)
+      if (mounted) {
+        setState(() {
+          _recipes = args;
+          _isLoading = false;
+        });
+      }
+    } else if (args is String) {
+      // Recipe ID passed (from history)
+      try {
+        final recipeService = RecipeService();
+        final language = context.languageCode;
+        final recipe = await recipeService.getRecipe(
+          recipeId: args,
+          language: language,
+        );
+        if (mounted) {
+          setState(() {
+            _recipes = [recipe];
+            _isLoading = false;
+          });
+        }
+      } catch (e) {
+        // Failed to fetch recipe - show empty state
+        if (mounted) {
+          setState(() {
+            _recipes = [];
+            _isLoading = false;
+          });
+        }
+      }
+    } else {
+      // No arguments - empty state
+      if (mounted) {
+        setState(() {
+          _recipes = [];
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -94,9 +137,11 @@ class _RecipeResultsScreenState extends State<RecipeResultsScreen> {
                                   text: context.l10n.editIngredients,
                                   icon: Icons.edit,
                                   onPressed: () {
+                                    // Pass empty list to start fresh
                                     Navigator.pushNamed(
                                       context,
                                       '/confirm-ingredients',
+                                      arguments: <Ingredient>[],
                                     );
                                   },
                                   fullWidth: true,

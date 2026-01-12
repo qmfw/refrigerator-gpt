@@ -17,11 +17,16 @@ const Map<String, String> bengaliStrings = {
   AppStrings.photos: 'ছবি',
   AppStrings.thisIsEnough: 'এটাই যথেষ্ট',
   AppStrings.addAnotherPhoto: 'আরেকটি ছবি যোগ করুন',
+  AppStrings.addPhoto: 'ছবি যোগ করুন',
+  AppStrings.takePhoto: 'ছবি তুলুন',
+  AppStrings.chooseFromGallery: 'গ্যালারি থেকে নির্বাচন করুন',
   AppStrings.confirmIngredients: 'উপাদান নিশ্চিত করুন',
   AppStrings.heresWhatIThink: 'আমার মনে হয় আপনার কাছে এগুলো আছে।',
   AppStrings.mightBeWrong: 'আমি ভুল হতে পারি। যেকোনো কিছু ঠিক করুন।',
   AppStrings.addSomethingElse: 'অন্য কিছু যোগ করুন…',
   AppStrings.cookWithThis: '🍳 এটি দিয়ে রান্না করুন',
+  AppStrings.noIngredientsFound:
+      'আমি এই ছবিগুলিতে কোনো খাদ্য উপাদান সনাক্ত করতে পারছি না।',
   AppStrings.lookingClosely: 'কাছ থেকে দেখছি…',
   AppStrings.fridgeHasPotential: 'এই ফ্রিজের সম্ভাবনা আছে।',
   AppStrings.heresWhatYouCanMake: 'আপনি এটি তৈরি করতে পারেন',
@@ -47,12 +52,40 @@ const Map<String, String> bengaliStrings = {
   AppStrings.ok: 'ঠিক আছে',
   AppStrings.history: 'ইতিহাস',
   AppStrings.emptyHistory: 'এখনও কোন ইতিহাস নেই',
+  AppStrings.minutesAgo: '{minutes} মিনিট আগে',
   AppStrings.hoursAgo: '{hours} ঘন্টা আগে',
   AppStrings.yesterday: 'গতকাল',
   AppStrings.daysAgo: '{days} দিন আগে',
   AppStrings.weekAgo: '1 সপ্তাহ আগে',
   AppStrings.weeksAgo: '{weeks} সপ্তাহ আগে',
-  AppStrings.dietPreferences: 'বাংলা',
+  AppStrings.dietPreferences: 'খাদ্য পছন্দ',
   AppStrings.dietPreferencesHelper:
       'আমরা রেসিপি প্রস্তাব করার সময় এগুলি এড়ানোর চেষ্টা করব।',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: 'এড়াতে উপাদান',
+  AppStrings.dietStyle: 'খাদ্য শৈলী',
+  AppStrings.cookingPreferences: 'রান্নার পছন্দ',
+  AppStrings.religious: 'ধর্মীয়',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'বাদাম',
+  AppStrings.shellfish: 'শেলফিশ',
+  AppStrings.dairy: 'দুগ্ধজাত',
+  AppStrings.eggs: 'ডিম',
+  AppStrings.gluten: 'গ্লুটেন',
+  AppStrings.soy: 'সয়াবিন',
+
+  // Diet Style
+  AppStrings.vegan: 'ভেগান',
+  AppStrings.vegetarian: 'নিরামিষ',
+  AppStrings.pescatarian: 'পেসকেটারিয়ান',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: 'কম কার্ব',
+  AppStrings.lowFat: 'কম ফ্যাট',
+
+  // Religious
+  AppStrings.halal: 'হালাল',
+  AppStrings.kosher: 'কোশার',
 };

@@ -45,62 +45,63 @@ class OpenAIService:
         
         # Create ultra-short prompt for cost optimization
         # COST REDUCTION: Return ONLY comma-separated list, no JSON, no descriptions, max 10 items
+        # IMPORTANT: Only food ingredients, ignore hands, backgrounds, surfaces, containers
         # Language order matches Flutter AppLanguage enum: english, arabic, bengali, chinese, danish, dutch, finnish, french, german, greek, hebrew, hindi, indonesian, italian, japanese, korean, norwegian, polish, portuguese, romanian, russian, spanish, swedish, thai, turkish, ukrainian, vietnamese
         language_prompts = {
             # English (first)
-            "en": "Return ONLY a comma-separated list of ingredients you see. No explanations. No sentences. Max 10 items.",
+            "en": "Return ONLY food ingredients separated by commas. Ignore hands, backgrounds, surfaces, containers. No explanations. Max 10 items.",
             # Arabic
-            "ar": "أعد فقط قائمة مكونات مفصولة بفواصل. لا تفسيرات. لا جمل. حد أقصى 10 عناصر.",
+            "ar": "أعد فقط مكونات الطعام مفصولة بفواصل. تجاهل الأيدي والخلفيات والأسطح والحاويات. لا تفسيرات. حد أقصى 10 عناصر.",
             # Bengali
-            "bn": "শুধুমাত্র কমা দ্বারা পৃথক করা উপাদানের তালিকা ফেরত দিন। কোন ব্যাখ্যা নেই। কোন বাক্য নেই। সর্বোচ্চ 10টি আইটেম।",
+            "bn": "শুধুমাত্র খাদ্য উপাদান কমা দ্বারা পৃথক করে ফেরত দিন। হাত, পটভূমি, পৃষ্ঠতল, পাত্র উপেক্ষা করুন। কোন ব্যাখ্যা নেই। সর্বোচ্চ 10টি আইটেম।",
             # Chinese
-            "zh": "只返回用逗号分隔的成分列表。无解释。无句子。最多10项。",
+            "zh": "只返回用逗号分隔的食物成分。忽略手、背景、表面、容器。无解释。最多10项。",
             # Danish
-            "da": "Returner kun komma-separeret liste af ingredienser. Ingen forklaringer. Ingen sætninger. Max 10 emner.",
+            "da": "Returner kun madingredienser adskilt af kommaer. Ignorer hænder, baggrunde, overflader, beholdere. Ingen forklaringer. Max 10 emner.",
             # Dutch
-            "nl": "Geef alleen een komma-gescheiden lijst van ingrediënten. Geen uitleg. Geen zinnen. Max 10 items.",
+            "nl": "Geef alleen voedselingrediënten gescheiden door komma's. Negeer handen, achtergronden, oppervlakken, containers. Geen uitleg. Max 10 items.",
             # Finnish
-            "fi": "Palauta vain pilkulla erotettu aineiden lista. Ei selityksiä. Ei lauseita. Max 10 kohdetta.",
+            "fi": "Palauta vain ruoka-aineet pilkuilla erotettuina. Ohita kädet, taustat, pinnat, astiat. Ei selityksiä. Max 10 kohdetta.",
             # French
-            "fr": "Retournez uniquement une liste d'ingrédients séparés par des virgules. Pas d'explications. Pas de phrases. Max 10 éléments.",
+            "fr": "Retournez uniquement des ingrédients alimentaires séparés par des virgules. Ignorez les mains, arrière-plans, surfaces, contenants. Pas d'explications. Max 10 éléments.",
             # German
-            "de": "Geben Sie nur eine kommagetrennte Liste von Zutaten zurück. Keine Erklärungen. Keine Sätze. Max 10 Artikel.",
+            "de": "Geben Sie nur Lebensmittelzutaten durch Kommas getrennt zurück. Ignorieren Sie Hände, Hintergründe, Oberflächen, Behälter. Keine Erklärungen. Max 10 Artikel.",
             # Greek
-            "el": "Επιστρέψτε μόνο λίστα συστατικών διαχωρισμένη με κόμματα. Χωρίς εξηγήσεις. Χωρίς προτάσεις. Μέγιστο 10 στοιχεία.",
+            "el": "Επιστρέψτε μόνο συστατικά φαγητού διαχωρισμένα με κόμματα. Αγνοήστε χέρια, φόντα, επιφάνειες, δοχεία. Χωρίς εξηγήσεις. Μέγιστο 10 στοιχεία.",
             # Hebrew
-            "he": "החזר רק רשימת מרכיבים מופרדת בפסיקים. ללא הסברים. ללא משפטים. מקסימום 10 פריטים.",
+            "he": "החזר רק מרכיבי מזון מופרדים בפסיקים. התעלם מידיים, רקעים, משטחים, מיכלים. ללא הסברים. מקסימום 10 פריטים.",
             # Hindi
-            "hi": "केवल अल्पविराम से अलग किए गए सामग्री की सूची लौटाएं। कोई स्पष्टीकरण नहीं। कोई वाक्य नहीं। अधिकतम 10 आइटम।",
+            "hi": "केवल खाद्य सामग्री अल्पविराम से अलग करके लौटाएं। हाथ, पृष्ठभूमि, सतह, कंटेनर को नजरअंदाज करें। कोई स्पष्टीकरण नहीं। अधिकतम 10 आइटम।",
             # Indonesian
-            "id": "Kembalikan hanya daftar bahan yang dipisahkan koma. Tanpa penjelasan. Tanpa kalimat. Maks 10 item.",
+            "id": "Kembalikan hanya bahan makanan yang dipisahkan koma. Abaikan tangan, latar belakang, permukaan, wadah. Tanpa penjelasan. Maks 10 item.",
             # Italian
-            "it": "Restituisci solo un elenco di ingredienti separati da virgole. Nessuna spiegazione. Nessuna frase. Max 10 elementi.",
+            "it": "Restituisci solo ingredienti alimentari separati da virgole. Ignora mani, sfondi, superfici, contenitori. Nessuna spiegazione. Max 10 elementi.",
             # Japanese
-            "ja": "見える材料をカンマ区切りのリストのみ返す。説明なし。文なし。最大10項目。",
+            "ja": "食品材料のみをカンマ区切りで返す。手、背景、床、光、表面、容器は無視。説明なし。最大10項目。",
             # Korean
-            "ko": "보이는 재료만 쉼표로 구분된 목록으로 반환. 설명 없음. 문장 없음. 최대 10개 항목.",
+            "ko": "음식 재료만 쉼표로 구분하여 반환. 손, 배경, 바닥, 표면, 용기는 무시. 설명 없음. 최대 10개 항목.",
             # Norwegian
-            "no": "Returner kun komma-separert liste av ingredienser. Ingen forklaringer. Ingen setninger. Maks 10 elementer.",
+            "no": "Returner kun matingredienser adskilt med kommaer. Ignorer hender, bakgrunner, overflater, beholdere. Ingen forklaringer. Maks 10 elementer.",
             # Polish
-            "pl": "Zwróć tylko listę składników oddzielonych przecinkami. Bez wyjaśnień. Bez zdań. Max 10 pozycji.",
+            "pl": "Zwróć tylko składniki żywności oddzielone przecinkami. Ignoruj dłonie, tła, powierzchnie, pojemniki. Bez wyjaśnień. Max 10 pozycji.",
             # Portuguese
-            "pt": "Retorne apenas uma lista de ingredientes separados por vírgulas. Sem explicações. Sem frases. Máx 10 itens.",
+            "pt": "Retorne apenas ingredientes alimentares separados por vírgulas. Ignore mãos, fundos, superfícies, recipientes. Sem explicações. Máx 10 itens.",
             # Romanian
-            "ro": "Returnează doar o listă de ingrediente separate prin virgulă. Fără explicații. Fără propoziții. Max 10 elemente.",
+            "ro": "Returnează doar ingrediente alimentare separate prin virgulă. Ignoră mâinile, fundalurile, suprafețele, containerele. Fără explicații. Max 10 elemente.",
             # Russian
-            "ru": "Верните только список ингредиентов через запятую. Без объяснений. Без предложений. Макс 10 элементов.",
+            "ru": "Верните только пищевые ингредиенты через запятую. Игнорируйте руки, фоны, поверхности, контейнеры. Без объяснений. Макс 10 элементов.",
             # Spanish
-            "es": "Devuelve solo una lista de ingredientes separados por comas. Sin explicaciones. Sin oraciones. Máx 10 elementos.",
+            "es": "Devuelve solo ingredientes alimentarios separados por comas. Ignora manos, fondos, superficies, contenedores. Sin explicaciones. Máx 10 elementos.",
             # Swedish
-            "sv": "Returnera endast en komma-separerad lista av ingredienser. Inga förklaringar. Inga meningar. Max 10 objekt.",
+            "sv": "Returnera endast livsmedelsingredienser separerade med kommatecken. Ignorera händer, bakgrunder, ytor, behållare. Inga förklaringar. Max 10 objekt.",
             # Thai
-            "th": "คืนเฉพาะรายการส่วนผสมที่คั่นด้วยจุลภาค ไม่มีคำอธิบาย ไม่มีประโยค สูงสุด 10 รายการ",
+            "th": "คืนเฉพาะส่วนผสมอาหารที่คั่นด้วยจุลภาค ไม่สนใจมือ พื้นหลัง พื้นผิว ภาชนะ ไม่มีคำอธิบาย สูงสุด 10 รายการ",
             # Turkish
-            "tr": "Sadece virgülle ayrılmış malzeme listesi döndür. Açıklama yok. Cümle yok. Maks 10 öğe.",
+            "tr": "Sadece virgülle ayrılmış gıda malzemeleri döndür. Elleri, arka planları, yüzeyleri, kapları yoksay. Açıklama yok. Maks 10 öğe.",
             # Ukrainian
-            "uk": "Поверніть лише список інгредієнтів через кому. Без пояснень. Без речень. Макс 10 елементів.",
+            "uk": "Поверніть лише харчові інгредієнти через кому. Ігноруйте руки, фони, поверхні, контейнери. Без пояснень. Макс 10 елементів.",
             # Vietnamese
-            "vi": "Chỉ trả về danh sách nguyên liệu cách nhau bằng dấu phẩy. Không giải thích. Không câu. Tối đa 10 mục.",
+            "vi": "Chỉ trả về nguyên liệu thực phẩm cách nhau bằng dấu phẩy. Bỏ qua tay, nền, bề mặt, hộp đựng. Không giải thích. Tối đa 10 mục.",
         }
         
         prompt = language_prompts.get(language, language_prompts["en"])
@@ -146,16 +147,59 @@ class OpenAIService:
             # Limit to max 10 items as per prompt
             ingredient_names = ingredient_names[:10]
             
+            # List of non-food items and error messages to filter out
+            non_food_keywords = {
+                'en': ['hand', 'hands', 'background', 'floor', 'surface', 'light', 'container', 'table', 'counter'],
+                'ja': ['手', '背景', '床', '光', '表面', '容器', 'テーブル', 'カウンター'],
+                'ar': ['يد', 'خلفية', 'أرضية', 'ضوء', 'سطح', 'حاوية'],
+                'zh': ['手', '背景', '地板', '光', '表面', '容器'],
+                'ko': ['손', '배경', '바닥', '빛', '표면', '용기'],
+                # Add more languages as needed
+            }
+            
+            # Error messages to filter out (apologies, can't identify, etc.)
+            error_messages = {
+                'en': ['sorry', "i'm sorry", "i can't", "can't identify", "cannot identify", "unable to identify", "no ingredients", "no food"],
+                'ja': ['申し訳', 'ごめん', '特定できません', '特定することはできません', '材料を特定', '食品材料を特定', '材料が見つかりません'],
+                'ar': ['آسف', 'عذراً', 'لا يمكن', 'لا أستطيع', 'لم أتمكن'],
+                'zh': ['抱歉', '对不起', '无法识别', '无法确定', '不能识别'],
+                'ko': ['죄송', '미안', '식별할 수 없', '재료를 찾을 수 없'],
+                # Add more languages as needed
+            }
+            
+            # Get language-specific keywords or use English as fallback
+            keywords_to_filter = non_food_keywords.get(language, non_food_keywords['en'])
+            error_keywords = error_messages.get(language, error_messages['en'])
+            
             # Create ingredient objects
             ingredients = []
             for name in ingredient_names:
-                # Clean up ingredient name (remove numbers, bullets, etc.)
-                clean_name = name.lstrip('0123456789.-• ').strip()
-                if clean_name:
-                    ingredients.append({
-                        "id": f"ing_{str(uuid.uuid4())[:8]}",
-                        "name": clean_name
-                    })
+                # Clean up ingredient name (remove leading/trailing numbers, bullets, periods, etc.)
+                clean_name = name.lstrip('0123456789.-• ').rstrip('.-• ').strip()
+                
+                # Remove trailing periods and other punctuation
+                while clean_name and clean_name[-1] in '.,;:!?•':
+                    clean_name = clean_name[:-1].strip()
+                
+                # Skip if empty after cleaning
+                if not clean_name:
+                    continue
+                
+                # Filter out error messages (case-insensitive check)
+                clean_lower = clean_name.lower()
+                is_error_message = any(error in clean_lower for error in error_keywords)
+                if is_error_message:
+                    continue  # Skip error messages
+                
+                # Filter out non-food items (case-insensitive check)
+                is_non_food = any(keyword.lower() in clean_lower for keyword in keywords_to_filter)
+                if is_non_food:
+                    continue  # Skip this ingredient
+                
+                ingredients.append({
+                    "id": f"ing_{str(uuid.uuid4())[:8]}",
+                    "name": clean_name
+                })
             
             # Generate detection ID
             detection_id = f"det_{str(uuid.uuid4())[:12]}"
@@ -176,7 +220,9 @@ class OpenAIService:
         self,
         ingredients: List[Any],
         language: str = "en",
-        max_recipes: int = 3
+        max_recipes: int = 3,
+        user_tier: str = "free",
+        diet_preferences: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
         Generate recipes from ingredients using OpenAI GPT-4
@@ -185,6 +231,8 @@ class OpenAIService:
             ingredients: List of ingredient objects (Pydantic models or dicts) with 'id' and 'name'
             language: Language code for recipe generation
             max_recipes: Maximum number of recipes to generate
+            user_tier: 'free' or 'premium' - determines prompt strategy
+            diet_preferences: Optional dict with avoid_ingredients, diet_style, cooking_preferences, religious
             
         Returns:
             Dict with recipes and generation_id
@@ -200,27 +248,66 @@ class OpenAIService:
                 ingredient_names.append(getattr(ing, "name", ""))
         ingredient_list = ", ".join(ingredient_names)
         
+        # Build diet preferences constraints if premium user
+        constraints_text = ""
+        if user_tier == "premium" and diet_preferences:
+            constraints = []
+            
+            # Avoid ingredients
+            avoid = diet_preferences.get("avoid_ingredients", [])
+            if avoid:
+                constraints.append(f"Avoid these ingredients: {', '.join(avoid)}")
+            
+            # Diet style
+            diet_style = diet_preferences.get("diet_style", [])
+            if diet_style:
+                constraints.append(f"Diet style: {', '.join(diet_style)}")
+            
+            # Cooking preferences
+            cooking = diet_preferences.get("cooking_preferences", [])
+            if cooking:
+                constraints.append(f"Cooking preferences: {', '.join(cooking)}")
+            
+            # Religious
+            religious = diet_preferences.get("religious", [])
+            if religious:
+                constraints.append(f"Religious requirements: {', '.join(religious)}")
+            
+            if constraints:
+                constraints_text = "\n\nIMPORTANT CONSTRAINTS (MUST BE FOLLOWED STRICTLY):\n" + "\n".join(f"- {c}" for c in constraints) + "\n\nIf no safe recipe exists with these constraints, return an empty array with a message explaining why."
+        
+        # Determine prompt strategy based on user tier
+        if user_tier == "premium" and diet_preferences:
+            # Premium user: Conservative, safety-first, strict constraints
+            system_message = """You are a careful, safety-first chef assistant. Generate recipes that strictly respect dietary preferences and constraints. Safety and compliance are more important than creativity. If ingredients conflict with preferences, exclude those ingredients or suggest alternatives. Never violate dietary constraints. If no safe recipe exists, politely explain why."""
+            temperature = 0.3  # Lower temperature for more conservative responses
+        else:
+            # Free user: Creative, forgiving, flexible
+            system_message = """You are a creative chef assistant. Generate practical, delicious recipes based on available ingredients. Be flexible and forgiving - messy fridges are okay. Make reasonable guesses. Prefer simple recipes."""
+            temperature = self.temperature  # Use configured temperature (medium)
+        
         # COST REDUCTION: Shorter, focused prompts - max 5 steps per recipe, keep it short
         # Language order matches Flutter AppLanguage enum: english, arabic, bengali, chinese, danish, dutch, finnish, french, german, greek, hebrew, hindi, indonesian, italian, japanese, korean, norwegian, polish, portuguese, romanian, russian, spanish, swedish, thai, turkish, ukrainian, vietnamese
-        language_prompts = {
+        # Base prompt template - constraints_text is added to all languages
+        base_prompts = {
             # English (first)
-            "en": f"""Ingredients: {ingredient_list}
+            "en": f"""Ingredients: {ingredient_list}{constraints_text}
 
 Create {max_recipes} simple recipes. Each recipe max 5 steps. Keep it short. No introductions.
 
 JSON format:
 [
-  {{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Title", "steps": ["Step 1", "Step 2"], "ingredients": ["ing1", "ing2"]}},
+  {{"emoji": "🍝", "badge": "fastLazy", "title": "Title", "steps": ["Step 1", "Step 2"], "ingredients": ["ing1", "ing2"]}},
   ...
 ]
 
-Return ONLY valid JSON array.""",
+Return ONLY valid JSON array. Do not include "id" field - it will be generated automatically.""",
             # Arabic
-            "ar": f"""المكونات: {ingredient_list}
+            "ar": f"""المكونات: {ingredient_list}{constraints_text}
 
 أنشئ {max_recipes} وصفات بسيطة. كل وصفة بحد أقصى 5 خطوات. اجعلها قصيرة. بدون مقدمات.
 
-تنسيق JSON: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "العنوان", "steps": ["خطوة 1"], "ingredients": ["مكون1"]}}]
+تنسيق JSON: [{{"emoji": "🍝", "badge": "fastLazy", "title": "العنوان", "steps": ["خطوة 1"], "ingredients": ["مكون1"]}}]
 
 أعد مصفوفة JSON صالحة فقط.""",
             # Bengali
@@ -228,7 +315,7 @@ Return ONLY valid JSON array.""",
 
 {max_recipes}টি সহজ রেসিপি তৈরি করুন। প্রতিটি রেসিপি সর্বোচ্চ 5 ধাপ। সংক্ষিপ্ত রাখুন। কোন ভূমিকা নেই।
 
-JSON ফরম্যাট: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "শিরোনাম", "steps": ["ধাপ 1"], "ingredients": ["উপাদান1"]}}]
+JSON ফরম্যাট: [{{"emoji": "🍝", "badge": "fastLazy", "title": "শিরোনাম", "steps": ["ধাপ 1"], "ingredients": ["উপাদান1"]}}]
 
 শুধুমাত্র বৈধ JSON অ্যারে ফেরত দিন।""",
             # Chinese
@@ -236,7 +323,7 @@ JSON ফরম্যাট: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastL
 
 创建{max_recipes}个简单食谱。每个食谱最多5步。保持简短。无介绍。
 
-JSON格式: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "标题", "steps": ["步骤1"], "ingredients": ["食材1"]}}]
+JSON格式: [{{"emoji": "🍝", "badge": "fastLazy", "title": "标题", "steps": ["步骤1"], "ingredients": ["食材1"]}}]
 
 仅返回有效JSON数组。""",
             # Danish
@@ -244,7 +331,7 @@ JSON格式: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "
 
 Lav {max_recipes} simple opskrifter. Hver opskrift max 5 trin. Hold det kort. Ingen introduktioner.
 
-JSON format: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Titel", "steps": ["Trin 1"], "ingredients": ["ing1"]}}]
+JSON format: [{{"emoji": "🍝", "badge": "fastLazy", "title": "Titel", "steps": ["Trin 1"], "ingredients": ["ing1"]}}]
 
 Returner KUN gyldig JSON array.""",
             # Dutch
@@ -252,7 +339,7 @@ Returner KUN gyldig JSON array.""",
 
 Maak {max_recipes} eenvoudige recepten. Elk recept max 5 stappen. Houd het kort. Geen inleidingen.
 
-JSON formaat: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Titel", "steps": ["Stap 1"], "ingredients": ["ing1"]}}]
+JSON formaat: [{{"emoji": "🍝", "badge": "fastLazy", "title": "Titel", "steps": ["Stap 1"], "ingredients": ["ing1"]}}]
 
 Geef ALLEEN geldig JSON array terug.""",
             # Finnish
@@ -260,7 +347,7 @@ Geef ALLEEN geldig JSON array terug.""",
 
 Luo {max_recipes} yksinkertaista reseptiä. Jokainen resepti max 5 vaihetta. Pidä lyhyenä. Ei johdantoja.
 
-JSON muoto: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Otsikko", "steps": ["Vaihe 1"], "ingredients": ["aine1"]}}]
+JSON muoto: [{{"emoji": "🍝", "badge": "fastLazy", "title": "Otsikko", "steps": ["Vaihe 1"], "ingredients": ["aine1"]}}]
 
 Palauta VAIN kelvollinen JSON taulukko.""",
             # French
@@ -268,7 +355,7 @@ Palauta VAIN kelvollinen JSON taulukko.""",
 
 Créez {max_recipes} recettes simples. Chaque recette max 5 étapes. Gardez court. Pas d'introductions.
 
-Format JSON: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Titre", "steps": ["Étape 1"], "ingredients": ["ing1"]}}]
+Format JSON: [{{"emoji": "🍝", "badge": "fastLazy", "title": "Titre", "steps": ["Étape 1"], "ingredients": ["ing1"]}}]
 
 Retournez UNIQUEMENT un tableau JSON valide.""",
             # German
@@ -276,7 +363,7 @@ Retournez UNIQUEMENT un tableau JSON valide.""",
 
 Erstellen Sie {max_recipes} einfache Rezepte. Jedes Rezept max 5 Schritte. Kurz halten. Keine Einleitungen.
 
-JSON Format: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Titel", "steps": ["Schritt 1"], "ingredients": ["Zutat1"]}}]
+JSON Format: [{{"emoji": "🍝", "badge": "fastLazy", "title": "Titel", "steps": ["Schritt 1"], "ingredients": ["Zutat1"]}}]
 
 Geben Sie NUR gültiges JSON Array zurück.""",
             # Greek
@@ -284,7 +371,7 @@ Geben Sie NUR gültiges JSON Array zurück.""",
 
 Δημιουργήστε {max_recipes} απλές συνταγές. Κάθε συνταγή max 5 βήματα. Κρατήστε το σύντομο. Χωρίς εισαγωγές.
 
-JSON μορφή: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Τίτλος", "steps": ["Βήμα 1"], "ingredients": ["συσ1"]}}]
+JSON μορφή: [{{"emoji": "🍝", "badge": "fastLazy", "title": "Τίτλος", "steps": ["Βήμα 1"], "ingredients": ["συσ1"]}}]
 
 Επιστρέψτε ΜΟΝΟ έγκυρο JSON array.""",
             # Hebrew
@@ -292,7 +379,7 @@ JSON μορφή: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "titl
 
 צור {max_recipes} מתכונים פשוטים. כל מתכון מקסימום 5 שלבים. שמור קצר. ללא הקדמות.
 
-פורמט JSON: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "כותרת", "steps": ["שלב 1"], "ingredients": ["מרכיב1"]}}]
+פורמט JSON: [{{"emoji": "🍝", "badge": "fastLazy", "title": "כותרת", "steps": ["שלב 1"], "ingredients": ["מרכיב1"]}}]
 
 החזר רק מערך JSON תקין.""",
             # Hindi
@@ -300,7 +387,7 @@ JSON μορφή: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "titl
 
 {max_recipes} सरल व्यंजन बनाएं। प्रत्येक व्यंजन अधिकतम 5 चरण। संक्षिप्त रखें। कोई परिचय नहीं।
 
-JSON प्रारूप: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "शीर्षक", "steps": ["चरण 1"], "ingredients": ["सामग्री1"]}}]
+JSON प्रारूप: [{{"emoji": "🍝", "badge": "fastLazy", "title": "शीर्षक", "steps": ["चरण 1"], "ingredients": ["सामग्री1"]}}]
 
 केवल वैध JSON सरणी लौटाएं।""",
             # Indonesian
@@ -308,7 +395,7 @@ JSON प्रारूप: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastL
 
 Buat {max_recipes} resep sederhana. Setiap resep max 5 langkah. Buat singkat. Tanpa pengantar.
 
-Format JSON: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Judul", "steps": ["Langkah 1"], "ingredients": ["bahan1"]}}]
+Format JSON: [{{"emoji": "🍝", "badge": "fastLazy", "title": "Judul", "steps": ["Langkah 1"], "ingredients": ["bahan1"]}}]
 
 Kembalikan HANYA array JSON yang valid.""",
             # Italian
@@ -316,7 +403,7 @@ Kembalikan HANYA array JSON yang valid.""",
 
 Crea {max_recipes} ricette semplici. Ogni ricetta max 5 passi. Mantieni breve. Nessuna introduzione.
 
-Formato JSON: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Titolo", "steps": ["Passo 1"], "ingredients": ["ing1"]}}]
+Formato JSON: [{{"emoji": "🍝", "badge": "fastLazy", "title": "Titolo", "steps": ["Passo 1"], "ingredients": ["ing1"]}}]
 
 Restituisci SOLO array JSON valido.""",
             # Japanese
@@ -324,7 +411,7 @@ Restituisci SOLO array JSON valido.""",
 
 {max_recipes}つの簡単なレシピを作成。各レシピ最大5ステップ。簡潔に。紹介なし。
 
-JSON形式: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "タイトル", "steps": ["ステップ1"], "ingredients": ["材料1"]}}]
+JSON形式: [{{"emoji": "🍝", "badge": "fastLazy", "title": "タイトル", "steps": ["ステップ1"], "ingredients": ["材料1"]}}]
 
 有効なJSON配列のみ返す。""",
             # Korean
@@ -332,7 +419,7 @@ JSON形式: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "
 
 {max_recipes}개의 간단한 레시피 생성. 각 레시피 최대 5단계. 간결하게. 소개 없음.
 
-JSON 형식: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "제목", "steps": ["단계1"], "ingredients": ["재료1"]}}]
+JSON 형식: [{{"emoji": "🍝", "badge": "fastLazy", "title": "제목", "steps": ["단계1"], "ingredients": ["재료1"]}}]
 
 유효한 JSON 배열만 반환.""",
             # Norwegian
@@ -340,7 +427,7 @@ JSON 형식: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": 
 
 Lag {max_recipes} enkle oppskrifter. Hver oppskrift max 5 steg. Hold kort. Ingen introduksjoner.
 
-JSON format: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Tittel", "steps": ["Steg 1"], "ingredients": ["ing1"]}}]
+JSON format: [{{"emoji": "🍝", "badge": "fastLazy", "title": "Tittel", "steps": ["Steg 1"], "ingredients": ["ing1"]}}]
 
 Returner KUN gyldig JSON array.""",
             # Polish
@@ -348,7 +435,7 @@ Returner KUN gyldig JSON array.""",
 
 Utwórz {max_recipes} proste przepisy. Każdy przepis max 5 kroków. Krótko. Bez wstępów.
 
-Format JSON: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Tytuł", "steps": ["Krok 1"], "ingredients": ["składnik1"]}}]
+Format JSON: [{{"emoji": "🍝", "badge": "fastLazy", "title": "Tytuł", "steps": ["Krok 1"], "ingredients": ["składnik1"]}}]
 
 Zwróć TYLKO prawidłową tablicę JSON.""",
             # Portuguese
@@ -356,7 +443,7 @@ Zwróć TYLKO prawidłową tablicę JSON.""",
 
 Crie {max_recipes} receitas simples. Cada receita máx 5 passos. Mantenha curto. Sem introduções.
 
-Formato JSON: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Título", "steps": ["Passo 1"], "ingredients": ["ing1"]}}]
+Formato JSON: [{{"emoji": "🍝", "badge": "fastLazy", "title": "Título", "steps": ["Passo 1"], "ingredients": ["ing1"]}}]
 
 Retorne APENAS array JSON válido.""",
             # Romanian
@@ -364,7 +451,7 @@ Retorne APENAS array JSON válido.""",
 
 Creează {max_recipes} rețete simple. Fiecare rețetă max 5 pași. Păstrează scurt. Fără introduceri.
 
-Format JSON: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Titlu", "steps": ["Pas 1"], "ingredients": ["ing1"]}}]
+Format JSON: [{{"emoji": "🍝", "badge": "fastLazy", "title": "Titlu", "steps": ["Pas 1"], "ingredients": ["ing1"]}}]
 
 Returnează DOAR array JSON valid.""",
             # Russian
@@ -372,7 +459,7 @@ Returnează DOAR array JSON valid.""",
 
 Создайте {max_recipes} простых рецептов. Каждый рецепт макс 5 шагов. Кратко. Без вступлений.
 
-Формат JSON: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Название", "steps": ["Шаг 1"], "ingredients": ["инг1"]}}]
+Формат JSON: [{{"emoji": "🍝", "badge": "fastLazy", "title": "Название", "steps": ["Шаг 1"], "ingredients": ["инг1"]}}]
 
 Возвращайте ТОЛЬКО действительный JSON массив.""",
             # Spanish
@@ -380,7 +467,7 @@ Returnează DOAR array JSON valid.""",
 
 Crea {max_recipes} recetas simples. Cada receta máx 5 pasos. Mantén corto. Sin introducciones.
 
-Formato JSON: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Título", "steps": ["Paso 1"], "ingredients": ["ing1"]}}]
+Formato JSON: [{{"emoji": "🍝", "badge": "fastLazy", "title": "Título", "steps": ["Paso 1"], "ingredients": ["ing1"]}}]
 
 Devuelve SOLO array JSON válido.""",
             # Swedish
@@ -388,7 +475,7 @@ Devuelve SOLO array JSON válido.""",
 
 Skapa {max_recipes} enkla recept. Varje recept max 5 steg. Håll kort. Inga inledningar.
 
-JSON format: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Titel", "steps": ["Steg 1"], "ingredients": ["ing1"]}}]
+JSON format: [{{"emoji": "🍝", "badge": "fastLazy", "title": "Titel", "steps": ["Steg 1"], "ingredients": ["ing1"]}}]
 
 Returnera ENDAST giltigt JSON array.""",
             # Thai
@@ -396,7 +483,7 @@ Returnera ENDAST giltigt JSON array.""",
 
 สร้างสูตรอาหารง่ายๆ {max_recipes} รายการ แต่ละสูตรสูงสุด 5 ขั้นตอน สั้นๆ ไม่มีคำนำ
 
-รูปแบบ JSON: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "ชื่อ", "steps": ["ขั้นตอน1"], "ingredients": ["ส่วนผสม1"]}}]
+รูปแบบ JSON: [{{"emoji": "🍝", "badge": "fastLazy", "title": "ชื่อ", "steps": ["ขั้นตอน1"], "ingredients": ["ส่วนผสม1"]}}]
 
 คืนค่าเฉพาะอาร์เรย์ JSON ที่ถูกต้อง""",
             # Turkish
@@ -404,7 +491,7 @@ Returnera ENDAST giltigt JSON array.""",
 
 {max_recipes} basit tarif oluştur. Her tarif max 5 adım. Kısa tut. Giriş yok.
 
-JSON formatı: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Başlık", "steps": ["Adım 1"], "ingredients": ["malzeme1"]}}]
+JSON formatı: [{{"emoji": "🍝", "badge": "fastLazy", "title": "Başlık", "steps": ["Adım 1"], "ingredients": ["malzeme1"]}}]
 
 SADECE geçerli JSON dizisi döndür.""",
             # Ukrainian
@@ -412,7 +499,7 @@ SADECE geçerli JSON dizisi döndür.""",
 
 Створіть {max_recipes} простих рецептів. Кожен рецепт макс 5 кроків. Коротко. Без вступів.
 
-Формат JSON: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Назва", "steps": ["Крок 1"], "ingredients": ["інг1"]}}]
+Формат JSON: [{{"emoji": "🍝", "badge": "fastLazy", "title": "Назва", "steps": ["Крок 1"], "ingredients": ["інг1"]}}]
 
 Повертайте ЛИШЕ дійсний JSON масив.""",
             # Vietnamese
@@ -420,12 +507,12 @@ SADECE geçerli JSON dizisi döndür.""",
 
 Tạo {max_recipes} công thức đơn giản. Mỗi công thức tối đa 5 bước. Ngắn gọn. Không giới thiệu.
 
-Định dạng JSON: [{{"id": "rec_001", "emoji": "🍝", "badge": "fastLazy", "title": "Tiêu đề", "steps": ["Bước 1"], "ingredients": ["nguyên liệu1"]}}]
+Định dạng JSON: [{{"emoji": "🍝", "badge": "fastLazy", "title": "Tiêu đề", "steps": ["Bước 1"], "ingredients": ["nguyên liệu1"]}}]
 
 Chỉ trả về mảng JSON hợp lệ.""",
         }
         
-        prompt = language_prompts.get(language, language_prompts["en"])
+        prompt = base_prompts.get(language, base_prompts["en"])
         
         try:
             # COST REDUCTION: Controlled token limit for recipe generation
@@ -438,7 +525,7 @@ Chỉ trả về mảng JSON hợp lệ.""",
                 messages=[
                     {
                         "role": "system",
-                        "content": "You are a creative chef assistant. Generate practical, delicious recipes based on available ingredients. Always return valid JSON arrays."
+                        "content": system_message + " Always return valid JSON arrays."
                     },
                     {
                         "role": "user",
@@ -446,7 +533,7 @@ Chỉ trả về mảng JSON hợp lệ.""",
                     }
                 ],
                 max_tokens=recipe_max_tokens,  # Controlled limit for cost reduction
-                temperature=self.temperature,
+                temperature=temperature,
                 response_format={"type": "json_object"} if max_recipes == 1 else None
             )
             
@@ -487,9 +574,9 @@ Chỉ trả về mảng JSON hợp lệ.""",
                 
                 # Validate and fix recipe structure
                 for recipe in recipes:
-                    # Generate ID if missing
-                    if "id" not in recipe:
-                        recipe["id"] = f"rec_{str(uuid.uuid4())[:8]}"
+                    # ALWAYS generate a unique ID server-side to prevent collisions
+                    # OpenAI may return generic IDs like "rec_001" which get reused
+                    recipe["id"] = f"rec_{str(uuid.uuid4())[:8]}"
                     
                     # Ensure required fields exist
                     if "emoji" not in recipe:

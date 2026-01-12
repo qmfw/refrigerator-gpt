@@ -18,11 +18,16 @@ const Map<String, String> greekStrings = {
   AppStrings.photos: 'φωτογραφίες',
   AppStrings.thisIsEnough: 'Αυτό είναι αρκετό',
   AppStrings.addAnotherPhoto: 'Προσθήκη άλλης φωτογραφίας',
+  AppStrings.addPhoto: 'Προσθήκη φωτογραφίας',
+  AppStrings.takePhoto: 'Λήψη φωτογραφίας',
+  AppStrings.chooseFromGallery: 'Επιλογή από τη συλλογή',
   AppStrings.confirmIngredients: 'Επιβεβαίωση Υλικών',
   AppStrings.heresWhatIThink: 'Αυτά νομίζω ότι έχετε.',
   AppStrings.mightBeWrong: 'Μπορεί να κάνω λάθος. Διορθώστε οτιδήποτε.',
   AppStrings.addSomethingElse: 'Προσθέστε κάτι άλλο…',
   AppStrings.cookWithThis: '🍳 Μαγειρέψτε με αυτό',
+  AppStrings.noIngredientsFound:
+      'Δεν μπορώ να εντοπίσω συστατικά φαγητού σε αυτές τις εικόνες.',
   AppStrings.lookingClosely: 'Κοιτάζω προσεκτικά…',
   AppStrings.fridgeHasPotential: 'Αυτό το ψυγείο έχει δυνατότητες.',
   AppStrings.heresWhatYouCanMake: 'Αυτά μπορείτε να φτιάξετε',
@@ -48,12 +53,40 @@ const Map<String, String> greekStrings = {
   AppStrings.ok: 'Εντάξει',
   AppStrings.history: 'Ιστορικό',
   AppStrings.emptyHistory: 'Δεν υπάρχει ιστορικό ακόμα',
+  AppStrings.minutesAgo: 'πριν {minutes} λεπτά',
   AppStrings.hoursAgo: 'πριν {hours} ώρες',
   AppStrings.yesterday: 'Χθες',
   AppStrings.daysAgo: 'πριν {days} ημέρες',
   AppStrings.weekAgo: 'πριν 1 εβδομάδα',
   AppStrings.weeksAgo: 'πριν {weeks} εβδομάδες',
-  AppStrings.dietPreferences: 'Ελληνικά',
+  AppStrings.dietPreferences: 'Διατροφικές Προτιμήσεις',
   AppStrings.dietPreferencesHelper:
       'Θα προσπαθήσουμε να τα αποφύγουμε όταν προτείνουμε συνταγές.',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: 'Αποφύγετε Συστατικά',
+  AppStrings.dietStyle: 'Στυλ Διατροφής',
+  AppStrings.cookingPreferences: 'Προτιμήσεις Μαγειρικής',
+  AppStrings.religious: 'Θρησκευτικό',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'Καρύδια',
+  AppStrings.shellfish: 'Οστρακοειδή',
+  AppStrings.dairy: 'Γαλακτοκομικά',
+  AppStrings.eggs: 'Αυγά',
+  AppStrings.gluten: 'Γλουτένη',
+  AppStrings.soy: 'Σόγια',
+
+  // Diet Style
+  AppStrings.vegan: 'Βίγκαν',
+  AppStrings.vegetarian: 'Χορτοφαγικό',
+  AppStrings.pescatarian: 'Πεσκαταριανό',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: 'Χαμηλά υδατάνθρακες',
+  AppStrings.lowFat: 'Χαμηλά λίπη',
+
+  // Religious
+  AppStrings.halal: 'Χαλάλ',
+  AppStrings.kosher: 'Κόσερ',
 };

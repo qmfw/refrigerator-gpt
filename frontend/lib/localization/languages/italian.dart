@@ -17,11 +17,16 @@ const Map<String, String> italianStrings = {
   AppStrings.photos: 'foto',
   AppStrings.thisIsEnough: 'Basta così',
   AppStrings.addAnotherPhoto: 'Aggiungi un\'altra foto',
+  AppStrings.addPhoto: 'Aggiungi foto',
+  AppStrings.takePhoto: 'Scatta foto',
+  AppStrings.chooseFromGallery: 'Scegli dalla galleria',
   AppStrings.confirmIngredients: 'Conferma ingredienti',
   AppStrings.heresWhatIThink: 'Ecco cosa penso tu abbia.',
   AppStrings.mightBeWrong: 'Potrei sbagliarmi. Correggi quello che vuoi.',
   AppStrings.addSomethingElse: 'Aggiungi qualcos\'altro…',
   AppStrings.cookWithThis: '🍳 Cucina con questo',
+  AppStrings.noIngredientsFound:
+      'Non riesco a identificare ingredienti alimentari in queste immagini.',
   AppStrings.lookingClosely: 'Guardando da vicino…',
   AppStrings.fridgeHasPotential: 'Questo frigo ha potenziale.',
   AppStrings.heresWhatYouCanMake: 'Ecco cosa puoi fare',
@@ -66,12 +71,40 @@ const Map<String, String> italianStrings = {
   AppStrings.cancel: 'Annulla',
   AppStrings.history: 'Cronologia',
   AppStrings.emptyHistory: 'Nessuna cronologia ancora',
+  AppStrings.minutesAgo: '{minutes} minuti fa',
   AppStrings.hoursAgo: '{hours} ore fa',
   AppStrings.yesterday: 'Ieri',
   AppStrings.daysAgo: '{days} giorni fa',
   AppStrings.weekAgo: '1 settimana fa',
   AppStrings.weeksAgo: '{weeks} settimane fa',
-  AppStrings.dietPreferences: 'Italiano',
+  AppStrings.dietPreferences: 'Preferenze Dietetiche',
   AppStrings.dietPreferencesHelper:
       'Cercheremo di evitarli quando suggeriamo ricette.',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: 'Evitare Ingredienti',
+  AppStrings.dietStyle: 'Stile Dietetico',
+  AppStrings.cookingPreferences: 'Preferenze di Cucina',
+  AppStrings.religious: 'Religioso',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'Noci',
+  AppStrings.shellfish: 'Crostacei',
+  AppStrings.dairy: 'Latticini',
+  AppStrings.eggs: 'Uova',
+  AppStrings.gluten: 'Glutine',
+  AppStrings.soy: 'Soia',
+
+  // Diet Style
+  AppStrings.vegan: 'Vegano',
+  AppStrings.vegetarian: 'Vegetariano',
+  AppStrings.pescatarian: 'Pescetariano',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: 'Basso contenuto di carboidrati',
+  AppStrings.lowFat: 'Basso contenuto di grassi',
+
+  // Religious
+  AppStrings.halal: 'Halal',
+  AppStrings.kosher: 'Kosher',
 };

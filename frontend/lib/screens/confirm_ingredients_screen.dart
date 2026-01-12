@@ -16,6 +16,7 @@ class _ConfirmIngredientsScreenState extends State<ConfirmIngredientsScreen> {
   final TextEditingController _ingredientController = TextEditingController();
   List<Ingredient> _ingredients = [];
   bool _isLoading = true;
+  Object? _lastRouteArguments; // Track last route arguments to detect changes
 
   @override
   void initState() {
@@ -26,6 +27,21 @@ class _ConfirmIngredientsScreenState extends State<ConfirmIngredientsScreen> {
     });
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reload ingredients only if route arguments actually changed
+    final currentArgs = ModalRoute.of(context)?.settings.arguments;
+    if (currentArgs != _lastRouteArguments) {
+      _lastRouteArguments = currentArgs;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _loadIngredients();
+        }
+      });
+    }
+  }
+
   void _loadIngredients() {
     // Get ingredients from route arguments
     final args = ModalRoute.of(context)?.settings.arguments;
@@ -33,7 +49,8 @@ class _ConfirmIngredientsScreenState extends State<ConfirmIngredientsScreen> {
     List<Ingredient> ingredients = [];
     if (args != null) {
       if (args is List<Ingredient>) {
-        ingredients = args;
+        // Create a new list to avoid reference issues
+        ingredients = List<Ingredient>.from(args);
       } else if (args is List) {
         // Try to convert list of dynamic to List<Ingredient>
         try {
@@ -44,6 +61,7 @@ class _ConfirmIngredientsScreenState extends State<ConfirmIngredientsScreen> {
         }
       }
     }
+    // If args is null or empty list, ingredients will be empty (fresh start)
 
     setState(() {
       _ingredients = ingredients;
@@ -112,6 +130,28 @@ class _ConfirmIngredientsScreenState extends State<ConfirmIngredientsScreen> {
                         child: Padding(
                           padding: EdgeInsets.all(32.0),
                           child: CircularProgressIndicator(),
+                        ),
+                      )
+                    else if (_ingredients.isEmpty)
+                      // Show message when no ingredients found
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppColors.chipBackground,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                context.l10n.noIngredientsFound,
+                                style: const TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       )
                     else

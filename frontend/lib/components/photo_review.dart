@@ -93,55 +93,67 @@ class PhotoPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 320),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFFE5E7EB), Color(0xFFD1D5DB)],
+    return AspectRatio(
+      aspectRatio: 1.0, // Square aspect ratio for consistent sizing
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color:
+              AppColors
+                  .background, // Use app background color (white) instead of grey
         ),
-      ),
-      child: Stack(
-        children: [
-          if (image != null)
-            ClipRRect(borderRadius: BorderRadius.circular(20), child: image!)
-          else
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.image, size: 48, color: AppColors.textHint),
-                  const SizedBox(height: 12),
-                  Text(
-                    placeholderText ?? 'Tap a thumbnail to preview',
-                    style: AppTextStyles.bodySmall,
+        child: Stack(
+          children: [
+            if (image != null)
+              Positioned.fill(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: image!,
+                ),
+              )
+            else
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.image,
+                      size: 48,
+                      color: AppColors.textHint,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      placeholderText ?? 'Tap a thumbnail to preview',
+                      style: AppTextStyles.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+            // Photo count badge
+            Positioned(
+              top: 16,
+              right: 16,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.black.withAlpha(153),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  '$photoCount photo${photoCount != 1 ? 's' : ''}',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
                   ),
-                ],
-              ),
-            ),
-          // Photo count badge
-          Positioned(
-            top: 16,
-            right: 16,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.black.withAlpha(153),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                '$photoCount photo${photoCount != 1 ? 's' : ''}',
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

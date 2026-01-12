@@ -17,11 +17,16 @@ const Map<String, String> arabicStrings = {
   AppStrings.photos: 'صور',
   AppStrings.thisIsEnough: 'هذا كافٍ',
   AppStrings.addAnotherPhoto: 'إضافة صورة أخرى',
+  AppStrings.addPhoto: 'إضافة صورة',
+  AppStrings.takePhoto: 'التقاط صورة',
+  AppStrings.chooseFromGallery: 'اختر من المعرض',
   AppStrings.confirmIngredients: 'تأكيد المكونات',
   AppStrings.heresWhatIThink: 'هذا ما أعتقد أن لديك.',
   AppStrings.mightBeWrong: 'قد أكون مخطئاً. صحح أي شيء.',
   AppStrings.addSomethingElse: 'أضف شيئاً آخر…',
   AppStrings.cookWithThis: '🍳 اطبخ بهذا',
+  AppStrings.noIngredientsFound:
+      'عذراً، لا يمكنني تحديد أي مكونات غذائية في هذه الصور.',
   AppStrings.lookingClosely: 'أبحث بعناية…',
   AppStrings.fridgeHasPotential: 'هذه الثلاجة لديها إمكانات.',
   AppStrings.heresWhatYouCanMake: 'هذا ما يمكنك صنعه',
@@ -46,11 +51,39 @@ const Map<String, String> arabicStrings = {
   AppStrings.ok: 'موافق',
   AppStrings.history: 'السجل',
   AppStrings.emptyHistory: 'لا يوجد تاريخ بعد',
+  AppStrings.minutesAgo: 'منذ {minutes} دقيقة',
   AppStrings.hoursAgo: 'منذ {hours} ساعة',
   AppStrings.yesterday: 'أمس',
   AppStrings.daysAgo: 'منذ {days} يوم',
   AppStrings.weekAgo: 'منذ أسبوع واحد',
   AppStrings.weeksAgo: 'منذ {weeks} أسبوع',
-  AppStrings.dietPreferences: 'العربية',
+  AppStrings.dietPreferences: 'التفضيلات الغذائية',
   AppStrings.dietPreferencesHelper: 'سنحاول تجنب هذه عند اقتراح الوصفات.',
+
+  // Diet Preference Sections
+  AppStrings.avoidIngredients: 'تجنب المكونات',
+  AppStrings.dietStyle: 'نمط النظام الغذائي',
+  AppStrings.cookingPreferences: 'تفضيلات الطهي',
+  AppStrings.religious: 'ديني',
+
+  // Avoid Ingredients
+  AppStrings.nuts: 'المكسرات',
+  AppStrings.shellfish: 'المأكولات البحرية',
+  AppStrings.dairy: 'منتجات الألبان',
+  AppStrings.eggs: 'البيض',
+  AppStrings.gluten: 'الغلوتين',
+  AppStrings.soy: 'الصويا',
+
+  // Diet Style
+  AppStrings.vegan: 'نباتي صرف',
+  AppStrings.vegetarian: 'نباتي',
+  AppStrings.pescatarian: 'نباتي يأكل السمك',
+
+  // Cooking Preferences
+  AppStrings.lowCarb: 'قليل الكربوهيدرات',
+  AppStrings.lowFat: 'قليل الدهون',
+
+  // Religious
+  AppStrings.halal: 'حلال',
+  AppStrings.kosher: 'كوشير',
 };

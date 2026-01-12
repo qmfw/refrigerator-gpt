@@ -4,9 +4,31 @@ import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 import '../localization/app_localizations.dart';
 import '../localization/app_localizations_extension.dart';
+import '../localization/language_service.dart';
 
-class LanguageScreen extends StatelessWidget {
+class LanguageScreen extends StatefulWidget {
   const LanguageScreen({super.key});
+
+  @override
+  State<LanguageScreen> createState() => _LanguageScreenState();
+}
+
+class _LanguageScreenState extends State<LanguageScreen> {
+  bool _isUsingDeviceLanguage = false;
+  final LanguageService _languageService = LanguageService();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkDeviceLanguageSetting();
+  }
+
+  Future<void> _checkDeviceLanguageSetting() async {
+    final savedLanguage = await _languageService.getLanguage();
+    setState(() {
+      _isUsingDeviceLanguage = savedLanguage == null;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,21 +54,19 @@ class LanguageScreen extends StatelessWidget {
                 children: [
                   _buildLanguageItem(
                     context,
-                    language: AppLanguage.english,
+                    language: null, // null means "use device language"
                     label: context.l10n.useDeviceLanguage,
                     sublabel: context.l10n.defaultLabel,
-                    isSelected: currentLanguage == AppLanguage.english,
+                    isSelected: _isUsingDeviceLanguage,
                   ),
-                  ...AppLanguage.values
-                      .where((lang) => lang != AppLanguage.english)
-                      .map(
-                        (language) => _buildLanguageItem(
-                          context,
-                          language: language,
-                          label: _getLanguageName(language),
-                          isSelected: currentLanguage == language,
-                        ),
-                      ),
+                  ...AppLanguage.values.map(
+                    (language) => _buildLanguageItem(
+                      context,
+                      language: language,
+                      label: _getLanguageName(language),
+                      isSelected: currentLanguage == language,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -58,15 +78,25 @@ class LanguageScreen extends StatelessWidget {
 
   Widget _buildLanguageItem(
     BuildContext context, {
-    required AppLanguage language,
+    required AppLanguage? language, // null means "use device language"
     required String label,
     String? sublabel,
     required bool isSelected,
   }) {
     return InkWell(
       onTap: () async {
-        await context.setLanguage(language);
+        await context.setLanguage(language); // Pass null for device language
         if (context.mounted) {
+          // Update the device language flag
+          if (language == null) {
+            setState(() {
+              _isUsingDeviceLanguage = true;
+            });
+          } else {
+            setState(() {
+              _isUsingDeviceLanguage = false;
+            });
+          }
           Navigator.pop(context);
         }
       },
