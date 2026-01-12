@@ -426,6 +426,7 @@ flowchart TD
 
     Home -->|Bottom Tab| History
     History -->|Tap item| Result
+```
 
 Users can:
 - Edit ingredients from confirmation screen
