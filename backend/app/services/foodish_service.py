@@ -2,6 +2,7 @@
 import httpx
 import re
 from typing import Optional
+from app.services.food_image_matcher import food_image_matcher
 
 
 class FoodishService:
@@ -19,42 +20,61 @@ class FoodishService:
     def __init__(self):
         self.client = httpx.AsyncClient(timeout=5.0)  # 5 second timeout
     
-    async def get_food_image(self, recipe_title: str, ingredients: list = None) -> Optional[str]:
+    async def get_food_image(self, recipe_title: str, ingredients: list = None, language: str = "en") -> Optional[str]:
         """
         Get a food image from Foodish API based on recipe title and ingredients.
-        Selects the best matching image index based on recipe characteristics.
+        Uses description-based matching to find the best image from all 364 available images.
         
         Args:
             recipe_title: Recipe title
             ingredients: List of ingredient names
+            language: Language code for multilingual matching (default: "en")
             
         Returns:
             Image URL if successful, None if failed
         """
         try:
-            # Try to match recipe to a Foodish category (multiple strategies)
+            # Strategy 1: Use description-based matcher (most accurate)
+            match_result = food_image_matcher.find_best_match(recipe_title, ingredients or [], language)
+            
+            if match_result:
+                image_path, score = match_result
+                
+                # Only use description match if score is reasonable (>= 0.2)
+                if score >= 0.2:
+                    image_url = food_image_matcher.get_image_url(image_path)
+                    
+                    # Verify image exists
+                    try:
+                        check_response = await self.client.head(image_url, timeout=2.0)
+                        if check_response.status_code == 200:
+                            print(f"✅ Foodish: Description match '{recipe_title}' -> {image_path} (score: {score:.2f})")
+                            return image_url
+                    except:
+                        pass  # Fall through to category-based matching
+            
+            # Strategy 2: Fallback to category-based matching (if description match fails or score too low)
             category = self._match_to_category(recipe_title, ingredients or [])
             
             if category:
                 # Select best image index based on recipe characteristics
                 image_index = self._select_best_image_index(category, recipe_title, ingredients or [])
                 
-                # Try to fetch specific image by index first (more accurate)
-                # Foodish images are at: https://foodish-api.com/images/{category}/{category}{index}.jpg
+                # Try to fetch specific image by index
                 specific_url = f"{self.BASE_URL}/images/{category}/{category}{image_index}.jpg"
                 
-                # Verify image exists by trying to fetch it
+                # Verify image exists
                 try:
                     check_response = await self.client.head(specific_url, timeout=2.0)
                     if check_response.status_code == 200:
-                        print(f"🍽️  Foodish: Matched '{recipe_title}' -> category: {category}, image: {image_index}")
+                        print(f"🍽️  Foodish: Category match '{recipe_title}' -> category: {category}, image: {image_index}")
                         return specific_url
                 except:
-                    pass  # Fall back to API endpoint if direct URL doesn't work
+                    pass  # Fall back to API endpoint
                 
                 # Fallback to API endpoint (returns random image from category)
                 url = f"{self.BASE_URL}/api/images/{category}"
-                print(f"🍽️  Foodish: Matched '{recipe_title}' -> category: {category} (using API endpoint)")
+                print(f"🍽️  Foodish: Category match '{recipe_title}' -> {category} (using API endpoint)")
             else:
                 # Fallback to random food image only after all matching strategies fail
                 url = f"{self.BASE_URL}/api/"
@@ -73,7 +93,7 @@ class FoodishService:
             
         except Exception as e:
             # Log error but don't fail recipe generation
-            print(f"Failed to fetch Foodish image: {str(e)}")
+            print(f"⚠️  Failed to fetch Foodish image: {str(e)}")
             return None
     
     def _match_to_category(self, title: str, ingredients: list) -> Optional[str]:
@@ -408,79 +428,12 @@ class FoodishService:
     def _select_best_image_index(self, category: str, title: str, ingredients: list) -> int:
         """
         Select the best image index for a recipe based on its characteristics.
-        Uses recipe title and ingredients to determine which image best matches.
+        Uses automatic hash-based selection for consistent image picking within category.
         
-        Manual image mappings can be added here based on actual image analysis.
-        Format: (recipe_keywords, preferred_image_indices)
+        Note: This is a fallback method. Primary matching uses description-based matcher
+        which has access to all 364 images with AI-generated descriptions.
         """
-        # Manual image mappings - GENERATED BY COMPUTER VISION ANALYSIS
-        # These mappings are based on precise visual analysis using color detection
-        # Generated by: analyze_images_precise.py
-        # 
-        # The analysis uses:
-        # - Color detection (red/orange for kimchi, yellow for fried rice, etc.)
-        # - Pattern recognition (mixed colors vs plain white)
-        # - Visual characteristics matching
-        manual_mappings = {
-            "rice": {
-                # Kimchi fried rice - images with red/orange color from kimchi
-                # Detected by: reddish/orange colors + mixed color patterns
-                # Note: Some images may have low scores but still contain kimchi
-                "kimchi": [2, 3, 5, 6, 11, 12, 14, 17, 20, 22, 24, 26, 28, 30, 31, 33, 34],  # Images with potential kimchi
-                
-                # Fried rice - golden/yellow fried rice dishes  
-                # Detected by: yellow/golden colors + mixed color patterns
-                "fried": [4, 6, 11, 12, 14, 17, 20, 22, 24, 26, 28, 30, 31, 33, 34],  # Images with yellow/golden detected
-                
-                # Cabbage/lettuce/vegetable rice - rice with visible vegetables
-                # Detected by: green colors + mixed patterns
-                "cabbage": [2, 3, 4, 5, 6, 11, 12, 14, 17, 20, 22, 24, 26, 28, 30, 31, 33, 34],  # Images with potential vegetables
-                
-                # Plain rice - simple white rice (fallback for white-dominant images)
-                # Detected by: mostly white/cream colors, minimal other colors
-                "plain": [1, 8, 9, 10, 13, 15, 16, 18, 19, 21, 23, 27, 29, 32, 35],  # White-dominant images
-            },
-            "dessert": {
-                # Ice cream - images showing ice cream cones, scoops, sundaes
-                # Detected by: white/cream colors dominant
-                "ice cream": [4, 8, 9, 17, 19, 32],  # White/cream dominant images
-                
-                # Soft cream - soft serve ice cream (similar to ice cream)
-                # Uses same images as ice cream
-                "soft cream": [4, 8, 9, 17, 19, 32],  # White/cream dominant images
-                
-                # Chocolate desserts - chocolate-based desserts
-                # Detected by: brown colors
-                "chocolate": [5, 34],  # Brown-dominant images
-                
-                # Cakes and pastries - cake images
-                # Detected by: colorful patterns (decorated cakes)
-                "cake": [7, 20, 22, 25],  # Colorful/decorated images
-            },
-            "pasta": {
-                # Spaghetti - spaghetti dishes
-                # Detected by: brown/red sauce colors
-                "spaghetti": [2, 15, 20],  # Brown/red sauce detected
-                
-                # Lasagna - lasagna dishes (similar to spaghetti)
-                "lasagna": [2, 15, 20],  # Brown/red sauce detected
-            },
-        }
-        
-        # Check manual mappings first
-        if category in manual_mappings:
-            title_lower = title.lower()
-            ingredients_text = " ".join(ingredients).lower() if ingredients else ""
-            combined_text = (title_lower + " " + ingredients_text).lower()
-            
-            for keyword, image_indices in manual_mappings[category].items():
-                if keyword in combined_text:
-                    # Use hash to consistently select from preferred indices
-                    import hashlib
-                    hash_val = int(hashlib.md5(combined_text.encode()).hexdigest(), 16)
-                    return image_indices[hash_val % len(image_indices)]
-        
-        # Fall through to automatic selection
+        # Use automatic selection (hash-based for consistency)
         return self._select_best_image_index_auto(category, title, ingredients)
     
     def _select_best_image_index_auto(self, category: str, title: str, ingredients: list) -> int:

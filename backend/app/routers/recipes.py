@@ -148,7 +148,8 @@ async def generate_recipes(
             recipe_ingredients = recipe.get("ingredients", [])
             image_task = foodish_service.get_food_image(
                 recipe_title=recipe.get("title", ""),
-                ingredients=recipe_ingredients
+                ingredients=recipe_ingredients,
+                language=request.language  # Pass language for multilingual matching
             )
             image_tasks.append(image_task)
         
